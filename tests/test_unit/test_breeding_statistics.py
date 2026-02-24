@@ -21,83 +21,39 @@ from oscar.breeding_statistics import Genotype, generate_breeding_schemes
             2,
             [
                 [(Genotype.WT, Genotype.WT), (Genotype.HOM, Genotype.HOM)],
-                [
-                    (Genotype.WT, Genotype.WT),
-                    (
-                        Genotype.HOM,
-                        Genotype.HET,
-                    ),
-                ],
-                [
-                    (Genotype.WT, Genotype.WT),
-                    (
-                        Genotype.HET,
-                        Genotype.HET,
-                    ),
-                ],
-                [
-                    (
-                        Genotype.WT,
-                        Genotype.HOM,
-                    ),
-                    (Genotype.HOM, Genotype.HOM),
-                ],
-                [
-                    (
-                        Genotype.WT,
-                        Genotype.HOM,
-                    ),
-                    (Genotype.HOM, Genotype.HET),
-                ],
-                [
-                    (
-                        Genotype.WT,
-                        Genotype.HOM,
-                    ),
-                    (Genotype.HET, Genotype.HET),
-                ],
-                [
-                    (
-                        Genotype.WT,
-                        Genotype.HET,
-                    ),
-                    (Genotype.HET, Genotype.HET),
-                ],
-                [
-                    (
-                        Genotype.HOM,
-                        Genotype.HOM,
-                    ),
-                    (Genotype.HOM, Genotype.HOM),
-                ],
-                [
-                    (
-                        Genotype.HOM,
-                        Genotype.HOM,
-                    ),
-                    (Genotype.HOM, Genotype.HET),
-                ],
-                [
-                    (
-                        Genotype.HOM,
-                        Genotype.HOM,
-                    ),
-                    (Genotype.HET, Genotype.HET),
-                ],
-                [
-                    (
-                        Genotype.HOM,
-                        Genotype.HET,
-                    ),
-                    (Genotype.HET, Genotype.HET),
-                ],
-                [
-                    (
-                        Genotype.HET,
-                        Genotype.HET,
-                    ),
-                    (Genotype.HET, Genotype.HET),
-                ],
+                [(Genotype.WT, Genotype.WT), (Genotype.HOM, Genotype.HET)],
+                [(Genotype.WT, Genotype.WT), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.WT, Genotype.WT), (Genotype.HET, Genotype.HET)],
+                [(Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.WT)],
+                [(Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.HOM)],
+                [(Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.HET)],
+                [(Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.WT)],
+                [(Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.HET)],
+                [(Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.WT)],
+                [(Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.HOM)],
+                [(Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.HET)],
+                [(Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.WT)],
+                [(Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.HET)],
+                [(Genotype.HOM, Genotype.WT), (Genotype.HOM, Genotype.HOM)],
+                [(Genotype.HOM, Genotype.WT), (Genotype.HOM, Genotype.HET)],
+                [(Genotype.HOM, Genotype.WT), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.HOM, Genotype.WT), (Genotype.HET, Genotype.HET)],
+                [(Genotype.HOM, Genotype.HOM), (Genotype.HOM, Genotype.HOM)],
+                [(Genotype.HOM, Genotype.HOM), (Genotype.HOM, Genotype.HET)],
+                [(Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.WT)],
+                [(Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.HET)],
+                [(Genotype.HOM, Genotype.HET), (Genotype.HOM, Genotype.HET)],
+                [(Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.WT)],
+                [(Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.HET)],
+                [(Genotype.HET, Genotype.WT), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.HET, Genotype.WT), (Genotype.HET, Genotype.HET)],
+                [(Genotype.HET, Genotype.HOM), (Genotype.HET, Genotype.HOM)],
+                [(Genotype.HET, Genotype.HOM), (Genotype.HET, Genotype.HET)],
+                [(Genotype.HET, Genotype.HET), (Genotype.HET, Genotype.HET)],
             ],
             id="two mutations",
         ),
@@ -106,5 +62,5 @@ from oscar.breeding_statistics import Genotype, generate_breeding_schemes
 def test_generate_breeding_schemes(
     n_mutations: int, expected_schemes: list[list[tuple]]
 ):
-    schemes = generate_breeding_schemes(2)
-    print(schemes)
+    schemes = generate_breeding_schemes(n_mutations)
+    assert schemes == expected_schemes

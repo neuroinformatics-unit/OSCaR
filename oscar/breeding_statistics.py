@@ -1,5 +1,5 @@
+import itertools
 from enum import StrEnum, auto
-from itertools import combinations_with_replacement
 
 
 class Genotype(StrEnum):
@@ -9,7 +9,9 @@ class Genotype(StrEnum):
     UNGENOTYPED = auto()
 
 
-def generate_breeding_schemes(number_of_mutations: int):
+def generate_breeding_schemes(
+    number_of_mutations: int,
+) -> list[list[tuple[Genotype, ...]]]:
     """Generate all possible combinations of parent1 x parent2 genotype, for
     the given number of mutations.
 
@@ -26,16 +28,23 @@ def generate_breeding_schemes(number_of_mutations: int):
     genotypes = [Genotype.WT, Genotype.HOM, Genotype.HET]
     breeding_schemes = []
 
-    # as order doesn't matter e.g. wt x hom == hom x wt, these are
-    # mathematically 'combinations'
-    breeding_combos = combinations_with_replacement(
-        genotypes, 2 * number_of_mutations
+    # First, generate all possible genotypes of a single parent.
+    parent_genotype = itertools.product(genotypes, repeat=number_of_mutations)
+
+    # Then combine two parents, bearing in mind order doesn't matter e.g.
+    # wt x hom == hom x wt
+    breeding_combos = itertools.combinations_with_replacement(
+        parent_genotype, 2
     )
 
     for combo in breeding_combos:
-        parent_1 = combo[:number_of_mutations]
-        parent_2 = combo[number_of_mutations:]
+        parent_1 = combo[0]
+        parent_2 = combo[1]
 
+        # exclude combos that have wt for the same allele in both parents.
+        # e.g. for a 2 mutations scenario, we could generate wt, het x wt, hom.
+        # Here, both parents are wt for allele 1, so this is actually a 1
+        # mutation scenario and should be excluded.
         if not _breeding_scheme_contains_wt_pairs(parent_1, parent_2):
             breeding_schemes.append([parent_1, parent_2])
 
@@ -45,7 +54,7 @@ def generate_breeding_schemes(number_of_mutations: int):
 def _breeding_scheme_contains_wt_pairs(
     parent_1_genotype: tuple[Genotype, ...],
     parent_2_genotype: tuple[Genotype, ...],
-):
+) -> bool:
     """Check if a given breeding scheme (parent_1 x parent_2) contains pairs of
     wt alleles.
 
