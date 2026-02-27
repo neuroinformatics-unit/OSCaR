@@ -115,3 +115,29 @@ def test_mendelian_ratio_single_mutation(
         parent_2_genotype=parent_2_genotype,
     )
     assert scheme.mendelian_ratio() == expected_ratios
+
+
+@pytest.mark.parametrize(
+    "parent_1_genotype, parent_2_genotype, expected_ratios",
+    [
+        pytest.param(
+            (Genotype.WT, Genotype.HET),
+            (Genotype.HET, Genotype.HOM),
+            {
+                (Genotype.WT, Genotype.HET): 0.25,
+                (Genotype.WT, Genotype.HOM): 0.25,
+                (Genotype.HET, Genotype.HET): 0.25,
+                (Genotype.HET, Genotype.HOM): 0.25,
+            },
+            id="WT,HET x HET,HOM",
+        ),
+    ],
+)
+def test_mendelian_ratio_two_mutations(
+    parent_1_genotype, parent_2_genotype, expected_ratios
+):
+    scheme = BreedingScheme(
+        parent_1_genotype=parent_1_genotype,
+        parent_2_genotype=parent_2_genotype,
+    )
+    assert scheme.mendelian_ratio() == expected_ratios

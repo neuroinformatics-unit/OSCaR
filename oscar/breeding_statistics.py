@@ -51,38 +51,95 @@ class BreedingScheme:
             that genotype.
         """
 
-        # first gene
-        parent_1 = self.parent_1_genotype[0]
-        parent_2 = self.parent_2_genotype[0]
+        # For each parent, determine all the combinations of alleles they
+        # could pass on to their offspring. This is equivalent to making the
+        # header for that parent in a punnet square.
+        parent_1_alleles = self._parent_allele_combos(self.parent_1_genotype)
+        parent_2_alleles = self._parent_allele_combos(self.parent_2_genotype)
 
-        # Each parent has 2 copies of that gene. For wt = both true. For
-        # het = one true, one false. For hom = both false.
-        alleles = []
-        for parent in [parent_1, parent_2]:
-            parent_alleles = [True] * parent.value
-            parent_alleles.extend([False] * (2 - parent.value))
-            alleles.append(parent_alleles)
-
-        offspring_combos = itertools.product(alleles[0], alleles[1])
+        # All combinations of parent 1 x parent 2. This is equivalent to the
+        # contents of a punnet square.
+        offspring_combos = itertools.product(
+            parent_1_alleles, parent_2_alleles
+        )
 
         total_sum = 0
         genotype_sums: dict[Genotype, int] = {}
 
         for combo in offspring_combos:
-            total_sum += 1
-            n_wt_copies = np.array(combo).sum()
-            genotype = Genotype(n_wt_copies)
+            # each combo is a tuple of two items: the first being the alleles
+            # from parent 1, the second being the alleles from parent 2
+            offspring_genotype = self._determine_offspring_genotype(
+                combo[0], combo[1]
+            )
 
-            if genotype in genotype_sums:
-                genotype_sums[genotype] += 1
+            total_sum += 1
+
+            if offspring_genotype in genotype_sums:
+                genotype_sums[offspring_genotype] += 1
             else:
-                genotype_sums[genotype] = 1
+                genotype_sums[offspring_genotype] = 1
 
         mendelian_ratios = {}
         for genotype, n_with_genotype in genotype_sums.items():
             mendelian_ratios[genotype] = n_with_genotype / total_sum
 
         return mendelian_ratios
+
+    def _parent_allele_combos(self, parent_genotype: tuple[Genotype, ...]):
+        """For each parent, determine all the combinations of alleles they
+        could pass on to their offspring.
+
+        Bear in mind that each parent has 2 alleles for each gene, and will
+        pass on 1 to their offspring.
+
+        You can think of this like n separate containers (n == number of
+        mutations), each with 2 items inside (the alleles). We must generate
+        all combos of picking one item from each container.
+
+        Parameters
+        ----------
+        parent_genotype : tuple[Genotype, ...]
+            _description_
+
+        Returns
+        -------
+        itertools.product
+            An iterable of all allele combinations they could pass to their
+            offpsring. Each item is a list of bools with length == the number
+            of mutations. e.g. an item of [true, false, true] would mean they
+            are wildtype for gene 1, mutant for gene 2 and wildtype for gene 3
+        """
+
+        alleles = []
+        for gene in parent_genotype:
+            alleles.append(self._alleles_for_genotype(gene))
+
+        return itertools.product(*alleles)
+
+    def _determine_offspring_genotype(
+        self,
+        parent_1_alleles: tuple[bool, ...],
+        parent_2_alleles: tuple[bool, ...],
+    ):
+        if len(parent_1_alleles) != len(parent_2_alleles):
+            raise ValueError(
+                "parent 1 and 2 alleles must have the same length"
+            )
+
+        offspring_genotype = []
+        for parent_1_allele, parent_2_allele in zip(
+            parent_1_alleles, parent_2_alleles
+        ):
+            n_wt_copies = np.array([parent_1_allele, parent_2_allele]).sum()
+            offspring_genotype.append(Genotype(n_wt_copies))
+
+        return tuple(offspring_genotype)
+
+    def _alleles_for_genotype(self, genotype: Genotype) -> list[bool]:
+        alleles = [True] * genotype.value
+        alleles.extend([False] * (2 - genotype.value))
+        return alleles
 
 
 def generate_breeding_schemes(
