@@ -131,9 +131,117 @@ def test_mendelian_ratio_single_mutation(
             },
             id="WT,HET x HET,HOM",
         ),
+        pytest.param(
+            (Genotype.HET, Genotype.HET),
+            (Genotype.HET, Genotype.HET),
+            {
+                (Genotype.WT, Genotype.WT): 0.0625,
+                (Genotype.WT, Genotype.HET): 0.125,
+                (Genotype.WT, Genotype.HOM): 0.0625,
+                (Genotype.HET, Genotype.WT): 0.125,
+                (Genotype.HET, Genotype.HET): 0.25,
+                (Genotype.HET, Genotype.HOM): 0.125,
+                (Genotype.HOM, Genotype.WT): 0.0625,
+                (Genotype.HOM, Genotype.HET): 0.125,
+                (Genotype.HOM, Genotype.HOM): 0.0625,
+            },
+            id="HET,HET x HET,HET",
+        ),
+        pytest.param(
+            (Genotype.HET, Genotype.HOM),
+            (Genotype.HOM, Genotype.HET),
+            {
+                (Genotype.HET, Genotype.HET): 0.25,
+                (Genotype.HET, Genotype.HOM): 0.25,
+                (Genotype.HOM, Genotype.HET): 0.25,
+                (Genotype.HOM, Genotype.HOM): 0.25,
+            },
+            id="HET,HOM x HOM,HET",
+        ),
+        pytest.param(
+            (Genotype.HET, Genotype.HET),
+            (Genotype.HET, Genotype.WT),
+            {
+                (Genotype.WT, Genotype.WT): 0.125,
+                (Genotype.WT, Genotype.HET): 0.125,
+                (Genotype.HET, Genotype.WT): 0.25,
+                (Genotype.HET, Genotype.HET): 0.25,
+                (Genotype.HOM, Genotype.WT): 0.125,
+                (Genotype.HOM, Genotype.HET): 0.125,
+            },
+            id="HET,HET x HET,WT",
+        ),
     ],
 )
 def test_mendelian_ratio_two_mutations(
+    parent_1_genotype, parent_2_genotype, expected_ratios
+):
+    scheme = BreedingScheme(
+        parent_1_genotype=parent_1_genotype,
+        parent_2_genotype=parent_2_genotype,
+    )
+    assert scheme.mendelian_ratio() == expected_ratios
+
+
+@pytest.mark.parametrize(
+    "parent_1_genotype, parent_2_genotype, expected_ratios",
+    [
+        pytest.param(
+            (Genotype.WT, Genotype.HET, Genotype.WT),
+            (Genotype.HET, Genotype.HET, Genotype.HET),
+            {
+                (Genotype.WT, Genotype.WT, Genotype.WT): 0.0625,
+                (Genotype.WT, Genotype.WT, Genotype.HET): 0.0625,
+                (Genotype.WT, Genotype.HET, Genotype.WT): 0.125,
+                (Genotype.WT, Genotype.HET, Genotype.HET): 0.125,
+                (Genotype.WT, Genotype.HOM, Genotype.WT): 0.0625,
+                (Genotype.WT, Genotype.HOM, Genotype.HET): 0.0625,
+                (Genotype.HET, Genotype.WT, Genotype.WT): 0.0625,
+                (Genotype.HET, Genotype.WT, Genotype.HET): 0.0625,
+                (Genotype.HET, Genotype.HET, Genotype.WT): 0.125,
+                (Genotype.HET, Genotype.HET, Genotype.HET): 0.125,
+                (Genotype.HET, Genotype.HOM, Genotype.WT): 0.0625,
+                (Genotype.HET, Genotype.HOM, Genotype.HET): 0.0625,
+            },
+            id="WT,HET,WT x HET,HET,HET",
+        ),
+        pytest.param(
+            (Genotype.HET, Genotype.HET, Genotype.HET),
+            (Genotype.HET, Genotype.HET, Genotype.HET),
+            {
+                (Genotype.WT, Genotype.WT, Genotype.WT): 0.015625,
+                (Genotype.WT, Genotype.WT, Genotype.HET): 0.03125,
+                (Genotype.WT, Genotype.WT, Genotype.HOM): 0.015625,
+                (Genotype.WT, Genotype.HET, Genotype.WT): 0.03125,
+                (Genotype.WT, Genotype.HET, Genotype.HET): 0.0625,
+                (Genotype.WT, Genotype.HET, Genotype.HOM): 0.03125,
+                (Genotype.WT, Genotype.HOM, Genotype.WT): 0.015625,
+                (Genotype.WT, Genotype.HOM, Genotype.HET): 0.03125,
+                (Genotype.WT, Genotype.HOM, Genotype.HOM): 0.015625,
+                (Genotype.HET, Genotype.WT, Genotype.WT): 0.03125,
+                (Genotype.HET, Genotype.WT, Genotype.HET): 0.0625,
+                (Genotype.HET, Genotype.WT, Genotype.HOM): 0.03125,
+                (Genotype.HET, Genotype.HET, Genotype.WT): 0.0625,
+                (Genotype.HET, Genotype.HET, Genotype.HET): 0.125,
+                (Genotype.HET, Genotype.HET, Genotype.HOM): 0.0625,
+                (Genotype.HET, Genotype.HOM, Genotype.WT): 0.03125,
+                (Genotype.HET, Genotype.HOM, Genotype.HET): 0.0625,
+                (Genotype.HET, Genotype.HOM, Genotype.HOM): 0.03125,
+                (Genotype.HOM, Genotype.WT, Genotype.WT): 0.015625,
+                (Genotype.HOM, Genotype.WT, Genotype.HET): 0.03125,
+                (Genotype.HOM, Genotype.WT, Genotype.HOM): 0.015625,
+                (Genotype.HOM, Genotype.HET, Genotype.WT): 0.03125,
+                (Genotype.HOM, Genotype.HET, Genotype.HET): 0.0625,
+                (Genotype.HOM, Genotype.HET, Genotype.HOM): 0.03125,
+                (Genotype.HOM, Genotype.HOM, Genotype.WT): 0.015625,
+                (Genotype.HOM, Genotype.HOM, Genotype.HET): 0.03125,
+                (Genotype.HOM, Genotype.HOM, Genotype.HOM): 0.015625,
+            },
+            id="HET,HET,HET x HET,HET,HET",
+        ),
+    ],
+)
+def test_mendelian_ratio_three_mutations(
     parent_1_genotype, parent_2_genotype, expected_ratios
 ):
     scheme = BreedingScheme(
