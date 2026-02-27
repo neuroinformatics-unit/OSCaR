@@ -13,59 +13,125 @@ from oscar.breeding_scheme import (
         pytest.param(
             1,
             [
-                [(Genotype.WT,), (Genotype.HOM,)],
-                [(Genotype.WT,), (Genotype.HET,)],
-                [(Genotype.HOM,), (Genotype.HOM,)],
-                [(Genotype.HOM,), (Genotype.HET,)],
-                [(Genotype.HET,), (Genotype.HET,)],
+                BreedingScheme((Genotype.WT,), (Genotype.HOM,)),
+                BreedingScheme((Genotype.WT,), (Genotype.HET,)),
+                BreedingScheme((Genotype.HOM,), (Genotype.HOM,)),
+                BreedingScheme((Genotype.HOM,), (Genotype.HET,)),
+                BreedingScheme((Genotype.HET,), (Genotype.HET,)),
             ],
             id="one mutation",
         ),
         pytest.param(
             2,
             [
-                [(Genotype.WT, Genotype.WT), (Genotype.HOM, Genotype.HOM)],
-                [(Genotype.WT, Genotype.WT), (Genotype.HOM, Genotype.HET)],
-                [(Genotype.WT, Genotype.WT), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.WT, Genotype.WT), (Genotype.HET, Genotype.HET)],
-                [(Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.WT)],
-                [(Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.HOM)],
-                [(Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.HET)],
-                [(Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.WT)],
-                [(Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.HET)],
-                [(Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.WT)],
-                [(Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.HOM)],
-                [(Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.HET)],
-                [(Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.WT)],
-                [(Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.HET)],
-                [(Genotype.HOM, Genotype.WT), (Genotype.HOM, Genotype.HOM)],
-                [(Genotype.HOM, Genotype.WT), (Genotype.HOM, Genotype.HET)],
-                [(Genotype.HOM, Genotype.WT), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.HOM, Genotype.WT), (Genotype.HET, Genotype.HET)],
-                [(Genotype.HOM, Genotype.HOM), (Genotype.HOM, Genotype.HOM)],
-                [(Genotype.HOM, Genotype.HOM), (Genotype.HOM, Genotype.HET)],
-                [(Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.WT)],
-                [(Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.HET)],
-                [(Genotype.HOM, Genotype.HET), (Genotype.HOM, Genotype.HET)],
-                [(Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.WT)],
-                [(Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.HET)],
-                [(Genotype.HET, Genotype.WT), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.HET, Genotype.WT), (Genotype.HET, Genotype.HET)],
-                [(Genotype.HET, Genotype.HOM), (Genotype.HET, Genotype.HOM)],
-                [(Genotype.HET, Genotype.HOM), (Genotype.HET, Genotype.HET)],
-                [(Genotype.HET, Genotype.HET), (Genotype.HET, Genotype.HET)],
+                BreedingScheme(
+                    (Genotype.WT, Genotype.WT), (Genotype.HOM, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.WT), (Genotype.HOM, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.WT), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.WT), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.WT)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HOM), (Genotype.HOM, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.WT)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HOM), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.WT)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HET), (Genotype.HOM, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.WT)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.WT, Genotype.HET), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.WT), (Genotype.HOM, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.WT), (Genotype.HOM, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.WT), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.WT), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HOM), (Genotype.HOM, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HOM), (Genotype.HOM, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.WT)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HOM), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HET), (Genotype.HOM, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.WT)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HOM, Genotype.HET), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HET, Genotype.WT), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HET, Genotype.WT), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HET, Genotype.HOM), (Genotype.HET, Genotype.HOM)
+                ),
+                BreedingScheme(
+                    (Genotype.HET, Genotype.HOM), (Genotype.HET, Genotype.HET)
+                ),
+                BreedingScheme(
+                    (Genotype.HET, Genotype.HET), (Genotype.HET, Genotype.HET)
+                ),
             ],
             id="two mutations",
         ),
     ],
 )
-def test_generate_breeding_schemes(
-    n_mutations: int, expected_schemes: list[list[tuple]]
-):
+def test_generate_breeding_schemes(n_mutations, expected_schemes):
     schemes = generate_breeding_schemes(n_mutations)
     assert schemes == expected_schemes
 
@@ -76,33 +142,37 @@ def test_generate_breeding_schemes(
         pytest.param(
             (Genotype.WT,),
             (Genotype.HET,),
-            {Genotype.WT: 0.5, Genotype.HET: 0.5},
+            {(Genotype.WT,): 0.5, (Genotype.HET,): 0.5},
             id="WT x HET",
         ),
         pytest.param(
             (Genotype.WT,),
             (Genotype.HOM,),
-            {Genotype.HET: 1},
+            {(Genotype.HET,): 1},
             id="WT x HOM",
         ),
         pytest.param(
             (Genotype.HET,),
             (Genotype.HOM,),
-            {Genotype.HOM: 0.5, Genotype.HET: 0.5},
+            {(Genotype.HOM,): 0.5, (Genotype.HET,): 0.5},
             id="HET x HOM",
         ),
         pytest.param(
             (Genotype.HOM,),
             (Genotype.HOM,),
             {
-                Genotype.HOM: 1,
+                (Genotype.HOM,): 1,
             },
             id="HOM x HOM",
         ),
         pytest.param(
             (Genotype.HET,),
             (Genotype.HET,),
-            {Genotype.WT: 0.25, Genotype.HET: 0.5, Genotype.HOM: 0.25},
+            {
+                (Genotype.WT,): 0.25,
+                (Genotype.HET,): 0.5,
+                (Genotype.HOM,): 0.25,
+            },
             id="HET x HET",
         ),
     ],
@@ -249,3 +319,22 @@ def test_mendelian_ratio_three_mutations(
         parent_2_genotype=parent_2_genotype,
     )
     assert scheme.mendelian_ratio() == expected_ratios
+
+
+def test_breeding_scheme_equality():
+    """
+    Check breeding schemes are marked as equal independent of parent 1 vs
+    2 order.
+    """
+    parent_1_genotype = (Genotype.WT, Genotype.HET)
+    parent_2_genotype = (Genotype.HOM, Genotype.HOM)
+
+    assert BreedingScheme(
+        parent_1_genotype, parent_2_genotype
+    ) == BreedingScheme(parent_1_genotype, parent_2_genotype)
+    assert BreedingScheme(
+        parent_1_genotype, parent_2_genotype
+    ) == BreedingScheme(parent_2_genotype, parent_1_genotype)
+    assert BreedingScheme(
+        parent_1_genotype, parent_2_genotype
+    ) != BreedingScheme(parent_2_genotype, parent_2_genotype)

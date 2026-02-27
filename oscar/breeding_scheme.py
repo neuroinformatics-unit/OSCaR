@@ -7,9 +7,9 @@ import numpy as np
 class Genotype(Enum):
     """Genotype status: homozygous (HOM), heterozygous (HET) or WT (wildtype).
 
-    Each mouse will have two copies a particular gene - each being either
-    wildtype or mutated. The value of the enum is the number of wildtype copies
-    for that genotype.
+    Each animal will have two copies (alleles) of a particular gene - each
+    being either wildtype or mutated. The value of the enum is the number of
+    wildtype copies for that genotype.
     """
 
     HOM = 0
@@ -18,6 +18,11 @@ class Genotype(Enum):
 
 
 class BreedingScheme:
+    """
+    Class representing a particular breeding scheme, i.e. the breeding
+    of two specific parent genotypes.
+    """
+
     def __init__(
         self,
         parent_1_genotype: tuple[Genotype, ...],
@@ -36,11 +41,11 @@ class BreedingScheme:
         # The order of parent 1 vs parent 2 doesn't matter. Breeding
         # schemes are equal if they are combining the same two genotypes
         # in any order.
-        return sorted(
-            [self.parent_1_genotype, self.parent_2_genotype]
-        ) == sorted([other.parent_1_genotype, other.parent_2_genotype])
+        return set([self.parent_1_genotype, self.parent_2_genotype]) == set(
+            [other.parent_1_genotype, other.parent_2_genotype]
+        )
 
-    def mendelian_ratio(self) -> dict[Genotype, float]:
+    def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.
 
         Returns
@@ -63,8 +68,9 @@ class BreedingScheme:
             parent_1_alleles, parent_2_alleles
         )
 
+        # Calculate total numbers for all offspring genotypes
         total_sum = 0
-        genotype_sums: dict[Genotype, int] = {}
+        genotype_sums: dict[tuple[Genotype, ...], int] = {}
 
         for combo in offspring_combos:
             # each combo is a tuple of two items: the first being the alleles
@@ -80,14 +86,18 @@ class BreedingScheme:
             else:
                 genotype_sums[offspring_genotype] = 1
 
+        # calculate overall proportion of offspring of each type - termed
+        # the 'mendelian ratio'
         mendelian_ratios = {}
         for genotype, n_with_genotype in genotype_sums.items():
             mendelian_ratios[genotype] = n_with_genotype / total_sum
 
         return mendelian_ratios
 
-    def _parent_allele_combos(self, parent_genotype: tuple[Genotype, ...]):
-        """For each parent, determine all the combinations of alleles they
+    def _parent_allele_combos(
+        self, parent_genotype: tuple[Genotype, ...]
+    ) -> itertools.product:
+        """For a parent, determine all the combinations of alleles they
         could pass on to their offspring.
 
         Bear in mind that each parent has 2 alleles for each gene, and will
@@ -100,7 +110,7 @@ class BreedingScheme:
         Parameters
         ----------
         parent_genotype : tuple[Genotype, ...]
-            _description_
+            The genotype of the parent
 
         Returns
         -------
@@ -121,13 +131,28 @@ class BreedingScheme:
         self,
         parent_1_alleles: tuple[bool, ...],
         parent_2_alleles: tuple[bool, ...],
-    ):
-        if len(parent_1_alleles) != len(parent_2_alleles):
-            raise ValueError(
-                "parent 1 and 2 alleles must have the same length"
-            )
+    ) -> tuple[Genotype, ...]:
+        """Determine the genotype of the offspring, based on the alleles
+        it inherited from each parent.
+
+        Parameters
+        ----------
+        parent_1_alleles : tuple[bool, ...]
+            Alleles inherited from parent 1. True = wildtype, False = mutated.
+        parent_2_alleles : tuple[bool, ...]
+            Alleles inherited from parent 2. True = wildtype, False = mutated.
+
+        Returns
+        -------
+        tuple[Genotype, ...]
+            The genotype of the offspring. The tuple will have length ==
+            the number of mutations.
+        """
 
         offspring_genotype = []
+
+        # Loop through each gene, and combine the allele from parent 1 with
+        # that from parent 2. The result may be wt, het or hom for each gene.
         for parent_1_allele, parent_2_allele in zip(
             parent_1_alleles, parent_2_alleles
         ):
@@ -137,6 +162,18 @@ class BreedingScheme:
         return tuple(offspring_genotype)
 
     def _alleles_for_genotype(self, genotype: Genotype) -> list[bool]:
+        """Return the 2 alleles for the given genotype.
+
+        Parameters
+        ----------
+        genotype : Genotype
+            The genotype
+
+        Returns
+        -------
+        list[bool]
+            The 2 alleles: True = wildtype, False = mutated.
+        """
         alleles = [True] * genotype.value
         alleles.extend([False] * (2 - genotype.value))
         return alleles
@@ -144,7 +181,7 @@ class BreedingScheme:
 
 def generate_breeding_schemes(
     n_mutations: int,
-) -> list[list[tuple[Genotype, ...]]]:
+) -> list[BreedingScheme]:
     """Generate all possible combinations of parent1 x parent2 genotype, for
     the given number of mutations.
 
@@ -159,15 +196,16 @@ def generate_breeding_schemes(
 
     Returns
     -------
-    list[list[tuple[Genotype, ...]]]
-        A list where each item is a possible breeding scheme. Each item is
-        a list of form: [(parent_1_genotype), (parent_2_genotype)]
+    list[BreedingScheme]
+        A list where each item is a possible breeding scheme (a cross between
+        two specific parent genotypes)
     """
 
     breeding_schemes = []
 
     # First, generate all possible genotypes of a single parent.
-    parent_genotypes = generate_genotypes(n_mutations)
+    single_genotypes = [Genotype.WT, Genotype.HOM, Genotype.HET]
+    parent_genotypes = itertools.product(single_genotypes, repeat=n_mutations)
 
     # Then combine two parents, bearing in mind order doesn't matter e.g.
     # wt x hom == hom x wt
@@ -179,32 +217,14 @@ def generate_breeding_schemes(
         parent_1 = combo[0]
         parent_2 = combo[1]
 
-        # exclude combos that have wt for the same allele in both parents.
+        # exclude combos that have wt for the same gene in both parents.
         # e.g. for a 2 mutations scenario, we could generate wt, het x wt, hom.
-        # Here, both parents are wt for allele 1, so this is actually a 1
+        # Here, both parents are wt for gene 1, so this is actually a 1
         # mutation scenario and should be excluded.
         if not _breeding_scheme_contains_wt_pairs(parent_1, parent_2):
-            breeding_schemes.append([parent_1, parent_2])
+            breeding_schemes.append(BreedingScheme(parent_1, parent_2))
 
     return breeding_schemes
-
-
-def generate_genotypes(n_mutations: int) -> itertools.product:
-    """Generate all possible genotypes of a single mouse, with the given
-    number of mutations.
-
-    Parameters
-    ----------
-    n_mutations : int
-        Number of mutations
-
-    Returns
-    -------
-    itertools.product
-        An iterable of all possible genotypes
-    """
-    single_genotypes = [Genotype.WT, Genotype.HOM, Genotype.HET]
-    return itertools.product(single_genotypes, repeat=n_mutations)
 
 
 def _breeding_scheme_contains_wt_pairs(

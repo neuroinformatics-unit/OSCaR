@@ -1,7 +1,7 @@
 [project]
 name = "oscar"
 authors = [{name = "Kimberly Meechan", email= "k.meechan@ucl.ac.uk"}]
-description = "A python package for mouse breeding calculations."
+description = "A python package for breeding calculations."
 readme = "README.md"
 requires-python = ">=3.11.0"
 dynamic = ["version"]
