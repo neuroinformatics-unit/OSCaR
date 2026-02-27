@@ -1,6 +1,6 @@
 import pytest
 
-from oscar.breeding_statistics import (
+from oscar.breeding_scheme import (
     BreedingScheme,
     Genotype,
     generate_breeding_schemes,
