@@ -18,13 +18,16 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
         "Mother: Grade 2",
         "Mother: Grade 3",
     ]
-
-    required_cols = (
-        ["ID", "Line / Strain (Name)", "DOB", "Sacrifice reason"]
-        + offspring_genotype_cols
-        + father_genotype_cols
-        + mother_genotype_cols
+    all_genotype_cols = (
+        offspring_genotype_cols + father_genotype_cols + mother_genotype_cols
     )
+
+    required_cols = [
+        "ID",
+        "Line / Strain (Name)",
+        "DOB",
+        "Sacrifice reason",
+    ] + all_genotype_cols
 
     # Get rid of any additional columns + rename to standard names
     standard_csv = input_csv[required_cols]
@@ -35,6 +38,9 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
             "Sacrifice reason": "sacrifice_reason",
         }
     )
+
+    standard_csv = _filter_allowed_genotypes(standard_csv, all_genotype_cols)
+    standard_csv = _filter_ungenotyped(standard_csv, offspring_genotype_cols)
 
     standard_csv["n_mutations"] = (
         standard_csv["Grade 1"].notna().astype(int)
@@ -61,10 +67,60 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
     )
 
     standard_csv = standard_csv.drop(
-        offspring_genotype_cols + father_genotype_cols + mother_genotype_cols,
+        all_genotype_cols,
         axis=1,
     )
     return standard_csv
+
+
+def _filter_allowed_genotypes(
+    standard_csv: pd.DataFrame, genotype_cols: list[str]
+) -> pd.DataFrame:
+    """Only keep allowed genotypes of wt, het or hom.
+
+    Remove others such as +/-, Tg, ko, as well as ungenotyped
+    individuals (na for grade 1/2/3)
+
+    Parameters
+    ----------
+    line_data : pd.DataFrame
+        Data for a single line
+    """
+
+    genotype_data = standard_csv.loc[:, genotype_cols]
+    allowed_genotypes = (
+        genotype_data.isin(["wt", "het", "hom"]) | genotype_data.isna()
+    ).all(axis=1)
+    filtered_data = standard_csv.loc[allowed_genotypes, :]
+
+    return filtered_data
+
+
+def _filter_ungenotyped(
+    standard_csv: pd.DataFrame, offspring_genotype_cols: list[str]
+) -> pd.DataFrame:
+    """Remove rows for ungenotyped individuals.
+
+    These offspring have na for all genotype columns.
+
+    Parameters
+    ----------
+    standard_csv : pd.DataFrame
+        _description_
+    offspring_genotype_cols : list[str]
+        _description_
+
+    Returns
+    -------
+    pd.DataFrame
+        _description_
+    """
+    ungenotyped = (
+        standard_csv.loc[:, offspring_genotype_cols].isna().all(axis=1)
+    )
+    filtered_data = standard_csv.loc[~ungenotyped, :]
+
+    return filtered_data
 
 
 def _make_combined_genotype_column(
