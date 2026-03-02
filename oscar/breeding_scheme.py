@@ -9,12 +9,12 @@ class Genotype(Enum):
 
     Each animal will have two copies (alleles) of a particular gene - each
     being either wildtype or mutated. The value of the enum is the number of
-    wildtype copies for that genotype.
+    mutated copies for that genotype.
     """
 
-    HOM = 0
+    WT = 0
     HET = 1
-    WT = 2
+    HOM = 2
 
 
 class BreedingScheme:
@@ -116,9 +116,9 @@ class BreedingScheme:
         -------
         itertools.product
             An iterable of all allele combinations they could pass to their
-            offpsring. Each item is a list of bools with length == the number
+            offspring. Each item is a list of bools with length == the number
             of mutations. e.g. an item of [true, false, true] would mean they
-            are wildtype for gene 1, mutant for gene 2 and wildtype for gene 3
+            are mutant for gene 1, wildtype for gene 2 and mutant for gene 3
         """
 
         alleles = []
@@ -138,9 +138,9 @@ class BreedingScheme:
         Parameters
         ----------
         parent_1_alleles : tuple[bool, ...]
-            Alleles inherited from parent 1. True = wildtype, False = mutated.
+            Alleles inherited from parent 1. True = mutated, False = wildtype.
         parent_2_alleles : tuple[bool, ...]
-            Alleles inherited from parent 2. True = wildtype, False = mutated.
+            Alleles inherited from parent 2. True = mutated, False = wildtype.
 
         Returns
         -------
@@ -156,8 +156,10 @@ class BreedingScheme:
         for parent_1_allele, parent_2_allele in zip(
             parent_1_alleles, parent_2_alleles
         ):
-            n_wt_copies = np.array([parent_1_allele, parent_2_allele]).sum()
-            offspring_genotype.append(Genotype(n_wt_copies))
+            n_mutant_copies = np.array(
+                [parent_1_allele, parent_2_allele]
+            ).sum()
+            offspring_genotype.append(Genotype(n_mutant_copies))
 
         return tuple(offspring_genotype)
 
@@ -172,7 +174,7 @@ class BreedingScheme:
         Returns
         -------
         list[bool]
-            The 2 alleles: True = wildtype, False = mutated.
+            The 2 alleles: True = mutated, False = wildtype.
         """
         alleles = [True] * genotype.value
         alleles.extend([False] * (2 - genotype.value))
