@@ -26,6 +26,8 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
         "ID",
         "Line / Strain (Name)",
         "DOB",
+        "Father",
+        "Mother",
         "Sacrifice reason",
     ] + all_genotype_cols
 
@@ -33,8 +35,11 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
     standard_csv = input_csv[required_cols]
     standard_csv = standard_csv.rename(
         columns={
+            "ID": "ID_offspring",
             "Line / Strain (Name)": "line_name",
             "DOB": "date_of_birth",
+            "Father": "ID_father",
+            "Mother": "ID_mother",
             "Sacrifice reason": "sacrifice_reason",
         }
     )
