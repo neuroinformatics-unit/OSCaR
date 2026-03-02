@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from oscar.breeding_scheme import generate_breeding_schemes
+from oscar.breeding_scheme import BreedingScheme, generate_breeding_schemes
 
 
 class Line:
@@ -32,7 +32,7 @@ class Line:
         if self.n_mutations == 0:
             raise ValueError(f"No mutations recorded for line {line_name}")
 
-        self._calculate_summary_statistics()
+        self._summary_stats_for_line(line_data)
 
     def _filter_allowed_genotypes(self, line_data: pd.DataFrame):
         """Only keep allowed genotypes of wt, het or hom.
@@ -75,5 +75,13 @@ class Line:
 
         return filtered_data
 
-    def _calculate_summary_statistics(self):
+    def _summary_stats_for_line(self, line_data: pd.DataFrame):
         self.breeding_schemes = generate_breeding_schemes(self.n_mutations)
+
+        for breeding_scheme in self.breeding_schemes:
+            self._summary_stats_for_breeding_scheme(breeding_scheme, line_data)
+
+    def _summary_stats_for_breeding_scheme(
+        self, scheme: BreedingScheme, line_data: pd.DataFrame
+    ):
+        pass
