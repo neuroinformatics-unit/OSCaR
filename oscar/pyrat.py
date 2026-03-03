@@ -62,13 +62,13 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
 
     # Combine grade 1/2/3 columns into an overall genotype
     _make_combined_genotype_column(
-        standard_csv, offspring_genotype_cols, "offspring_genotype"
+        standard_csv, offspring_genotype_cols, "genotype_offspring"
     )
     _make_combined_genotype_column(
-        standard_csv, father_genotype_cols, "father_genotype"
+        standard_csv, father_genotype_cols, "genotype_father"
     )
     _make_combined_genotype_column(
-        standard_csv, mother_genotype_cols, "mother_genotype"
+        standard_csv, mother_genotype_cols, "genotype_mother"
     )
 
     standard_csv = standard_csv.drop(

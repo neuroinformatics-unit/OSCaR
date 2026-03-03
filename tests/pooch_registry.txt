@@ -1,1 +1,2 @@
-test-data-single-mutation.csv 7a285d093da589d58f56f677775df4ad55ce4be4406ff18d03ba4f063d2e5725
+pyrat-data-single-mutation.csv 365e32b457c912a4bdfdd9ef87604d3e6e6387e6d2df7241c813e1feba132304
+standardised-data-single-mutation.csv 97fbe057567b422b22ad9f910929d0b194bfb5d678406693d2a58098dc445f17

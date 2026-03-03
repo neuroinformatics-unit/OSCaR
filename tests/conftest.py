@@ -13,5 +13,10 @@ GIN_REPO.load_registry(Path(__file__).parent / "pooch_registry.txt")
 
 
 @pytest.fixture
-def single_mutation_csv_path():
-    return GIN_REPO.fetch("test-data-single-mutation.csv")
+def pyrat_single_mutation_csv_path():
+    return GIN_REPO.fetch("pyrat-data-single-mutation.csv")
+
+
+@pytest.fixture
+def standardised_single_mutation_csv_path():
+    return GIN_REPO.fetch("standardised-data-single-mutation.csv")
