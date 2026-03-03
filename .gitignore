@@ -82,5 +82,6 @@ venv/
 # written by setuptools-scm
 **/_version.py
 
-# test data
-/data
+# test data and temporary files
+/test_data
+/tmp
