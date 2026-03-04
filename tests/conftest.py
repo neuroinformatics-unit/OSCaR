@@ -20,3 +20,8 @@ def pyrat_single_mutation_csv_path():
 @pytest.fixture
 def standardised_single_mutation_csv_path():
     return GIN_REPO.fetch("standardised-data-single-mutation.csv")
+
+
+@pytest.fixture
+def pyrat_2_mutations_csv_path():
+    return GIN_REPO.fetch("pyrat-data-2-mutations.csv")

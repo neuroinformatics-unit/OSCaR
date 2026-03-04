@@ -57,8 +57,8 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
 
     n_mutations = 0
     for col_name in offspring_genotype_cols:
-        n_mutations += standard_csv[col_name].not_na().any()
-    standard_csv["n mutations"] = n_mutations
+        n_mutations += standard_csv[col_name].notna().any()
+    standard_csv["n_mutations"] = n_mutations
 
     # make sure number of mutations is the same throughout each line -
     # use the max.
