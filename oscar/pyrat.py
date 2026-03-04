@@ -7,17 +7,25 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
     if isinstance(input_csv, Path):
         input_csv = pd.read_csv(input_csv)
 
-    offspring_genotype_cols = ["Grade 1", "Grade 2", "Grade 3"]
-    father_genotype_cols = [
-        "Father: Grade 1",
-        "Father: Grade 2",
-        "Father: Grade 3",
-    ]
-    mother_genotype_cols = [
-        "Mother: Grade 1",
-        "Mother: Grade 2",
-        "Mother: Grade 3",
-    ]
+    # columns of form 'Grade NUMBER'
+    offspring_genotype_cols = list(
+        input_csv.columns[input_csv.columns.str.contains(r"^Grade \d$")]
+    )
+
+    # columns of form 'Father: Grade NUMBER'
+    father_genotype_cols = list(
+        input_csv.columns[
+            input_csv.columns.str.contains(r"^Father: Grade \d$")
+        ]
+    )
+
+    # columns of form 'Mother: Grade NUMBER'
+    mother_genotype_cols = list(
+        input_csv.columns[
+            input_csv.columns.str.contains(r"^Mother: Grade \d$")
+        ]
+    )
+
     all_genotype_cols = (
         offspring_genotype_cols + father_genotype_cols + mother_genotype_cols
     )
@@ -47,15 +55,15 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
     standard_csv = _filter_allowed_genotypes(standard_csv, all_genotype_cols)
     standard_csv = _filter_ungenotyped(standard_csv, offspring_genotype_cols)
 
-    standard_csv["n_mutations"] = (
-        standard_csv["Grade 1"].notna().astype(int)
-        + standard_csv["Grade 2"].notna().astype(int)
-        + standard_csv["Grade 3"].notna().astype(int)
-    )
+    n_mutations = 0
+    for col_name in offspring_genotype_cols:
+        n_mutations += standard_csv[col_name].not_na().any()
+    standard_csv["n mutations"] = n_mutations
+
     # make sure number of mutations is the same throughout each line -
     # use the max.
     # Sometimes particular individuals are ungenotyped (n_mutations = 0) or a
-    # grade 1/2/3 value is omitted to mean wt.
+    # genotype value is omitted to mean wt.
     standard_csv["n_mutations"] = standard_csv.groupby("line_name")[
         "n_mutations"
     ].transform("max")
