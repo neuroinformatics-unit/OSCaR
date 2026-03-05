@@ -45,16 +45,6 @@ class BreedingScheme:
             [other.parent_1_genotype, other.parent_2_genotype]
         )
 
-    def __str__(self):
-        parent_1_str = "_".join(
-            [genotype.name.lower() for genotype in self.parent_1_genotype]
-        )
-        parent_2_str = "_".join(
-            [genotype.name.lower() for genotype in self.parent_2_genotype]
-        )
-
-        return f"{parent_1_str}x{parent_2_str}"
-
     def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.
 
