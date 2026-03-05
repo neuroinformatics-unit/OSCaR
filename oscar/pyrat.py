@@ -91,6 +91,11 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
         ["level_1"] + all_genotype_cols_list + all_mutation_cols_list,
         axis=1,
     )
+
+    # for readability, make sure ID_offspring is first
+    id_offspring_col = standard_csv.pop("ID_offspring")
+    standard_csv.insert(0, "ID_offspring", id_offspring_col)
+
     return standard_csv
 
 

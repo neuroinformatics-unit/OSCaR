@@ -16,12 +16,14 @@ def test_standardise_single_mutation_csv(
     )
 
 
-def test_standardise_2_mutations_csv(pyrat_2_mutations_csv_path):
+def test_standardise_2_mutations_csv(
+    pyrat_2_mutations_csv_path, standardised_2_mutations_csv_path
+):
     pyrat_csv = pd.read_csv(pyrat_2_mutations_csv_path)
-    # expected_csv = pd.read_csv(standardised_single_mutation_csv_path)
+    expected_csv = pd.read_csv(standardised_2_mutations_csv_path)
 
-    standardise_pyrat_csv(pyrat_csv)
-    # pd.testing.assert_frame_equal(
-    #     standard_csv.reset_index(drop=True),
-    #     expected_csv.reset_index(drop=True),
-    # )
+    standard_csv = standardise_pyrat_csv(pyrat_csv)
+    pd.testing.assert_frame_equal(
+        standard_csv.reset_index(drop=True),
+        expected_csv.reset_index(drop=True),
+    )
