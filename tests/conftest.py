@@ -40,3 +40,13 @@ def pyrat_3_mutations_csv_path():
 @pytest.fixture
 def standardised_3_mutations_csv_path():
     return GIN_REPO.fetch("standardised-data-3-mutations.csv")
+
+
+@pytest.fixture
+def pyrat_forbidden_genotypes_csv_path():
+    return GIN_REPO.fetch("pyrat-data-forbidden-genotypes.csv")
+
+
+@pytest.fixture
+def standardised_forbidden_genotypes_csv_path():
+    return GIN_REPO.fetch("standardised-data-forbidden-genotypes.csv")

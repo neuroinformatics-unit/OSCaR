@@ -16,8 +16,20 @@ class Identifier(Enum):
     MOTHER = 2
 
 
-def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
+def standardise_pyrat_csv(
+    input_csv: pd.DataFrame | Path | str,
+) -> pd.DataFrame:
     """Standardise a csv file exported from pyRAT.
+
+    Processing steps include:
+    - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko
+    - removing ungenotyped individuals
+    - adding columns for the number of mutations per line (n_mutations) and
+    a summary of the mutation names (mutations)
+    - adding summary columns for 'genotype_offspring', 'genotype_father' and
+    'genotype_mother' that match the order of 'mutations'.
+    - filling any missing genotypes with wildtype
+    - removing columns that aren't needed for further processing steps
 
     Parameters
     ----------
@@ -27,9 +39,9 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        Standardised dataframe
+        Standardised dataframe, ready for further processing
     """
-    if isinstance(input_csv, Path):
+    if isinstance(input_csv, (Path, str)):
         input_csv = pd.read_csv(input_csv)
 
     mutation_cols, genotype_cols = _create_column_name_dicts(input_csv)
@@ -62,27 +74,16 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
         }
     )
 
-    standard_csv = _filter_allowed_genotypes(
+    standard_csv = _filter_or_correct_genotypes(
         standard_csv, all_genotype_cols_list
     )
     standard_csv = _filter_ungenotyped(
         standard_csv, genotype_cols[Identifier.OFFSPRING]
     )
 
-    standard_csv["n_mutations"] = (
-        standard_csv.loc[:, genotype_cols[Identifier.OFFSPRING]]
-        .notna()
-        .sum(axis=1)
+    standard_csv = _add_n_mutations_column(
+        standard_csv, genotype_cols[Identifier.OFFSPRING]
     )
-
-    # make sure number of mutations is the same throughout each line -
-    # use the max.
-    # Sometimes particular individuals are ungenotyped (n_mutations = 0) or a
-    # genotype value is omitted to mean wt.
-    standard_csv["n_mutations"] = standard_csv.groupby("line_name")[
-        "n_mutations"
-    ].transform("max")
-
     standard_csv = standard_csv.groupby("line_name").apply(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
     )
@@ -95,6 +96,38 @@ def standardise_pyrat_csv(input_csv: pd.DataFrame | Path) -> pd.DataFrame:
     # for readability, make sure ID_offspring is first
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
+
+    return standard_csv
+
+
+def _add_n_mutations_column(
+    standard_csv: pd.DataFrame, offspring_genotype_cols: list[str]
+) -> pd.DataFrame:
+    """Add column with number of mutations per line.
+
+    Parameters
+    ----------
+    standard_csv : pd.DataFrame
+        Dataframe to add column to
+    offspring_genotype_cols : list[str]
+        Offspring genotype columns e.g. Grade 1, Grade 2, Grade 3
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataframe with n_mutations column added
+    """
+    standard_csv["n_mutations"] = (
+        standard_csv.loc[:, offspring_genotype_cols].notna().sum(axis=1)
+    )
+
+    # make sure number of mutations is the same throughout each line -
+    # use the max.
+    # Sometimes particular individuals are ungenotyped (n_mutations = 0) or a
+    # genotype value is omitted to mean wt.
+    standard_csv["n_mutations"] = standard_csv.groupby("line_name")[
+        "n_mutations"
+    ].transform("max")
 
     return standard_csv
 
@@ -155,12 +188,14 @@ def _create_column_name_dicts(
     return mutation_dict, genotype_dict
 
 
-def _filter_allowed_genotypes(
+def _filter_or_correct_genotypes(
     standard_csv: pd.DataFrame, genotype_cols: list[str]
 ) -> pd.DataFrame:
-    """Only keep allowed genotypes of wt, het or hom.
+    """Filter or correct rows so that only genotypes of wt, het or hom remain.
 
-    Remove others such as +/-, Tg, ko/ko
+    Where possible, this will convert alternative forms to wt/het/hom e.g.
+    ko/ko -> hom. If an un-ambiguous conversion isn't possible
+    (like T, Tg, N, +, -), rows that contain these will be removed.
 
     Parameters
     ----------
@@ -172,15 +207,39 @@ def _filter_allowed_genotypes(
     Returns
     -------
     pd.DataFrame
-        Dataframe with forbidden genotypes removed
+        Dataframe with only wt, het or hom in genotype columns
     """
 
+    genotype_conversions = {
+        "ko/ko": Genotype.HOM,
+        "ko/+": Genotype.HET,
+        "ko/-": Genotype.HET,
+        "+/ko": Genotype.HET,
+        "-/ko": Genotype.HET,
+        "ki/ki": Genotype.HOM,
+        "ki/+": Genotype.HET,
+        "ki/-": Genotype.HET,
+        "+/ki": Genotype.HET,
+        "-/ki": Genotype.HET,
+    }
+
+    # convert genotypes where possible
     genotype_data = standard_csv.loc[:, genotype_cols]
+    for old_genotype, new_genotype in genotype_conversions.items():
+        genotype_data = genotype_data.replace(
+            to_replace=old_genotype, value=new_genotype.name.lower()
+        )
+
+    filtered_data = standard_csv.copy()
+    filtered_data.loc[:, genotype_cols] = genotype_data
+
+    # remove rows where any of the genotype values aren't in the allowed set:
+    # wt, het, hom or empty
     allowed_genotypes = (
         genotype_data.isin([genotype.name.lower() for genotype in Genotype])
         | genotype_data.isna()
     ).all(axis=1)
-    filtered_data = standard_csv.loc[allowed_genotypes, :]
+    filtered_data = filtered_data.loc[allowed_genotypes, :]
 
     return filtered_data
 
