@@ -30,3 +30,13 @@ def pyrat_2_mutations_csv_path():
 @pytest.fixture
 def standardised_2_mutations_csv_path():
     return GIN_REPO.fetch("standardised-data-2-mutations.csv")
+
+
+@pytest.fixture
+def pyrat_3_mutations_csv_path():
+    return GIN_REPO.fetch("pyrat-data-3-mutations.csv")
+
+
+@pytest.fixture
+def standardised_3_mutations_csv_path():
+    return GIN_REPO.fetch("standardised-data-3-mutations.csv")
