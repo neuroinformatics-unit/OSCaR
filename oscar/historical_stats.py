@@ -36,8 +36,30 @@ class LineStatistics:
 
 
 def calculate_historical_stats_for_line(
-    line_data: pd.DataFrame,
+    standardised_data: pd.DataFrame, line_name: str
 ) -> LineStatistics:
+    """Calculate summary statistics for a specific line from standardised
+    historical data.
+
+    Parameters
+    ----------
+    standardised_data : pd.DataFrame
+        Standardised historical data e.g. from standardise_pyrat_csv
+    line_name : str
+        Name of line
+
+    Returns
+    -------
+    LineStatistics
+        Summary statistics for the given line
+    """
+
+    line_data = standardised_data.loc[
+        standardised_data.line_name == line_name, :
+    ]
+    if len(line_data) == 0:
+        raise ValueError(f"No data for {line_name} found")
+
     breeding_schemes = line_data.apply(_create_breeding_scheme, axis=1)
     data_with_schemes = line_data.copy()
     data_with_schemes["breeding_scheme"] = breeding_schemes
@@ -77,6 +99,19 @@ def _create_breeding_scheme(row: pd.Series) -> BreedingScheme:
 def _historical_stats_for_breeding_scheme(
     scheme_data: pd.DataFrame,
 ) -> BreedingSchemeStatistics:
+    """Calculate summary statistics for an individual breeding scheme
+    (within a specific line).
+
+    Parameters
+    ----------
+    scheme_data : pd.DataFrame
+        Dataframe of data for a single breeding scheme and line
+
+    Returns
+    -------
+    BreedingSchemeStatistics
+        Summary statistics for the breeding scheme
+    """
     stats = BreedingSchemeStatistics()
 
     # breeding pairs is unique combos of father ID x mother ID
