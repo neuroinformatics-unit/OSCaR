@@ -1,5 +1,6 @@
 import itertools
 from enum import IntEnum
+from typing import Self
 
 import numpy as np
 
@@ -15,6 +16,15 @@ class Genotype(IntEnum):
     WT = 0
     HET = 1
     HOM = 2
+
+    @classmethod
+    def from_string(cls, genotype_str: str) -> tuple[Self, ...]:
+        genotype_strings = genotype_str.split("_")
+        genotypes = [
+            cls[genotype_string.upper()]
+            for genotype_string in genotype_strings
+        ]
+        return tuple(genotypes)
 
 
 class BreedingScheme:
@@ -46,14 +56,10 @@ class BreedingScheme:
         """
 
         if isinstance(parent_1_genotype, str):
-            parent_1_genotype = self._get_parent_genotype_from_str(
-                parent_1_genotype
-            )
+            parent_1_genotype = Genotype.from_string(parent_1_genotype)
 
         if isinstance(parent_2_genotype, str):
-            parent_2_genotype = self._get_parent_genotype_from_str(
-                parent_2_genotype
-            )
+            parent_2_genotype = Genotype.from_string(parent_2_genotype)
 
         if len(parent_1_genotype) != len(parent_2_genotype):
             raise ValueError(
@@ -63,16 +69,6 @@ class BreedingScheme:
         self.parent_1_genotype = parent_1_genotype
         self.parent_2_genotype = parent_2_genotype
         self.n_mutations = len(self.parent_1_genotype)
-
-    def _get_parent_genotype_from_str(
-        self, parent_str: str
-    ) -> tuple[Genotype, ...]:
-        genotype_strings = parent_str.split("_")
-        genotypes = [
-            Genotype[genotype_string.upper()]
-            for genotype_string in genotype_strings
-        ]
-        return tuple(genotypes)
 
     def __eq__(self, other):
         # The order of parent 1 vs parent 2 doesn't matter. Breeding

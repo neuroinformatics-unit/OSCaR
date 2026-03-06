@@ -13,7 +13,7 @@ class BreedingSchemeStatistics:
     n_breeding_pairs: int = 0
     n_successful_matings: int = 0
     average_litter_size: float = 0
-    average_litter_per_pair: float = 0
+    average_n_litters_per_pair: float = 0
     total_n_offspring: int = 0
     n_offspring_per_genotype: dict[tuple[Genotype, ...], int] = field(
         default_factory=dict
@@ -76,5 +76,28 @@ def _historical_stats_for_breeding_scheme(
     stats.n_successful_matings = scheme_data.groupby(
         ["ID_father", "ID_mother", "date_of_birth"]
     ).ngroups
+
+    stats.total_n_offspring = len(scheme_data)
+    stats.average_litter_size = (
+        stats.total_n_offspring / stats.n_successful_matings
+    )
+    stats.average_n_litters_per_pair = (
+        stats.n_successful_matings / stats.n_breeding_pairs
+    )
+
+    # convert string representation e.g. wt_hom_het to tuple representation
+    # of genotype: (Genotype.WT, Genotype.HOM, Genotype.HET)
+    scheme_data["genotype_offspring"] = scheme_data[
+        "genotype_offspring"
+    ].apply(Genotype.from_string)
+
+    # Number and proportion of offspring per genotype
+    stats.n_offspring_per_genotype = (
+        scheme_data.groupby("genotype_offspring").size().to_dict()
+    )
+
+    for genotype, n_offspring in stats.n_offspring_per_genotype.items():
+        proportion = n_offspring / stats.total_n_offspring
+        stats.proportion_offspring_per_genotype[genotype] = proportion
 
     return stats
