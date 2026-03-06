@@ -33,7 +33,7 @@ def standardise_pyrat_csv(
 
     Parameters
     ----------
-    input_csv : pd.DataFrame | Path
+    input_csv : pd.DataFrame | Path | str
         Csv file exported from pyRAT.
 
     Returns
@@ -202,7 +202,7 @@ def _filter_or_correct_genotypes(
     standard_csv : pd.DataFrame
         Dataframe to filter
     genotype_cols : list[str]
-        Names of all genotype columns
+        Names of all genotype columns including offspring, father and mother
 
     Returns
     -------
@@ -276,7 +276,7 @@ def _make_combined_genotype_columns_for_line(
     mutation_cols: dict[Identifier, list[str]],
     genotype_cols: dict[Identifier, list[str]],
 ) -> pd.DataFrame:
-    """For data on a single line, add columns for 'mutations',
+    """For data from a single line, add columns for 'mutations',
     'genotype_offspring', 'genotype_father' and 'genotype_mother'.
 
     All genotype columns list genotypes in the same order as given in
@@ -348,6 +348,7 @@ def _make_combined_genotype_column_for_identifier(
     """
 
     pivoted_mutations = pd.DataFrame(index=line_data.index)
+    wildtype_str = Genotype.WT.name.lower()
 
     # pivot each pair of mutation / genotype columns. E.g. if Mutation 1 /
     # Grade 1 had rows with a mix of Mutation-A and Mutation-B: this would
@@ -381,12 +382,12 @@ def _make_combined_genotype_column_for_identifier(
             pivoted_mutations = pivoted_mutations.join(pivoted_cols)
 
     # Any remaining NaN values are assumed to be wildtype
-    pivoted_mutations = pivoted_mutations.fillna("wt")
+    pivoted_mutations = pivoted_mutations.fillna(wildtype_str)
 
     # If a mutation name doesn't have a corresponding column -> assume all wt
     for mutation in unique_mutations:
         if mutation not in pivoted_mutations:
-            pivoted_mutations[mutation] = "wt"
+            pivoted_mutations[mutation] = wildtype_str
 
     # Combine pivoted mutations into a single summary column
     line_data[f"genotype_{identifier.name.lower()}"] = pivoted_mutations[
