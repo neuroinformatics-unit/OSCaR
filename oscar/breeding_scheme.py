@@ -25,9 +25,36 @@ class BreedingScheme:
 
     def __init__(
         self,
-        parent_1_genotype: tuple[Genotype, ...],
-        parent_2_genotype: tuple[Genotype, ...],
+        parent_1_genotype: tuple[Genotype, ...] | str,
+        parent_2_genotype: tuple[Genotype, ...] | str,
     ):
+        """Create a breeding scheme with two parent genotypes.
+
+        Parameters
+        ----------
+        parent_1_genotype : tuple[Genotype, ...] | str
+            Genotype of parent 1 either as a tuple of Genotypes or as a
+            string representation like het_hom_het
+        parent_2_genotype : tuple[Genotype, ...] | str
+            Genotype of parent 1 either as a tuple of Genotypes or as a
+            string representation like het_hom_het
+
+        Raises
+        ------
+        ValueError
+            If the parent genotypes don't have the same length
+        """
+
+        if isinstance(parent_1_genotype, str):
+            parent_1_genotype = self._get_parent_genotype_from_str(
+                parent_1_genotype
+            )
+
+        if isinstance(parent_2_genotype, str):
+            parent_2_genotype = self._get_parent_genotype_from_str(
+                parent_2_genotype
+            )
+
         if len(parent_1_genotype) != len(parent_2_genotype):
             raise ValueError(
                 "Both parents must have a genotype of the same length"
@@ -37,6 +64,16 @@ class BreedingScheme:
         self.parent_2_genotype = parent_2_genotype
         self.n_mutations = len(self.parent_1_genotype)
 
+    def _get_parent_genotype_from_str(
+        self, parent_str: str
+    ) -> tuple[Genotype, ...]:
+        genotype_strings = parent_str.split("_")
+        genotypes = [
+            Genotype[genotype_string.upper()]
+            for genotype_string in genotype_strings
+        ]
+        return tuple(genotypes)
+
     def __eq__(self, other):
         # The order of parent 1 vs parent 2 doesn't matter. Breeding
         # schemes are equal if they are combining the same two genotypes
@@ -44,6 +81,16 @@ class BreedingScheme:
         return set([self.parent_1_genotype, self.parent_2_genotype]) == set(
             [other.parent_1_genotype, other.parent_2_genotype]
         )
+
+    def __str__(self):
+        parent_1_str = "_".join(
+            [genotype.name.lower() for genotype in self.parent_1_genotype]
+        )
+        parent_2_str = "_".join(
+            [genotype.name.lower() for genotype in self.parent_2_genotype]
+        )
+
+        return f"{parent_1_str}x{parent_2_str}"
 
     def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.
