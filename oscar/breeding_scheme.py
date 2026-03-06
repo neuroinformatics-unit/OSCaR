@@ -1,10 +1,10 @@
 import itertools
-from enum import Enum
+from enum import IntEnum
 
 import numpy as np
 
 
-class Genotype(Enum):
+class Genotype(IntEnum):
     """Genotype status: homozygous (HOM), heterozygous (HET) or WT (wildtype).
 
     Each animal will have two copies (alleles) of a particular gene - each
@@ -82,7 +82,13 @@ class BreedingScheme:
             [other.parent_1_genotype, other.parent_2_genotype]
         )
 
-    def __str__(self):
+    def __hash__(self):
+        # Hash should be equal if the breeding scheme combines the same
+        # two genotypes in any order.
+        genotypes = sorted([self.parent_1_genotype, self.parent_2_genotype])
+        return hash(tuple(genotypes))
+
+    def __repr__(self):
         parent_1_str = "_".join(
             [genotype.name.lower() for genotype in self.parent_1_genotype]
         )
@@ -90,7 +96,7 @@ class BreedingScheme:
             [genotype.name.lower() for genotype in self.parent_2_genotype]
         )
 
-        return f"{parent_1_str}x{parent_2_str}"
+        return f"BreedingScheme({parent_1_str}x{parent_2_str})"
 
     def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.
