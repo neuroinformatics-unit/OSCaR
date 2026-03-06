@@ -347,7 +347,7 @@ def _make_combined_genotype_column_for_identifier(
         Genotype columns for the given identifier.
     """
 
-    pivoted_mutations = pd.DataFrame()
+    pivoted_mutations = pd.DataFrame(index=line_data.index)
 
     # pivot each pair of mutation / genotype columns. E.g. if Mutation 1 /
     # Grade 1 had rows with a mix of Mutation-A and Mutation-B: this would
