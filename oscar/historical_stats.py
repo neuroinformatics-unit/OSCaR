@@ -42,17 +42,30 @@ def calculate_historical_stats_for_line(
     data_with_schemes = line_data.copy()
     data_with_schemes["breeding_scheme"] = breeding_schemes
 
-    line_stats = LineStatistics()
+    line_stats = LineStatistics(total_n_offspring=len(line_data))
+
     for breeding_scheme in data_with_schemes["breeding_scheme"].unique():
         breeding_scheme_data = data_with_schemes.loc[
             data_with_schemes.breeding_scheme == breeding_scheme, :
         ]
-        breeding_scheme_stats = _historical_stats_for_breeding_scheme(
+        scheme_stats = _historical_stats_for_breeding_scheme(
             breeding_scheme_data
         )
-        line_stats.stats_per_breeding_scheme[breeding_scheme] = (
-            breeding_scheme_stats
-        )
+        line_stats.stats_per_breeding_scheme[breeding_scheme] = scheme_stats
+
+        # Update summary of number of offspring per genotype across entire line
+        for (
+            genotype,
+            n_offspring,
+        ) in scheme_stats.n_offspring_per_genotype.items():
+            if genotype in line_stats.total_n_offspring_per_genotype:
+                line_stats.total_n_offspring_per_genotype[genotype] += (
+                    n_offspring
+                )
+            else:
+                line_stats.total_n_offspring_per_genotype[genotype] = (
+                    n_offspring
+                )
 
     return line_stats
 
