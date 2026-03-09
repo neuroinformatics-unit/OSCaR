@@ -19,6 +19,21 @@ class Genotype(IntEnum):
 
     @classmethod
     def from_string(cls, genotype_str: str) -> tuple[Self, ...]:
+        """Create a tuple of Genotype from a string representation.
+
+        E.g. wt_het_hom -> (Genotype.WT, Genotype.HET, Genotype.HOM)
+
+        Parameters
+        ----------
+        genotype_str : str
+            String representing 1 or multiple genotypes. Each should be
+            wt, het or hom separated by an underscore.
+
+        Returns
+        -------
+        tuple[Self, ...]
+            Converted tuple of genotypes
+        """
         genotype_strings = genotype_str.split("_")
         genotypes = [
             cls[genotype_string.upper()]
@@ -46,7 +61,7 @@ class BreedingScheme:
             Genotype of parent 1 either as a tuple of Genotypes or as a
             string representation like het_hom_het
         parent_2_genotype : tuple[Genotype, ...] | str
-            Genotype of parent 1 either as a tuple of Genotypes or as a
+            Genotype of parent 2 either as a tuple of Genotypes or as a
             string representation like het_hom_het
 
         Raises
