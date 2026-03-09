@@ -12,22 +12,22 @@ from oscar.historical_stats import (
 @pytest.fixture
 def expected_stats_single_mutation():
     return LineStatistics(
-        total_n_offspring=13,
+        total_n_offspring=18,
         total_n_offspring_per_genotype={
-            (Genotype.WT,): 4,
-            (Genotype.HET,): 7,
+            (Genotype.WT,): 6,
+            (Genotype.HET,): 10,
             (Genotype.HOM,): 2,
         },
         stats_per_breeding_scheme={
             BreedingScheme("wt", "het"): BreedingSchemeStatistics(
-                n_breeding_pairs=3,
-                n_successful_matings=4,
-                average_litter_size=pytest.approx(1.0, abs=1e-3),
-                average_n_litters_per_pair=pytest.approx(1.333, abs=1e-3),
-                total_n_offspring=4,
+                n_breeding_pairs=2,
+                n_successful_matings=3,
+                average_litter_size=pytest.approx(2.666, abs=1e-3),
+                average_n_litters_per_pair=pytest.approx(1.5, abs=1e-3),
+                total_n_offspring=8,
                 n_offspring_per_genotype={
-                    (Genotype.WT,): 2,
-                    (Genotype.HET,): 2,
+                    (Genotype.WT,): 4,
+                    (Genotype.HET,): 4,
                 },
                 proportion_offspring_per_genotype={
                     (Genotype.WT,): pytest.approx(0.5, abs=1e-3),
@@ -35,20 +35,20 @@ def expected_stats_single_mutation():
                 },
             ),
             BreedingScheme("wt", "hom"): BreedingSchemeStatistics(
-                n_breeding_pairs=1,
+                n_breeding_pairs=2,
                 n_successful_matings=2,
-                average_litter_size=pytest.approx(1.5, abs=1e-3),
-                average_n_litters_per_pair=pytest.approx(2.0, abs=1e-3),
-                total_n_offspring=3,
-                n_offspring_per_genotype={(Genotype.HET,): 3},
+                average_litter_size=pytest.approx(2, abs=1e-3),
+                average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
+                total_n_offspring=4,
+                n_offspring_per_genotype={(Genotype.HET,): 4},
                 proportion_offspring_per_genotype={
                     (Genotype.HET,): pytest.approx(1.0, abs=1e-3)
                 },
             ),
             BreedingScheme("het", "het"): BreedingSchemeStatistics(
-                n_breeding_pairs=3,
-                n_successful_matings=3,
-                average_litter_size=pytest.approx(1.333, abs=1e-3),
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=pytest.approx(2, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=4,
                 n_offspring_per_genotype={
