@@ -8,9 +8,33 @@ from oscar.historical_stats import LineStatistics
 
 def calculate_optimal_scheme(
     required_genotypes: dict[tuple[Genotype, ...], int],
-    historical_line_stats: LineStatistics,
+    line_stats: LineStatistics,
+    min_n_matings: int = 3,
 ):
-    _get_combined_ratios(historical_line_stats)
+    # TODO - do we want to enable the scenario where there is no historical
+    # data for a line?
+    combined_ratios = _get_combined_ratios(line_stats)
+
+    # Convert expected ratios into an expected number of offspring of
+    # each genotype per litter
+    estimated_n_per_litter = combined_ratios.copy()
+    for (
+        breeding_scheme,
+        genotype_to_ratio_dict,
+    ) in estimated_n_per_litter.items():
+        scheme_stats = line_stats.stats_per_breeding_scheme[breeding_scheme]
+        if scheme_stats.n_successful_matings >= min_n_matings:
+            expected_litter_size = scheme_stats.average_litter_size
+        elif line_stats.total_n_successful_matings >= min_n_matings:
+            expected_litter_size = line_stats.average_litter_size
+        else:
+            # TODO - Fallback to whole institution stats
+            expected_litter_size = 0
+
+        for genotype in genotype_to_ratio_dict:
+            genotype_to_ratio_dict[genotype] = (
+                genotype_to_ratio_dict[genotype] * expected_litter_size
+            )
 
 
 def _get_combined_ratios(
