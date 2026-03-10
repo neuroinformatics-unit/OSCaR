@@ -1,4 +1,5 @@
 import math
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 
 from scipy.optimize import linprog
@@ -30,6 +31,7 @@ class SurplusSummary:
 def calculate_optimal_scheme(
     required_n_per_genotype: dict[tuple[Genotype, ...], int],
     line_stats: LineStatistics,
+    default_litter_size: int,
     min_matings_for_litter_size: int = 3,
     min_offspring_for_ratios: int = 10,
 ) -> tuple[dict[BreedingScheme, int], SurplusSummary]:
@@ -42,12 +44,16 @@ def calculate_optimal_scheme(
         Required number of individuals per genotype
     line_stats : LineStatistics
         Statistics from historical data for the line
+    default_litter_size: float
+        The default value used for average litter size if there isn't enough
+        historical data for the line. This should usually be set to the average
+        litter size across all available data for all lines.
     min_matings_for_litter_size : int, optional
         Minimum number of successful matings required to use the measured
         litter size from line_stats. If there aren't enough matings for a
         specific breeding scheme, the average of the whole line will be used
-        instead. If the whole line also doesn't have enough matings, then the
-        average across all lines will be used.
+        instead. If the whole line also doesn't have enough matings, then
+        default_litter_size is used.
     min_offspring_for_ratios: int, optional
         Minimum number of offspring required from a breeding scheme to use
         the measured proportion of each genotype from line_stats. If not met,
@@ -62,13 +68,14 @@ def calculate_optimal_scheme(
               combination
     """
 
-    # TODO - do we want to enable the scenario where there is no historical
-    # data for a line?
     combined_ratios = _get_combined_ratios(
         line_stats, min_offspring_for_ratios
     )
     litter_size_per_scheme = _get_estimated_litter_sizes(
-        combined_ratios.keys(), line_stats, min_matings_for_litter_size
+        combined_ratios.keys(),
+        line_stats,
+        min_matings_for_litter_size,
+        default_litter_size,
     )
 
     # Convert expected ratios into an expected number of offspring of
@@ -181,7 +188,7 @@ def _optimise_n_matings(
         method="highs",
     )
 
-    if (not optimised_result.status == 0) or (not optimised_result.success):
+    if (optimised_result.status != 0) or (not optimised_result.success):
         raise ValueError(
             f"Number of matings couldn't be optimised: "
             f"{optimised_result.message}"
@@ -195,8 +202,30 @@ def _optimise_n_matings(
 def _create_surplus_summary(
     required_n_per_genotype: dict[tuple[Genotype, ...], int],
     n_matings_per_scheme: dict[BreedingScheme, int],
-    n_per_scheme_genotype,
-):
+    n_per_scheme_genotype: dict[
+        BreedingScheme, dict[tuple[Genotype, ...], float]
+    ],
+) -> SurplusSummary:
+    """Create a summary of the total and surplus numbers for the
+    given combination of breeding schemes.
+
+    Parameters
+    ----------
+    required_n_per_genotype : dict[tuple[Genotype, ...], int]
+        Required number of individuals of each genotype
+    n_matings_per_scheme : dict[BreedingScheme, int]
+        Optimal number of matings per breeding scheme
+    n_per_scheme_genotype : dict[
+        BreedingScheme, dict[tuple[Genotype, ...], float]
+    ]
+        Number of individuals expected per litter for each genotype +
+        breeding scheme
+
+    Returns
+    -------
+    SurplusSummary
+        Summary of total and surplus numbers
+    """
     surplus_summary = SurplusSummary()
 
     for breeding_scheme, n_matings in n_matings_per_scheme.items():
@@ -231,19 +260,47 @@ def _create_surplus_summary(
     return surplus_summary
 
 
-def _get_estimated_litter_sizes(breeding_schemes, line_stats, min_n_matings):
+def _get_estimated_litter_sizes(
+    breeding_schemes: Iterable[BreedingScheme],
+    line_stats: LineStatistics,
+    min_n_matings: int,
+    default_litter_size: float,
+) -> dict[BreedingScheme, float]:
+    """Create an estimated average litter size for every breeding scheme.
+
+    Parameters
+    ----------
+    breeding_schemes : Iterable[BreedingScheme]
+        The breeding schemes to return litter sizes for
+    line_stats : LineStatistics
+        Summary statistics from historical data for the line
+    min_n_matings : int
+        Minimum number of successful matings required to use the
+        measured litter size from line_stats.
+    default_litter_size : float
+        Default litter size to fallback to if there's not enough historical
+        data for the line.
+
+    Returns
+    -------
+    dict[BreedingScheme, float]
+        Average litter size per breeding scheme
+    """
     litter_sizes = {}
 
     for breeding_scheme in breeding_schemes:
-        scheme_stats = line_stats.stats_per_breeding_scheme[breeding_scheme]
+        scheme_stats = line_stats.stats_per_breeding_scheme.get(
+            breeding_scheme, None
+        )
 
-        if scheme_stats.n_successful_matings >= min_n_matings:
+        if (scheme_stats is not None) and (
+            scheme_stats.n_successful_matings >= min_n_matings
+        ):
             litter_sizes[breeding_scheme] = scheme_stats.average_litter_size
         elif line_stats.total_n_successful_matings >= min_n_matings:
             litter_sizes[breeding_scheme] = line_stats.average_litter_size
         else:
-            # TODO - Fallback to whole institution stats
-            litter_sizes[breeding_scheme] = 0
+            litter_sizes[breeding_scheme] = default_litter_size
 
     return litter_sizes
 
@@ -266,8 +323,9 @@ def _get_combined_ratios(
 
     Returns
     -------
-    dict[BreedingScheme, float]
-        Expected proportion of offspring ...
+    dict[BreedingScheme, dict[tuple[Genotype, ...], float]]
+        For each breeding scheme, provides a dictionary mapping offspring
+        genotypes to the expected proportion of that type
     """
 
     # The breeding schemes listed in line_stats.stats_per_breeding_scheme are
