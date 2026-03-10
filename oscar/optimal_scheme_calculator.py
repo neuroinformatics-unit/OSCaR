@@ -30,9 +30,10 @@ class SurplusSummary:
 def calculate_optimal_scheme(
     required_n_per_genotype: dict[tuple[Genotype, ...], int],
     line_stats: LineStatistics,
-    min_n_matings: int = 3,
+    min_matings_for_litter_size: int = 3,
+    min_offspring_for_ratios: int = 10,
 ) -> tuple[dict[BreedingScheme, int], SurplusSummary]:
-    """Calculate optimal combination of breeding schemes to produce
+    """Calculate the optimal combination of breeding schemes to produce
     the required_n_per_genotype.
 
     Parameters
@@ -41,12 +42,16 @@ def calculate_optimal_scheme(
         Required number of individuals per genotype
     line_stats : LineStatistics
         Statistics from historical data for the line
-    min_n_matings : int, optional
-        Minimum number of recorded matings required in historical data to use
-        the measured litter size. If there aren't enough matings for a specific
-        breeding scheme, the average of the whole line will be used instead.
-        If the whole line also doesn't have enough matings, then the average
-        across all lines will be used.
+    min_matings_for_litter_size : int, optional
+        Minimum number of successful matings required to use the measured
+        litter size from line_stats. If there aren't enough matings for a
+        specific breeding scheme, the average of the whole line will be used
+        instead. If the whole line also doesn't have enough matings, then the
+        average across all lines will be used.
+    min_offspring_for_ratios: int, optional
+        Minimum number of offspring required from a breeding scheme to use
+        the measured proportion of each genotype from line_stats. If not met,
+        the theoretical mendelian ratio will be used instead.
 
     Returns
     -------
@@ -59,9 +64,11 @@ def calculate_optimal_scheme(
 
     # TODO - do we want to enable the scenario where there is no historical
     # data for a line?
-    combined_ratios = _get_combined_ratios(line_stats)
+    combined_ratios = _get_combined_ratios(
+        line_stats, min_offspring_for_ratios
+    )
     litter_size_per_scheme = _get_estimated_litter_sizes(
-        combined_ratios.keys(), line_stats, min_n_matings
+        combined_ratios.keys(), line_stats, min_matings_for_litter_size
     )
 
     # Convert expected ratios into an expected number of offspring of
@@ -242,16 +249,20 @@ def _get_estimated_litter_sizes(breeding_schemes, line_stats, min_n_matings):
 
 
 def _get_combined_ratios(
-    line_stats: LineStatistics,
+    line_stats: LineStatistics, minimum_n_offspring: int
 ) -> dict[BreedingScheme, dict[tuple[Genotype, ...], float]]:
     """Create dictionary combining the observed genotyping ratio (proportion of
     offspring of each genotype from historical data) with the theoretical
-    mendelian ratio (when no historical data is present).
+    mendelian ratio (when insufficient historical data is present).
 
     Parameters
     ----------
     line_stats : LineStatistics
         Summary line statistics from historical data
+    minimum_n_offspring: int
+        The minimum number of offspring required per breeding scheme to use
+        the genotyping ratio (measured from historical data). Otherwise,
+        defaults to theoretical mendelian ratio.
 
     Returns
     -------
@@ -271,13 +282,19 @@ def _get_combined_ratios(
     combined_ratios = {}
 
     for breeding_scheme in breeding_schemes:
-        # If present, use observed proportion from historical data
-        if breeding_scheme in line_stats.stats_per_breeding_scheme:
+        scheme_stats = line_stats.stats_per_breeding_scheme.get(
+            breeding_scheme, None
+        )
+
+        # If there's enough recorded offspring, use  the observed proportion
+        # from historical data
+        if (scheme_stats is not None) and (
+            scheme_stats.total_n_offspring >= minimum_n_offspring
+        ):
             combined_ratios[breeding_scheme] = (
-                line_stats.stats_per_breeding_scheme[
-                    breeding_scheme
-                ].proportion_offspring_per_genotype
+                scheme_stats.proportion_offspring_per_genotype
             )
+
         # Otherwise, use the theoretical ratio
         else:
             combined_ratios[breeding_scheme] = (
