@@ -1,10 +1,11 @@
 import itertools
-from enum import Enum
+from enum import IntEnum
+from typing import Self
 
 import numpy as np
 
 
-class Genotype(Enum):
+class Genotype(IntEnum):
     """Genotype status: homozygous (HOM), heterozygous (HET) or WT (wildtype).
 
     Each animal will have two copies (alleles) of a particular gene - each
@@ -16,6 +17,30 @@ class Genotype(Enum):
     HET = 1
     HOM = 2
 
+    @classmethod
+    def from_string(cls, genotype_str: str) -> tuple[Self, ...]:
+        """Create a tuple of Genotype from a string representation.
+
+        E.g. wt_het_hom -> (Genotype.WT, Genotype.HET, Genotype.HOM)
+
+        Parameters
+        ----------
+        genotype_str : str
+            String representing 1 or multiple genotypes. Each should be
+            wt, het or hom separated by an underscore.
+
+        Returns
+        -------
+        tuple[Self, ...]
+            Converted tuple of genotypes
+        """
+        genotype_strings = genotype_str.split("_")
+        genotypes = [
+            cls[genotype_string.upper()]
+            for genotype_string in genotype_strings
+        ]
+        return tuple(genotypes)
+
 
 class BreedingScheme:
     """
@@ -25,9 +50,32 @@ class BreedingScheme:
 
     def __init__(
         self,
-        parent_1_genotype: tuple[Genotype, ...],
-        parent_2_genotype: tuple[Genotype, ...],
+        parent_1_genotype: tuple[Genotype, ...] | str,
+        parent_2_genotype: tuple[Genotype, ...] | str,
     ):
+        """Create a breeding scheme with two parent genotypes.
+
+        Parameters
+        ----------
+        parent_1_genotype : tuple[Genotype, ...] | str
+            Genotype of parent 1 either as a tuple of Genotypes or as a
+            string representation like het_hom_het
+        parent_2_genotype : tuple[Genotype, ...] | str
+            Genotype of parent 2 either as a tuple of Genotypes or as a
+            string representation like het_hom_het
+
+        Raises
+        ------
+        ValueError
+            If the parent genotypes don't have the same length
+        """
+
+        if isinstance(parent_1_genotype, str):
+            parent_1_genotype = Genotype.from_string(parent_1_genotype)
+
+        if isinstance(parent_2_genotype, str):
+            parent_2_genotype = Genotype.from_string(parent_2_genotype)
+
         if len(parent_1_genotype) != len(parent_2_genotype):
             raise ValueError(
                 "Both parents must have a genotype of the same length"
@@ -44,6 +92,22 @@ class BreedingScheme:
         return set([self.parent_1_genotype, self.parent_2_genotype]) == set(
             [other.parent_1_genotype, other.parent_2_genotype]
         )
+
+    def __hash__(self):
+        # Hash should be equal if the breeding scheme combines the same
+        # two genotypes in any order.
+        genotypes = sorted([self.parent_1_genotype, self.parent_2_genotype])
+        return hash(tuple(genotypes))
+
+    def __repr__(self):
+        parent_1_str = "_".join(
+            [genotype.name.lower() for genotype in self.parent_1_genotype]
+        )
+        parent_2_str = "_".join(
+            [genotype.name.lower() for genotype in self.parent_2_genotype]
+        )
+
+        return f"BreedingScheme({parent_1_str}x{parent_2_str})"
 
     def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.
