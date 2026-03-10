@@ -28,10 +28,35 @@ class SurplusSummary:
 
 
 def calculate_optimal_scheme(
-    required_genotypes: dict[tuple[Genotype, ...], int],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int],
     line_stats: LineStatistics,
     min_n_matings: int = 3,
-):
+) -> tuple[dict[BreedingScheme, int], SurplusSummary]:
+    """Calculate optimal combination of breeding schemes to produce
+    the required_n_per_genotype.
+
+    Parameters
+    ----------
+    required_n_per_genotype : dict[tuple[Genotype, ...], int]
+        Required number of individuals per genotype
+    line_stats : LineStatistics
+        Statistics from historical data for the line
+    min_n_matings : int, optional
+        Minimum number of recorded matings required in historical data to use
+        the measured litter size. If there aren't enough matings for a specific
+        breeding scheme, the average of the whole line will be used instead.
+        If the whole line also doesn't have enough matings, then the average
+        across all lines will be used.
+
+    Returns
+    -------
+    tuple[dict[BreedingScheme, int], SurplusSummary]
+        Returns 2 items:
+            - optimal number of matings per breeding scheme
+            - a summary of the surplus numbers for this optimal scheme
+              combination
+    """
+
     # TODO - do we want to enable the scenario where there is no historical
     # data for a line?
     combined_ratios = _get_combined_ratios(line_stats)
@@ -52,6 +77,16 @@ def calculate_optimal_scheme(
                 * litter_size_per_scheme[breeding_scheme]
             )
 
+    n_matings_per_scheme = _optimise_n_matings(
+        required_n_per_genotype, litter_size_per_scheme, n_per_scheme_genotype
+    )
+
+    surplus_summary = _create_surplus_summary(
+        required_n_per_genotype, n_matings_per_scheme, n_per_scheme_genotype
+    )
+
+    return n_matings_per_scheme, surplus_summary
+
 
 def _optimise_n_matings(
     required_n_per_genotype: dict[tuple[Genotype, ...], int],
@@ -70,13 +105,14 @@ def _optimise_n_matings(
 
     Parameters
     ----------
-    required_genotypes : dict[tuple[Genotype, ...], int]
-        _description_
+    required_n_per_genotype : dict[tuple[Genotype, ...], int]
+        The required number of individuals per genotype
     litter_size_per_scheme : dict[BreedingScheme, float]
-        _description_
+        The estimated litter size per breeding scheme
     n_per_scheme_genotype :
         dict[BreedingScheme, dict[tuple[Genotype, ...], float]]
-        _description_
+        The estimated number of individuals per litter of the given
+        genotype + breeding scheme
     """
 
     # Extract names of breeding schemes / required genotypes as a list, so we
