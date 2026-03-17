@@ -110,6 +110,14 @@ def _optimise_n_matings(
     the objective function (the surplus to minimise) and the constraints
     (that the final result must meet the given required_genotypes).
 
+    The objective function is:
+    total_surplus =
+      sum(litter_size_per_scheme * n_matings_per_scheme) - total_n_required
+
+    There is one constraint per required offspring genotype of form:
+    sum(n_of_genotype_offspring_per_mating * n_matings_per_scheme)
+      >= required_n_for_genotype
+
     Parameters
     ----------
     required_n_per_genotype : dict[tuple[Genotype, ...], int]
@@ -124,27 +132,22 @@ def _optimise_n_matings(
     breeding_schemes = list(offspring_per_scheme.keys())
     required_genotypes = list(required_n_per_genotype.keys())
 
-    # Coefficients of the function defining the amount of surplus (we want to
-    # minimise).
-    # This is the sum of
-    # (estimated litter size for scheme * n matings for scheme)
-    # for all schemes minus the total number of individuals required.
-    # Therefore, coefficients are the estimated litter sizes (we ignore the
-    # constant = total number of individuals for now, as it won't affect the
-    # position of the solutions)
+    # Coefficients of the objective function we want to minimise. This will
+    # be a list with length == number of breeding schemes, containing the
+    # expected litter size for each. (see docstring for description of
+    # objective function. We can ignore the constant, total _n_required, as
+    # it won't affect the position of the solutions)
     objective_coefficients = []
 
-    # linprog constraints are given in form Ax + By + ... <= C
-    # The coefficients on the left side are added to 'constraint_coefficients',
-    # and the constant on the right to 'constraint_constants'.
-
-    # Our constraints are that the final number of
-    # individuals for each genotype must be >= the required number.
-    # e.g. for genotype hom:
-    # sum of (n matings for scheme * expected number of hom per litter)
-    # across all schemes >= required number of hom
-    # So coefficients will be expected_n_per_genotype for that genotype, and
-    # the constant the required number for that genotype.
+    # Coefficients and constants of our constraints (see docstring for
+    # description - coefficients come from the left side of the equation,
+    # constants from the right).
+    # Both will be a list of length == len(required_n_per_genotype). With
+    # each item being:
+    # - For constraint_coefficients, a list of the expected number of offspring
+    #   of that genotype per mating for all breeding schemes
+    # - For constraint_constants, the required number of individuals of that
+    #   genotype
     constraint_coefficients: list[list[float]] = []
     constraint_constants = []
 
@@ -189,7 +192,6 @@ def _optimise_n_matings(
         )
 
     n_matings_per_scheme = dict(zip(breeding_schemes, optimised_result.x))
-
     return n_matings_per_scheme
 
 
@@ -217,21 +219,21 @@ def _create_surplus_summary(
         Summary of total and surplus numbers
     """
     surplus_summary = SurplusSummary()
-    genotype_surplus = surplus_summary.surplus_per_genotype
+    surplus_per_genotype = surplus_summary.surplus_per_genotype
 
     for breeding_scheme, n_matings in n_matings_per_scheme.items():
         n_per_genotype = offspring_per_scheme[breeding_scheme].n_per_genotype
 
         total_for_scheme = 0
-        for genotype, n in n_per_genotype.items():
+        for genotype, n_per_mating in n_per_genotype.items():
             # round value up to the nearest int - as we can't have
             # partial animals
-            total_n = math.ceil(n * n_matings)
+            total_n = math.ceil(n_per_mating * n_matings)
             total_for_scheme += total_n
 
-            if genotype not in genotype_surplus:
-                genotype_surplus[genotype] = GenotypeSurplus()
-            genotype_surplus[genotype].total_n += total_n
+            if genotype not in surplus_per_genotype:
+                surplus_per_genotype[genotype] = GenotypeSurplus()
+            surplus_per_genotype[genotype].total_n += total_n
 
         surplus_summary.total_n += total_for_scheme
 
@@ -240,8 +242,8 @@ def _create_surplus_summary(
     )
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
 
-    for genotype, surplus in genotype_surplus.items():
-        total_surplus = total_n - required_n_per_genotype[genotype]
+    for genotype, surplus in surplus_per_genotype.items():
+        total_surplus = surplus.total_n - required_n_per_genotype[genotype]
         surplus.total_n_surplus = total_surplus
         surplus.percent_surplus = (total_surplus / surplus.total_n) * 100
 
@@ -264,10 +266,20 @@ def _estimate_n_offspring_per_mating(
     ----------
     line_stats : LineStatistics
         Statistics from historical data for the line
-    min_n_offspring : int
-        _description_
-    min_n_matings : int
-        _description_
+    min_n_offspring: int, optional
+        Minimum number of offspring required from a breeding scheme to use
+        the measured proportion of each genotype from line_stats. If not met,
+        the theoretical mendelian ratio will be used instead.
+    min_n_matings : int, optional
+        Minimum number of successful matings required to use the measured
+        litter size from line_stats. If there aren't enough matings for a
+        specific breeding scheme, the average of the whole line will be used
+        instead. If the whole line also doesn't have enough matings, then
+        default_litter_size is used.
+    default_litter_size: float
+        The default value used for average litter size if there isn't enough
+        historical data for the line. This should usually be set to the average
+        litter size across all available data for all lines.
     """
 
     # The breeding schemes listed in line_stats.stats_per_breeding_scheme are
