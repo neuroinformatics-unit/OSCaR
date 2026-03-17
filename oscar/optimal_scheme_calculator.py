@@ -304,9 +304,9 @@ def _estimate_n_offspring_per_mating(
         )
 
         for genotype, proportion in proportion_per_genotype.items():
-            expected_offspring.n_per_genotype[genotype] = (
-                proportion * litter_size
-            )
+            expected_n = proportion * litter_size
+            if expected_n > 0:
+                expected_offspring.n_per_genotype[genotype] = expected_n
 
         expected_offspring_per_scheme[breeding_scheme] = expected_offspring
 
