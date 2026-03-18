@@ -12,6 +12,7 @@ from oscar.historical_stats import (
 @pytest.fixture
 def expected_stats_single_mutation():
     return LineStatistics(
+        n_mutations=1,
         total_n_offspring=18,
         total_n_offspring_per_genotype={
             (Genotype.WT,): 6,
@@ -86,6 +87,7 @@ def expected_stats_single_mutation():
 @pytest.fixture
 def expected_stats_2_mutations():
     return LineStatistics(
+        n_mutations=2,
         total_n_offspring=20,
         total_n_offspring_per_genotype={
             (Genotype.HOM, Genotype.HOM): 2,
@@ -200,6 +202,7 @@ def expected_stats_2_mutations():
 @pytest.fixture
 def expected_stats_3_mutations():
     return LineStatistics(
+        n_mutations=3,
         total_n_offspring=20,
         total_n_offspring_per_genotype={
             (Genotype.HET, Genotype.WT, Genotype.HOM): 8,

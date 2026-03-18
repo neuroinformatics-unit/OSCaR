@@ -25,6 +25,7 @@ class BreedingSchemeStatistics:
 
 @dataclass
 class LineStatistics:
+    n_mutations: int = 0
     total_n_offspring: int = 0
     total_n_offspring_per_genotype: dict[tuple[Genotype, ...], int] = field(
         default_factory=dict
@@ -66,7 +67,10 @@ def calculate_historical_stats_for_line(
     data_with_schemes = line_data.copy()
     data_with_schemes["breeding_scheme"] = breeding_schemes
 
-    line_stats = LineStatistics(total_n_offspring=len(line_data))
+    line_stats = LineStatistics(
+        n_mutations=line_data.n_mutations.iloc[0],
+        total_n_offspring=len(line_data),
+    )
 
     for breeding_scheme in data_with_schemes["breeding_scheme"].unique():
         breeding_scheme_data = data_with_schemes.loc[

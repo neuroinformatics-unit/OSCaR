@@ -55,9 +55,7 @@ def estimate_n_offspring_per_mating(
     # sparse. i.e. only breeding schemes that appeared in the historical data
     # are included (rather than all that are possible)
     # Here we need ALL possible schemes:
-    n_mutations = len(
-        list(line_stats.total_n_offspring_per_genotype.keys())[0]
-    )
+    n_mutations = line_stats.n_mutations
     breeding_schemes = generate_breeding_schemes(n_mutations)
 
     expected_offspring_per_scheme = {}

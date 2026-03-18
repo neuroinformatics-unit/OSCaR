@@ -14,6 +14,7 @@ from oscar.optimise.estimate_offspring import (
 @pytest.fixture
 def example_line_stats():
     return LineStatistics(
+        n_mutations=1,
         total_n_offspring=140,
         total_n_offspring_per_genotype={
             (Genotype.WT,): 110,
