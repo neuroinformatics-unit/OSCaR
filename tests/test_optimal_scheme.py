@@ -366,9 +366,17 @@ from oscar.optimise.optimal_scheme_calculator import (
                 ),
             },
             {
-                BreedingScheme("het", "het"): 274,
-                BreedingScheme("hom", "hom"): 16,
-                BreedingScheme("wt", "het"): 285,
+                BreedingScheme("wt_het", "wt_hom"): 1,
+                BreedingScheme("wt_het", "het_wt"): 1,
+                BreedingScheme("wt_het", "het_het"): 4,
+                BreedingScheme("wt_het", "hom_wt"): 2,
+                BreedingScheme("wt_het", "hom_het"): 9,
+                BreedingScheme("wt_hom", "het_wt"): 5,
+                BreedingScheme("wt_hom", "hom_wt"): 48,
+                BreedingScheme("het_wt", "het_hom"): 16,
+                BreedingScheme("het_het", "het_hom"): 2,
+                BreedingScheme("hom_wt", "hom_het"): 7,
+                BreedingScheme("hom_wt", "hom_hom"): 1,
             },
             id="2 mutations",
         ),
@@ -383,3 +391,25 @@ def test_optimise_n_matings(
     )
 
     assert n_matings_per_scheme == expected_n_matings
+
+
+def test_optimise_impossible_scheme():
+    """Test situation where the given breeding schemes cannot produce the
+    required offspring genotypes."""
+
+    required_n_per_genotype = {(Genotype.WT,): 100, (Genotype.HET,): 50}
+
+    offspring_per_scheme = {
+        BreedingScheme("hom", "hom"): ExpectedOffspring(
+            total_n=8, n_per_genotype={(Genotype.HOM,): 8}
+        )
+    }
+
+    error_msg = (
+        "Number of matings couldn't be optimised: The problem is infeasible"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        _optimise_n_matings(
+            required_n_per_genotype,
+            offspring_per_scheme,
+        )
