@@ -164,4 +164,14 @@ def _optimise_n_matings(
         )
 
     n_matings_per_scheme = dict(zip(breeding_schemes, optimised_result.x))
+
+    # Change values to int() rather than float() + remove breeding schemes
+    # with 0 matings, to make the output easier to read at a glance
+    for scheme in list(n_matings_per_scheme.keys()):
+        n_matings = int(n_matings_per_scheme[scheme])
+        n_matings_per_scheme[scheme] = n_matings
+
+        if n_matings == 0:
+            del n_matings_per_scheme[scheme]
+
     return n_matings_per_scheme
