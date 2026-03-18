@@ -60,15 +60,11 @@ def example_line_stats():
 
 
 @pytest.mark.parametrize(
-    (
-        "min_n_offspring, min_n_matings, default_litter_size, "
-        "expected_offspring_per_scheme"
-    ),
+    "min_n_offspring, min_n_matings,expected_offspring_per_scheme",
     [
         pytest.param(
             1,
             1,
-            4,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
                     total_n=10, n_per_genotype={(Genotype.HET,): 10.0}
@@ -101,7 +97,6 @@ def example_line_stats():
         pytest.param(
             70,
             0,
-            4,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
                     total_n=10, n_per_genotype={(Genotype.HET,): 10.0}
@@ -134,7 +129,6 @@ def example_line_stats():
         pytest.param(
             0,
             6,
-            4,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
                     total_n=10, n_per_genotype={(Genotype.HET,): 10.0}
@@ -162,12 +156,11 @@ def example_line_stats():
                     },
                 ),
             },
-            id="min_n_matings=7. hetxhet should use line average_litter_size",
+            id="min_n_matings=6. hetxhet should use line average_litter_size",
         ),
         pytest.param(
             0,
             20,
-            4,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
                     total_n=4, n_per_genotype={(Genotype.HET,): 4.0}
@@ -203,14 +196,16 @@ def test_estimate_n_offspring_per_mating(
     example_line_stats,
     min_n_offspring,
     min_n_matings,
-    default_litter_size,
     expected_offspring_per_scheme,
 ):
+    """Test estimates of the number of offspring per mating, varying
+    min_n_offspring and min_n_matings.
+    """
     offspring_per_scheme = estimate_n_offspring_per_mating(
         example_line_stats,
         min_n_offspring=min_n_offspring,
         min_n_matings=min_n_matings,
-        default_litter_size=default_litter_size,
+        default_litter_size=4,
     )
 
     assert offspring_per_scheme == expected_offspring_per_scheme

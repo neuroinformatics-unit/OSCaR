@@ -98,8 +98,11 @@ def _expected_litter_size(
     line_stats : LineStatistics
         Summary statistics from historical data for the line
     min_n_matings : int
-        Minimum number of successful matings required to use the
-        measured litter size from line_stats.
+        Minimum number of successful matings required to use the measured
+        litter size from line_stats. If there aren't enough matings for a
+        specific breeding scheme, the average of the whole line will be used
+        instead. If the whole line also doesn't have enough matings, then
+        default_litter_size is used.
     default_litter_size : float
         Default litter size to fallback to if there's not enough historical
         data for the line.
