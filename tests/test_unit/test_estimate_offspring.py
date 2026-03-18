@@ -5,9 +5,9 @@ from oscar.historical_stats import (
     BreedingSchemeStatistics,
     LineStatistics,
 )
-from oscar.optimal_scheme_calculator import (
+from oscar.optimise.estimate_offspring import (
     ExpectedOffspring,
-    _estimate_n_offspring_per_mating,
+    estimate_n_offspring_per_mating,
 )
 
 
@@ -173,7 +173,7 @@ def test_estimate_n_offspring_per_mating(
     default_litter_size,
     expected_offspring_per_scheme,
 ):
-    offspring_per_scheme = _estimate_n_offspring_per_mating(
+    offspring_per_scheme = estimate_n_offspring_per_mating(
         example_line_stats,
         min_n_offspring=min_n_offspring,
         min_n_matings=min_n_matings,
