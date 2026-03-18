@@ -162,7 +162,40 @@ def example_line_stats():
                     },
                 ),
             },
-            id="min_n_matings=7. hetxhet should use default_litter_size now",
+            id="min_n_matings=7. hetxhet should use line average_litter_size",
+        ),
+        pytest.param(
+            0,
+            20,
+            4,
+            {
+                BreedingScheme("wt", "hom"): ExpectedOffspring(
+                    total_n=4, n_per_genotype={(Genotype.HET,): 4.0}
+                ),
+                BreedingScheme("wt", "het"): ExpectedOffspring(
+                    total_n=4,
+                    n_per_genotype={
+                        (Genotype.WT,): pytest.approx((58 / 72) * 4),
+                        (Genotype.HET,): pytest.approx((14 / 72) * 4),
+                    },
+                ),
+                BreedingScheme("hom", "hom"): ExpectedOffspring(
+                    total_n=4, n_per_genotype={(Genotype.HOM,): 4.0}
+                ),
+                BreedingScheme("hom", "het"): ExpectedOffspring(
+                    total_n=4,
+                    n_per_genotype={(Genotype.HOM,): 2, (Genotype.HET,): 2},
+                ),
+                BreedingScheme("het", "het"): ExpectedOffspring(
+                    total_n=4.0,
+                    n_per_genotype={
+                        (Genotype.WT,): pytest.approx((52 / 68) * 4.0),
+                        (Genotype.HET,): pytest.approx((10 / 68) * 4.0),
+                        (Genotype.HOM,): pytest.approx((6 / 68) * 4.0),
+                    },
+                ),
+            },
+            id="min_n_matings=20. All should use default_litter_size=4",
         ),
     ],
 )
