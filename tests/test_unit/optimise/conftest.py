@@ -5,7 +5,7 @@ from oscar.optimise.estimate_offspring import ExpectedOffspring
 
 
 @pytest.fixture
-def single_mutation_required_n_per_genotype():
+def required_n_per_genotype_1_mutation():
     return {
         (Genotype.WT,): 1176,
         (Genotype.HET,): 1558,
@@ -14,7 +14,16 @@ def single_mutation_required_n_per_genotype():
 
 
 @pytest.fixture
-def single_mutation_offspring_per_scheme():
+def n_matings_1_mutation():
+    return {
+        BreedingScheme("het", "het"): 274,
+        BreedingScheme("hom", "hom"): 16,
+        BreedingScheme("wt", "het"): 285,
+    }
+
+
+@pytest.fixture
+def offspring_per_scheme_1_mutation():
     return {
         BreedingScheme("het", "hom"): ExpectedOffspring(
             total_n=5.58,
@@ -54,9 +63,321 @@ def single_mutation_offspring_per_scheme():
 
 
 @pytest.fixture
-def single_mutation_n_matings():
+def required_n_per_genotype_2_mutations():
     return {
-        BreedingScheme("het", "het"): 274,
-        BreedingScheme("hom", "hom"): 16,
-        BreedingScheme("wt", "het"): 285,
+        (Genotype.HET, Genotype.HET): 380,
+        (Genotype.HET, Genotype.HOM): 18,
+        (Genotype.HET, Genotype.WT): 23,
+        (Genotype.HOM, Genotype.HET): 49,
+        (Genotype.HOM, Genotype.HOM): 1,
+        (Genotype.HOM, Genotype.WT): 20,
+        (Genotype.WT, Genotype.HET): 48,
+        (Genotype.WT, Genotype.HOM): 7,
+        (Genotype.WT, Genotype.WT): 4,
+    }
+
+
+@pytest.fixture
+def n_matings_2_mutations():
+    return {
+        BreedingScheme("wt_het", "wt_hom"): 1,
+        BreedingScheme("wt_het", "het_wt"): 1,
+        BreedingScheme("wt_het", "het_het"): 4,
+        BreedingScheme("wt_het", "hom_wt"): 2,
+        BreedingScheme("wt_het", "hom_het"): 9,
+        BreedingScheme("wt_hom", "het_wt"): 5,
+        BreedingScheme("wt_hom", "hom_wt"): 48,
+        BreedingScheme("het_wt", "het_hom"): 16,
+        BreedingScheme("het_het", "het_hom"): 2,
+        BreedingScheme("hom_wt", "hom_het"): 7,
+        BreedingScheme("hom_wt", "hom_hom"): 1,
+    }
+
+
+@pytest.fixture
+def offspring_per_scheme_2_mutations():
+    return {
+        BreedingScheme("wt_wt", "het_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.WT): 1.4475,
+                (Genotype.WT, Genotype.HET): 1.4475,
+                (Genotype.WT, Genotype.WT): 1.4475,
+            },
+        ),
+        BreedingScheme("wt_wt", "het_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.WT, Genotype.HET): 2.895,
+            },
+        ),
+        BreedingScheme("wt_wt", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HET, Genotype.WT): 2.895,
+            },
+        ),
+        BreedingScheme("wt_wt", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 5.79,
+            },
+        ),
+        BreedingScheme("wt_het", "wt_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.WT, Genotype.HET): 2.895,
+                (Genotype.WT, Genotype.HOM): 2.895,
+            },
+        ),
+        BreedingScheme("wt_het", "het_wt"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.WT): 1.4475,
+                (Genotype.WT, Genotype.HET): 1.4475,
+                (Genotype.WT, Genotype.WT): 1.4475,
+            },
+        ),
+        BreedingScheme("wt_het", "het_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 0.72375,
+                (Genotype.HET, Genotype.WT): 0.72375,
+                (Genotype.WT, Genotype.HET): 1.4475,
+                (Genotype.WT, Genotype.HOM): 0.72375,
+                (Genotype.WT, Genotype.WT): 0.72375,
+            },
+        ),
+        BreedingScheme("wt_het", "het_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 1.4475,
+                (Genotype.WT, Genotype.HET): 1.4475,
+                (Genotype.WT, Genotype.HOM): 1.4475,
+            },
+        ),
+        BreedingScheme("wt_het", "hom_wt"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HET, Genotype.WT): 2.985,
+            },
+        ),
+        BreedingScheme("wt_het", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HET, Genotype.HOM): 1.4475,
+                (Genotype.HET, Genotype.WT): 1.4475,
+            },
+        ),
+        BreedingScheme("wt_het", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HET, Genotype.HOM): 2.895,
+            },
+        ),
+        BreedingScheme("wt_hom", "het_wt"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.WT, Genotype.HET): 2.895,
+            },
+        ),
+        BreedingScheme("wt_hom", "het_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 1.4475,
+                (Genotype.WT, Genotype.HET): 1.4475,
+                (Genotype.WT, Genotype.HOM): 1.4475,
+            },
+        ),
+        BreedingScheme("wt_hom", "het_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HOM): 2.895,
+                (Genotype.WT, Genotype.HOM): 2.895,
+            },
+        ),
+        BreedingScheme("wt_hom", "hom_wt"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 5.79,
+            },
+        ),
+        BreedingScheme("wt_hom", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HET, Genotype.HOM): 2.895,
+            },
+        ),
+        BreedingScheme("wt_hom", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HOM): 5.79,
+            },
+        ),
+        BreedingScheme("het_wt", "het_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.WT): 1.4475,
+                (Genotype.HOM, Genotype.HET): 0.72375,
+                (Genotype.HOM, Genotype.WT): 0.72375,
+                (Genotype.WT, Genotype.HET): 0.72375,
+                (Genotype.WT, Genotype.WT): 0.72375,
+            },
+        ),
+        BreedingScheme("het_wt", "het_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HOM, Genotype.HET): 1.4475,
+                (Genotype.WT, Genotype.HET): 1.4475,
+            },
+        ),
+        BreedingScheme("het_wt", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.WT): 1.4475,
+                (Genotype.HOM, Genotype.HET): 1.4475,
+                (Genotype.HOM, Genotype.WT): 1.4475,
+            },
+        ),
+        BreedingScheme("het_wt", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HOM, Genotype.HET): 2.895,
+            },
+        ),
+        BreedingScheme("het_het", "het_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 0.72375,
+                (Genotype.HET, Genotype.WT): 0.72375,
+                (Genotype.HOM, Genotype.HET): 0.72375,
+                (Genotype.HOM, Genotype.HOM): 0.361875,
+                (Genotype.HOM, Genotype.WT): 0.361875,
+                (Genotype.WT, Genotype.HET): 0.72375,
+                (Genotype.WT, Genotype.HOM): 0.361875,
+                (Genotype.WT, Genotype.WT): 0.361875,
+            },
+        ),
+        BreedingScheme("het_het", "het_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 1.4475,
+                (Genotype.HOM, Genotype.HET): 0.72375,
+                (Genotype.HOM, Genotype.HOM): 0.72375,
+                (Genotype.WT, Genotype.HET): 0.72375,
+                (Genotype.WT, Genotype.HOM): 0.72375,
+            },
+        ),
+        BreedingScheme("het_het", "hom_wt"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.WT): 1.4475,
+                (Genotype.HOM, Genotype.HET): 1.4475,
+                (Genotype.HOM, Genotype.WT): 1.4475,
+            },
+        ),
+        BreedingScheme("het_het", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 0.72375,
+                (Genotype.HET, Genotype.WT): 0.72375,
+                (Genotype.HOM, Genotype.HET): 1.4475,
+                (Genotype.HOM, Genotype.HOM): 0.72375,
+                (Genotype.HOM, Genotype.WT): 0.72375,
+            },
+        ),
+        BreedingScheme("het_het", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 1.4475,
+                (Genotype.HOM, Genotype.HET): 1.4475,
+                (Genotype.HOM, Genotype.HOM): 1.4475,
+            },
+        ),
+        BreedingScheme("het_hom", "het_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HOM): 2.895,
+                (Genotype.HOM, Genotype.HOM): 1.4475,
+                (Genotype.WT, Genotype.HOM): 1.4475,
+            },
+        ),
+        BreedingScheme("het_hom", "hom_wt"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 2.895,
+                (Genotype.HOM, Genotype.HET): 2.895,
+            },
+        ),
+        BreedingScheme("het_hom", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HET): 1.4475,
+                (Genotype.HET, Genotype.HOM): 1.4475,
+                (Genotype.HOM, Genotype.HET): 1.4475,
+                (Genotype.HOM, Genotype.HOM): 1.4475,
+            },
+        ),
+        BreedingScheme("het_hom", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HET, Genotype.HOM): 2.895,
+                (Genotype.HOM, Genotype.HOM): 2.895,
+            },
+        ),
+        BreedingScheme("hom_wt", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HOM, Genotype.HET): 2.895,
+                (Genotype.HOM, Genotype.WT): 2.895,
+            },
+        ),
+        BreedingScheme("hom_wt", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HOM, Genotype.HET): 5.79,
+            },
+        ),
+        BreedingScheme("hom_het", "hom_het"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HOM, Genotype.HET): 2.895,
+                (Genotype.HOM, Genotype.HOM): 1.4475,
+                (Genotype.HOM, Genotype.WT): 1.4475,
+            },
+        ),
+        BreedingScheme("hom_het", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HOM, Genotype.HET): 2.895,
+                (Genotype.HOM, Genotype.HOM): 2.895,
+            },
+        ),
+        BreedingScheme("hom_hom", "hom_hom"): ExpectedOffspring(
+            total_n=5.79,
+            n_per_genotype={
+                (Genotype.HOM, Genotype.HOM): 5.79,
+            },
+        ),
     }
