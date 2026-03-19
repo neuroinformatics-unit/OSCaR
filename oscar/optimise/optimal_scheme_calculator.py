@@ -1,4 +1,5 @@
-from scipy.optimize import linprog
+import numpy as np
+from scipy.optimize import LinearConstraint, milp
 
 from oscar.breeding_scheme import (
     BreedingScheme,
@@ -90,6 +91,10 @@ def _optimise_n_matings(
     sum(n_of_genotype_offspring_per_mating * n_matings_per_scheme)
       >= required_n_for_genotype
 
+    Note: the solution given isn't guaranteed to be unique. There may be
+    multiple combinations of different breeding schemes that result in the
+    same total surplus.
+
     Parameters
     ----------
     required_n_per_genotype : dict[tuple[Genotype, ...], int]
@@ -118,16 +123,14 @@ def _optimise_n_matings(
     # each item being:
     # - For constraint_coefficients, a list of the expected number of offspring
     #   of that genotype per mating for all breeding schemes
-    # - For constraint_constants, the required number of individuals of that
+    # - For constraint_lower_limits, the required number of individuals of that
     #   genotype
     constraint_coefficients: list[list[float]] = []
-    constraint_constants = []
+    constraint_lower_limits = []
 
     for genotype in required_genotypes:
         constraint_coefficients.append([])
-        # Multiply by -1 as linprog only accepts <= constraints, and ours
-        # is >=
-        constraint_constants.append(required_n_per_genotype[genotype] * -1)
+        constraint_lower_limits.append(required_n_per_genotype[genotype])
 
     for breeding_scheme in breeding_schemes:
         expected_offspring = offspring_per_scheme[breeding_scheme]
@@ -139,22 +142,23 @@ def _optimise_n_matings(
 
         for i, genotype in enumerate(required_genotypes):
             if genotype in n_per_genotype:
-                # again, multiply by -1 as linprog only accepts <= constraints
-                constraint_coefficients[i].append(
-                    n_per_genotype[genotype] * -1
-                )
+                constraint_coefficients[i].append(n_per_genotype[genotype])
             else:
                 constraint_coefficients[i].append(0)
 
-    # By default linprog has bounds of 0-infinity for variables (i.e. the
-    # n_matings) so no need to specify further here.
+    constraints = LinearConstraint(
+        A=constraint_coefficients,
+        lb=constraint_lower_limits,
+        ub=np.inf,  # no upper limit on values
+    )
 
-    optimised_result = linprog(
+    # By default milp has bounds of 0-infinity for variables (i.e. the
+    # n_matings) so no need to specify further here.
+    optimised_result = milp(
         objective_coefficients,
-        A_ub=constraint_coefficients,
-        b_ub=constraint_constants,
         integrality=1,  # returned values for n of matings must be integers
-        method="highs",
+        constraints=constraints,
+        options={"mip_rel_gap": 0},
     )
 
     if (optimised_result.status != 0) or (not optimised_result.success):
