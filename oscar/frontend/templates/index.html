@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OSCaR — Optimal Scheme Calculator for Rodents</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f2ed; --surface: #fdfcfa; --surface2: #f0ece4;
+    --border: #ddd8ce; --border-strong: #c8c2b5;
+    --text: #1a1714; --text-muted: #7a7268; --text-faint: #b5b0a8;
+    --accent: #2d6a4f; --accent-light: #d8ede3; --accent-text: #1a4432;
+    --warn: #92400e; --warn-light: #fef3c7;
+    --danger: #991b1b; --danger-light: #fee2e2;
+    --blue: #1e3a5f; --blue-light: #dbeafe;
+    --radius: 10px; --radius-lg: 16px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+  header { background: var(--text); color: var(--bg); padding: 1.8rem 2.5rem; display: flex; align-items: flex-end; justify-content: space-between; }
+  .logo { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+  .logo span { color: #74c69d; }
+  .logo-sub { font-size: 11px; font-weight: 300; color: #a09890; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 5px; }
+  .header-tag { font-family: 'DM Mono', monospace; font-size: 11px; background: #2d6a4f; color: #d8ede3; padding: 5px 12px; border-radius: 4px; }
+  .tabs { background: var(--text); display: flex; padding: 0 2.5rem; border-top: 1px solid #333; }
+  .tab { font-size: 13px; color: #7a7268; padding: 11px 16px; cursor: pointer; border: none; border-bottom: 2px solid transparent; background: none; transition: all 0.15s; }
+  .tab:hover { color: #ccc; }
+  .tab.active { color: #74c69d; border-bottom-color: #74c69d; }
+  .page { display: none; padding: 2rem 2.5rem; max-width: 1100px; }
+  .page.active { display: block; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.2rem; }
+  .card-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+  label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
+  input[type="number"], input[type="text"], select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; }
+  input:focus, select:focus { border-color: var(--accent); }
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-text); }
+  .btn-ghost { background: transparent; color: var(--text-muted); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--surface2); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .geno-btn { padding: 7px 15px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text-muted); transition: all 0.12s; }
+  .geno-btn.sel-wt { background: var(--blue-light); color: var(--blue); border-color: #93c5fd; }
+  .geno-btn.sel-het { background: var(--warn-light); color: var(--warn); border-color: #fbbf24; }
+  .geno-btn.sel-hom { background: var(--accent-light); color: var(--accent-text); border-color: #6ee7b7; }
+  .genotype-selector { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .result-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .result-table th { text-align: left; padding: 10px 14px; font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 400; }
+  .result-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .result-table tr:last-child td { border-bottom: none; }
+  .result-table tr:hover td { background: var(--surface2); }
+  .ratio-bar { height: 8px; border-radius: 4px; background: var(--accent); display: inline-block; vertical-align: middle; }
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 5px; font-family: 'DM Mono', monospace; font-size: 11px; }
+  .badge-wt { background: var(--blue-light); color: var(--blue); }
+  .badge-het { background: var(--warn-light); color: var(--warn); }
+  .badge-hom { background: var(--accent-light); color: var(--accent-text); }
+  .stat-row { display: flex; gap: 1rem; margin-bottom: 1.2rem; }
+  .stat-box { flex: 1; background: var(--surface2); border-radius: var(--radius); padding: 1rem 1.2rem; }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .stat-val { font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 600; line-height: 1; }
+  .green { color: var(--accent); } .amber { color: var(--warn); } .red { color: var(--danger); }
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-faint); font-size: 14px; }
+  .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 13px; margin-bottom: 1rem; border-left: 3px solid; }
+  .alert-info { background: var(--blue-light); color: var(--blue); border-color: #3b82f6; }
+  .alert-warn { background: var(--warn-light); color: var(--warn); border-color: #f59e0b; }
+  .alert-error { background: var(--danger-light); color: var(--danger); border-color: #ef4444; }
+  .mono { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-muted); }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 700px) { header, .page { padding: 1.2rem; } .grid2, .grid3 { grid-template-columns: 1fr; } .tabs { padding: 0 1rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">OS<span>Ca</span>R</div>
+    <div class="logo-sub">Optimal Scheme Calculator for Rodents</div>
+  </div>
+  <div class="header-tag">Issue #6 — frontend</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('mendelian',this)">Mendelian Ratios</button>
+  <button class="tab" onclick="showTab('surplus',this)">Surplus Calculator</button>
+  <button class="tab" onclick="showTab('compare',this)">Scheme Comparison</button>
+</div>
+
+<!-- TAB 1 -->
+<div class="page active" id="page-mendelian">
+  <div class="grid2" style="align-items:start;">
+    <div>
+      <p class="section-label">Breeding Setup</p>
+      <div class="card">
+        <div class="card-title">Number of mutations</div>
+        <input type="number" id="n-mut" min="1" max="4" value="1" oninput="buildSelectors('p',+this.value,'parent-sel')"/>
+      </div>
+      <div class="card">
+        <div class="card-title">Parent genotypes</div>
+        <div id="parent-sel"></div>
+        <div style="display:flex;gap:10px;margin-top:1.2rem;">
+          <button class="btn btn-primary" id="calc-btn" onclick="calcRatios()">Calculate ratios</button>
+          <button class="btn btn-ghost" onclick="swapParents()">↕ Swap</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="section-label">Results</p>
+      <div id="ratio-results"><div class="card"><div class="empty-state">Set up parents and click calculate</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2 -->
+<div class="page" id="page-surplus">
+  <p class="section-label">Surplus & Litter Estimation</p>
+  <div class="alert alert-info">Issue #14 fix applied — surplus uses a single <code>math.ceil</code> on the total, avoiding accumulated rounding errors.</div>
+  <div class="grid2" style="align-items:start;">
+    <div>
+      <div class="card">
+        <div class="card-title">Parameters</div>
+        <div style="margin-bottom:1rem;"><label>Average litter size</label><input type="number" id="s-litter" value="5.58" step="0.01" min="1"/></div>
+        <div style="margin-bottom:1rem;"><label>Required target animals</label><input type="number" id="s-required" value="20" min="1"/></div>
+        <div style="margin-bottom:1rem;"><label>Number of mutations</label><input type="number" id="s-nmut" min="1" max="4" value="1" oninput="buildSelectors('s',+this.value,'surplus-sel')"/></div>
+        <div id="surplus-sel"></div>
+        <div style="margin-top:1.2rem;"><button class="btn btn-primary" id="surplus-btn" onclick="calcSurplus()">Calculate surplus</button></div>
+      </div>
+    </div>
+    <div id="surplus-results"><div class="card"><div class="empty-state">Fill in parameters to see estimates</div></div></div>
+  </div>
+</div>
+
+<!-- TAB 3 -->
+<div class="page" id="page-compare">
+  <p class="section-label">Compare All Schemes</p>
+  <div class="card">
+    <div class="card-title">Setup</div>
+    <div class="grid3">
+      <div><label>Number of mutations</label><input type="number" id="c-nmut" value="1" min="1" max="4"/></div>
+      <div><label>Target genotype</label>
+        <select id="c-target"><option value="hom">HOM — homozygous</option><option value="het">HET — heterozygous</option><option value="wt">WT — wildtype</option></select>
+      </div>
+      <div style="display:flex;align-items:flex-end;"><button class="btn btn-primary" onclick="calcCompare()">Compare schemes</button></div>
+    </div>
+  </div>
+  <div id="compare-results"></div>
+</div>
+
+<script>
+const GL = {wt:'WT', het:'HET', hom:'HOM'};
+const GENOS = ['wt','het','hom'];
+const state = {};   // stores selected genotypes
+
+function showTab(name, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+function buildSelectors(prefix, n, containerId) {
+  n = Math.max(1, Math.min(4, n||1));
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  [0,1].forEach(pi => {
+    const div = document.createElement('div');
+    div.style.cssText = 'margin-bottom:1rem;';
+    div.innerHTML = `<div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">Parent ${pi+1}</div>`;
+    const row = document.createElement('div');
+    row.className = 'genotype-selector';
+    for (let gi=0; gi<n; gi++) {
+      if (gi>0) { const sep=document.createElement('span'); sep.textContent='×'; sep.style.cssText='color:var(--text-faint);font-size:16px;padding:0 3px;'; row.appendChild(sep); }
+      GENOS.forEach(g => {
+        const btn = document.createElement('button');
+        btn.className = 'geno-btn';
+        btn.textContent = (n>1?`G${gi+1}: `:'') + GL[g];
+        btn.dataset.key = `${prefix}-${pi}-${gi}`;
+        btn.dataset.geno = g;
+        const defaultG = 'het';
+        if (g === defaultG) { btn.classList.add('sel-'+defaultG); state[btn.dataset.key] = defaultG; }
+        btn.onclick = function() {
+          document.querySelectorAll(`[data-key="${this.dataset.key}"]`).forEach(b=>b.className='geno-btn');
+          this.classList.add('sel-'+g);
+          state[this.dataset.key] = g;
+        };
+        row.appendChild(btn);
+      });
+    }
+    div.appendChild(row);
+    container.appendChild(div);
+  });
+}
+
+function getGeno(prefix, pi, n) {
+  return Array.from({length:n},(_,gi)=> state[`${prefix}-${pi}-${gi}`]||'het').join('_');
+}
+
+function swapParents() {
+  const n = +document.getElementById('n-mut').value||1;
+  const p1 = Array.from({length:n},(_,gi)=>state[`p-0-${gi}`]||'het');
+  const p2 = Array.from({length:n},(_,gi)=>state[`p-1-${gi}`]||'het');
+  for(let gi=0;gi<n;gi++){
+    setGeno('p',0,gi,p2[gi]);
+    setGeno('p',1,gi,p1[gi]);
+  }
+}
+
+function setGeno(prefix,pi,gi,g){
+  const key=`${prefix}-${pi}-${gi}`;
+  document.querySelectorAll(`[data-key="${key}"]`).forEach(b=>{
+    b.className='geno-btn';
+    if(b.dataset.geno===g){b.classList.add('sel-'+g);state[key]=g;}
+  });
+}
+
+async function post(url, body) {
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  return r.json();
+}
+
+function genoBadge(g) {
+  return g.split('_').map(x=>`<span class="badge badge-${x}">${GL[x]||x.toUpperCase()}</span>`).join(' ');
+}
+
+function barColor(g) {
+  const first = g.split('_')[0];
+  return first==='wt'?'#3b82f6':first==='het'?'#f59e0b':'#2d6a4f';
+}
+
+async function calcRatios() {
+  const n = +document.getElementById('n-mut').value||1;
+  const btn = document.getElementById('calc-btn');
+  btn.innerHTML = '<span class="spinner"></span> Calculating...';
+  btn.disabled = true;
+
+  const data = await post('/api/mendelian_ratio',{parent_1:getGeno('p',0,n), parent_2:getGeno('p',1,n)});
+  btn.innerHTML = 'Calculate ratios'; btn.disabled=false;
+
+  if(data.error){document.getElementById('ratio-results').innerHTML=`<div class="card"><div class="alert alert-error">${data.error}</div></div>`;return;}
+
+  const sorted = Object.entries(data.ratios).sort((a,b)=>b[1]-a[1]);
+  const tr = data.target_ratio;
+
+  let html = `<div class="card">
+    <div class="card-title" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text-muted);">${data.scheme}</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-label">HOM yield</div><div class="stat-val green">${tr?(tr*100).toFixed(1)+'%':'—'}</div></div>
+      <div class="stat-box"><div class="stat-label">Animals / HOM</div><div class="stat-val amber">${data.animals_per_target?data.animals_per_target.toFixed(1):'∞'}</div></div>
+      <div class="stat-box"><div class="stat-label">Surplus / HOM</div><div class="stat-val red">${data.surplus_per_target?data.surplus_per_target.toFixed(1):'∞'}</div></div>
+    </div>
+    <table class="result-table"><thead><tr><th>Offspring genotype</th><th>Proportion</th><th>Ratio (1:x)</th></tr></thead><tbody>`;
+
+  sorted.forEach(([geno,ratio])=>{
+    const barW = Math.round(ratio*180);
+    html+=`<tr><td>${genoBadge(geno)}</td>
+      <td><span class="ratio-bar" style="width:${barW}px;background:${barColor(geno)};"></span> <span class="mono">${(ratio*100).toFixed(2)}%</span></td>
+      <td class="mono">1 : ${(1/ratio).toFixed(1)}</td></tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  document.getElementById('ratio-results').innerHTML=html;
+}
+
+async function calcSurplus() {
+  const n = +document.getElementById('s-nmut').value||1;
+  const btn = document.getElementById('surplus-btn');
+  btn.innerHTML='<span class="spinner"></span> Calculating...'; btn.disabled=true;
+
+  const data = await post('/api/surplus',{
+    parent_1:getGeno('s',0,n), parent_2:getGeno('s',1,n),
+    litter_size:+document.getElementById('s-litter').value,
+    n_required:+document.getElementById('s-required').value
+  });
+  btn.innerHTML='Calculate surplus'; btn.disabled=false;
+
+  if(data.error){document.getElementById('surplus-results').innerHTML=`<div class="card"><div class="alert alert-error">${data.error}</div></div>`;return;}
+
+  let rows='';
+  Object.entries(data.breakdown).sort((a,b)=>b[1].ratio-a[1].ratio).forEach(([geno,info])=>{
+    rows+=`<tr><td>${genoBadge(geno)}</td>
+      <td class="mono">${(info.ratio*100).toFixed(1)}%</td>
+      <td class="mono">${info.expected_float}</td>
+      <td class="mono">${info.expected_ceil}</td></tr>`;
+  });
+
+  document.getElementById('surplus-results').innerHTML=`<div class="card">
+    <div class="card-title">Results — ${data.scheme}</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-label">Matings needed</div><div class="stat-val green">${data.matings_needed}</div></div>
+      <div class="stat-box"><div class="stat-label">Total offspring</div><div class="stat-val amber">${data.total_offspring_float}</div></div>
+      <div class="stat-box"><div class="stat-label">Surplus animals</div><div class="stat-val red">${data.surplus_int}</div></div>
+    </div>
+    <div class="alert alert-warn" style="margin-bottom:1rem;">Surplus float = ${data.surplus_float} → <code>math.ceil</code> once → <strong>${data.surplus_int}</strong></div>
+    <table class="result-table"><thead><tr><th>Genotype</th><th>Ratio</th><th>Expected (float)</th><th>Rounded</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+async function calcCompare() {
+  const n = +document.getElementById('c-nmut').value||1;
+  const target = document.getElementById('c-target').value;
+  const area = document.getElementById('compare-results');
+  area.innerHTML=`<div class="card"><div class="empty-state"><span class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:20px;height:20px;"></span></div></div>`;
+
+  const data = await fetch(`/api/schemes?n_mutations=${n}&target=${target}`).then(r=>r.json());
+  if(data.error){area.innerHTML=`<div class="card"><div class="alert alert-error">${data.error}</div></div>`;return;}
+
+  let rows='';
+  data.schemes.forEach((s,i)=>{
+    const best = i===0 && s.animals_per_target!==null;
+    const impossible = s.animals_per_target===null;
+    const style = best?'background:var(--accent-light);':impossible?'opacity:0.5;':'';
+    rows+=`<tr style="${style}">
+      <td class="mono">${s.scheme}</td>
+      <td class="mono">${s.target_ratio?(s.target_ratio*100).toFixed(1)+'%':'—'}</td>
+      <td class="mono">${s.animals_per_target?s.animals_per_target.toFixed(1):'∞'}</td>
+      <td class="mono">${s.surplus_per_target?s.surplus_per_target.toFixed(1):'∞'}</td>
+      <td>${best?'<span class="badge" style="background:var(--accent);color:white;">best</span>':impossible?'<span class="badge" style="background:var(--danger-light);color:var(--danger);">impossible</span>':`#${i+1}`}</td>
+    </tr>`;
+  });
+
+  area.innerHTML=`<div class="card">
+    <div class="card-title">${data.total} valid schemes — ranked by efficiency</div>
+    <table class="result-table"><thead><tr><th>Scheme</th><th>Target yield</th><th>Animals / target</th><th>Surplus / target</th><th>Rank</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+// Initialise all selectors
+buildSelectors('p', 1, 'parent-sel');
+buildSelectors('s', 1, 'surplus-sel');
+</script>
+</body>
+</html>
