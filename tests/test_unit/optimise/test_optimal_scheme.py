@@ -80,6 +80,8 @@ def test_calculate_optimal_scheme(
 def test_optimise_n_matings(
     required_n_per_genotype, offspring_per_scheme, expected_n_matings, request
 ):
+    """Test individual optimisation function with 1 and 2 mutations."""
+
     n_matings_per_scheme = _optimise_n_matings(
         request.getfixturevalue(required_n_per_genotype),
         request.getfixturevalue(offspring_per_scheme),

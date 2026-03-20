@@ -66,9 +66,7 @@ def create_surplus_summary(
             surplus_per_genotype[genotype].total_n += n_per_mating * n_matings
 
     # Calculate total surplus
-    total_required = sum(
-        [required_n for required_n in required_n_per_genotype.values()]
-    )
+    total_required = sum(required_n_per_genotype.values())
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
 
     # Calculate surplus per genotype

@@ -21,9 +21,9 @@ class ExpectedOffspring:
 
 def estimate_n_offspring_per_mating(
     line_stats: LineStatistics,
-    min_n_offspring: int,
-    min_n_matings: int,
     default_litter_size: int,
+    min_n_matings: int = 3,
+    min_n_offspring: int = 10,
 ) -> dict[BreedingScheme, ExpectedOffspring]:
     """For all possible breeding schemes for the given line, estimate the
     number of offspring produced per mating.
@@ -35,20 +35,20 @@ def estimate_n_offspring_per_mating(
     ----------
     line_stats : LineStatistics
         Statistics from historical data for the line
-    min_n_offspring: int, optional
-        Minimum number of offspring required from a breeding scheme to use
-        the measured proportion of each genotype from line_stats. If not met,
-        the theoretical mendelian ratio will be used instead.
+    default_litter_size: float
+        The default value used for average litter size if there isn't enough
+        historical data for the line. This should usually be set to the average
+        litter size across all available data for all lines.
     min_n_matings : int, optional
         Minimum number of successful matings required to use the measured
         litter size from line_stats. If there aren't enough matings for a
         specific breeding scheme, the average of the whole line will be used
         instead. If the whole line also doesn't have enough matings, then
         default_litter_size is used.
-    default_litter_size: float
-        The default value used for average litter size if there isn't enough
-        historical data for the line. This should usually be set to the average
-        litter size across all available data for all lines.
+    min_n_offspring: int, optional
+        Minimum number of offspring required from a breeding scheme to use
+        the measured proportion of each genotype from line_stats. If not met,
+        the theoretical mendelian ratio will be used instead.
 
     Returns
     -------
@@ -58,8 +58,8 @@ def estimate_n_offspring_per_mating(
     """
 
     # The breeding schemes listed in line_stats.stats_per_breeding_scheme are
-    # sparse. i.e. only breeding schemes that appeared in the historical data
-    # are included (rather than all that are possible)
+    # sparse i.e. only breeding schemes that appeared in the historical data
+    # are included.
     # Here we need ALL possible schemes:
     n_mutations = line_stats.n_mutations
     breeding_schemes = generate_breeding_schemes(n_mutations)

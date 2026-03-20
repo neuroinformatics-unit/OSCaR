@@ -57,7 +57,10 @@ def calculate_optimal_scheme(
     """
 
     offspring_per_scheme = estimate_n_offspring_per_mating(
-        line_stats, min_n_offspring, min_n_matings, default_litter_size
+        line_stats,
+        default_litter_size=default_litter_size,
+        min_n_offspring=min_n_offspring,
+        min_n_matings=min_n_matings,
     )
 
     n_matings_per_scheme = _optimise_n_matings(
@@ -110,8 +113,8 @@ def _optimise_n_matings(
         number of matings
     """
 
-    # Extract names of breeding schemes / required genotypes as a list, and
-    # sort so we always iterate through them in the same order.
+    # Extract sorted names of breeding schemes / required genotypes as a list,
+    # to ensure we always iterate through them in the same order.
     # This makes sure the same input always gives the same output. As
     # there may be multiple optimal solutions, slight changes in input order
     # can result in a different solution being returned.
@@ -121,7 +124,7 @@ def _optimise_n_matings(
     # Coefficients of the objective function we want to minimise. This will
     # be a list with length == number of breeding schemes, containing the
     # expected litter size for each. (see docstring for description of
-    # objective function. We can ignore the constant, total _n_required, as
+    # objective function. We can ignore the constant, total_n_required, as
     # it won't affect the position of the solutions)
     objective_coefficients = []
 
