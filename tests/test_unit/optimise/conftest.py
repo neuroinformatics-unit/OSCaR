@@ -106,16 +106,15 @@ def required_n_per_genotype_2_mutations():
 @pytest.fixture
 def n_matings_2_mutations():
     return {
-        BreedingScheme("het_wt", "het_hom"): 19,
-        BreedingScheme("het_wt", "hom_het"): 1,
-        BreedingScheme("hom_het", "hom_het"): 1,
-        BreedingScheme("hom_wt", "hom_het"): 6,
-        BreedingScheme("wt_het", "het_het"): 6,
-        BreedingScheme("wt_het", "hom_het"): 2,
-        BreedingScheme("wt_het", "hom_wt"): 5,
-        BreedingScheme("wt_hom", "het_het"): 2,
+        BreedingScheme("het_hom", "hom_het"): 1,
+        BreedingScheme("het_wt", "het_het"): 6,
+        BreedingScheme("het_wt", "het_hom"): 20,
+        BreedingScheme("het_wt", "hom_het"): 9,
+        BreedingScheme("hom_wt", "hom_het"): 1,
+        BreedingScheme("wt_het", "hom_het"): 1,
+        BreedingScheme("wt_hom", "het_het"): 5,
         BreedingScheme("wt_hom", "hom_het"): 3,
-        BreedingScheme("wt_wt", "het_hom"): 4,
+        BreedingScheme("wt_wt", "het_hom"): 3,
         BreedingScheme("wt_wt", "hom_hom"): 47,
     }
 
