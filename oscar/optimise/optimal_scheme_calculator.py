@@ -102,6 +102,12 @@ def _optimise_n_matings(
     offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
         The estimated number of offspring produced per mating of each
         breeding scheme
+
+    Returns
+    -------
+    dict[BreedingScheme, int]
+        Returns a dict mapping each breeding scheme to the optimal
+        number of matings
     """
 
     # Extract names of breeding schemes / required genotypes as a list, and

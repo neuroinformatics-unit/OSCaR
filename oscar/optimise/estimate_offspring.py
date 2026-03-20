@@ -49,6 +49,12 @@ def estimate_n_offspring_per_mating(
         The default value used for average litter size if there isn't enough
         historical data for the line. This should usually be set to the average
         litter size across all available data for all lines.
+
+    Returns
+    -------
+    dict[BreedingScheme, ExpectedOffspring]
+        Returns a dict mapping each breeding scheme to the expected number
+        of offspring it will produce per mating.
     """
 
     # The breeding schemes listed in line_stats.stats_per_breeding_scheme are
