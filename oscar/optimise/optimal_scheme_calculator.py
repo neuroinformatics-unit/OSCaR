@@ -164,10 +164,6 @@ def _optimise_n_matings(
         ub=np.inf,  # no upper limit on values
     )
 
-    print("lower limits", constraint_lower_limits)
-    [print(coeff_list) for coeff_list in constraint_coefficients]
-    print("objective", objective_coefficients)
-
     # By default milp has bounds of 0-infinity for variables (i.e. the
     # n_matings) so no need to specify further here.
     optimised_result = milp(
@@ -195,5 +191,7 @@ def _optimise_n_matings(
 
         if n_matings == 0:
             del n_matings_per_scheme[scheme]
+
+    print(n_matings_per_scheme)
 
     return n_matings_per_scheme
