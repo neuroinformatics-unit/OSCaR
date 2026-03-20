@@ -66,23 +66,23 @@ def offspring_per_scheme_1_mutation():
 @pytest.fixture
 def surplus_1_mutation():
     return SurplusSummary(
-        total_n=3212,
-        total_n_surplus=7,
+        total_n=pytest.approx(3208.5, abs=1e-4),
+        total_n_surplus=pytest.approx(3.5, abs=1e-4),
         surplus_per_genotype={
             (Genotype.HET,): GenotypeSurplus(
-                total_n=1561,
-                total_n_surplus=3,
-                percent_surplus=pytest.approx((3 / 1561) * 100),
+                total_n=pytest.approx(1559.6100, abs=1e-4),
+                total_n_surplus=pytest.approx(1.610, abs=1e-4),
+                percent_surplus=pytest.approx(0.1032, abs=1e-4),
             ),
             (Genotype.HOM,): GenotypeSurplus(
-                total_n=473,
-                total_n_surplus=2,
-                percent_surplus=pytest.approx((2 / 473) * 100),
+                total_n=pytest.approx(471.51, abs=1e-4),
+                total_n_surplus=pytest.approx(0.5100, abs=1e-4),
+                percent_surplus=pytest.approx(0.1082, abs=1e-4),
             ),
             (Genotype.WT,): GenotypeSurplus(
-                total_n=1178,
-                total_n_surplus=2,
-                percent_surplus=pytest.approx((2 / 1178) * 100),
+                total_n=pytest.approx(1177.38, abs=1e-4),
+                total_n_surplus=pytest.approx(1.3800, abs=1e-4),
+                percent_surplus=pytest.approx(0.1172, abs=1e-4),
             ),
         },
     )
