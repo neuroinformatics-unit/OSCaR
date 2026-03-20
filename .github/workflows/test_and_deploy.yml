@@ -31,8 +31,8 @@ jobs:
         os: [ubuntu-latest]
         # Include one windows and macos run
         include:
-        # - os: macos-latest
-        #   python-version: "3.13"
+        - os: macos-latest
+          python-version: "3.13"
         - os: windows-latest
           python-version: "3.13"
 
