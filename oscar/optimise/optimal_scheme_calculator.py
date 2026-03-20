@@ -104,10 +104,13 @@ def _optimise_n_matings(
         breeding scheme
     """
 
-    # Extract names of breeding schemes / required genotypes as a list, so we
-    # can make sure we always iterate through them in the same order
-    breeding_schemes = list(offspring_per_scheme.keys())
-    required_genotypes = list(required_n_per_genotype.keys())
+    # Extract names of breeding schemes / required genotypes as a list, and
+    # sort so we always iterate through them in the same order.
+    # This makes sure the same input always gives the same output. As
+    # there may be multiple optimal solutions, slight changes in input order
+    # can result in a different solution being returned.
+    breeding_schemes = sorted(list(offspring_per_scheme.keys()), key=str)
+    required_genotypes = sorted(list(required_n_per_genotype.keys()))
 
     # Coefficients of the objective function we want to minimise. This will
     # be a list with length == number of breeding schemes, containing the

@@ -17,9 +17,9 @@ def required_n_per_genotype_1_mutation():
 @pytest.fixture
 def n_matings_1_mutation():
     return {
-        BreedingScheme("het", "het"): 274,
+        BreedingScheme("hom", "het"): 137,
         BreedingScheme("hom", "hom"): 16,
-        BreedingScheme("wt", "het"): 285,
+        BreedingScheme("wt", "het"): 422,
     }
 
 
@@ -66,8 +66,8 @@ def offspring_per_scheme_1_mutation():
 @pytest.fixture
 def surplus_1_mutation():
     return SurplusSummary(
-        total_n=3213,
-        total_n_surplus=8,
+        total_n=3212,
+        total_n_surplus=7,
         surplus_per_genotype={
             (Genotype.HET,): GenotypeSurplus(
                 total_n=1561,
@@ -80,9 +80,9 @@ def surplus_1_mutation():
                 percent_surplus=pytest.approx((2 / 473) * 100),
             ),
             (Genotype.WT,): GenotypeSurplus(
-                total_n=1179,
-                total_n_surplus=3,
-                percent_surplus=pytest.approx((3 / 1179) * 100),
+                total_n=1178,
+                total_n_surplus=2,
+                percent_surplus=pytest.approx((2 / 1178) * 100),
             ),
         },
     )
