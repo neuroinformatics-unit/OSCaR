@@ -404,53 +404,35 @@ def offspring_per_scheme_2_mutations():
 @pytest.fixture
 def surplus_2_mutations():
     return SurplusSummary(
-        total_n=570,
-        total_n_surplus=20,
+        total_n=572,
+        total_n_surplus=22,
         surplus_per_genotype={
             (Genotype.HET, Genotype.HET): GenotypeSurplus(
-                total_n=385,
-                total_n_surplus=5,
-                percent_surplus=pytest.approx((5 / 385) * 100),
-            ),
-            (Genotype.HOM, Genotype.HET): GenotypeSurplus(
-                total_n=51,
-                total_n_surplus=2,
-                percent_surplus=pytest.approx((2 / 51) * 100),
-            ),
-            (Genotype.WT, Genotype.HET): GenotypeSurplus(
-                total_n=52,
-                total_n_surplus=4,
-                percent_surplus=pytest.approx((4 / 52) * 100),
-            ),
-            (Genotype.HET, Genotype.WT): GenotypeSurplus(
-                total_n=25,
-                total_n_surplus=2,
-                percent_surplus=pytest.approx((2 / 25) * 100),
-            ),
-            (Genotype.HOM, Genotype.WT): GenotypeSurplus(
-                total_n=22,
-                total_n_surplus=2,
-                percent_surplus=pytest.approx((2 / 22) * 100),
-            ),
-            (Genotype.HOM, Genotype.HOM): GenotypeSurplus(
-                total_n=2,
-                total_n_surplus=1,
-                percent_surplus=pytest.approx((1 / 2) * 100),
+                total_n=385, total_n_surplus=5, percent_surplus=(5 / 385) * 100
             ),
             (Genotype.HET, Genotype.HOM): GenotypeSurplus(
-                total_n=20,
-                total_n_surplus=2,
-                percent_surplus=pytest.approx((2 / 20) * 100),
+                total_n=21, total_n_surplus=3, percent_surplus=(3 / 21) * 100
             ),
-            (Genotype.WT, Genotype.HOM): GenotypeSurplus(
-                total_n=8,
-                total_n_surplus=1,
-                percent_surplus=pytest.approx((1 / 8) * 100),
+            (Genotype.HOM, Genotype.HET): GenotypeSurplus(
+                total_n=53, total_n_surplus=4, percent_surplus=(4 / 53) * 100
+            ),
+            (Genotype.HOM, Genotype.HOM): GenotypeSurplus(
+                total_n=2, total_n_surplus=1, percent_surplus=(1 / 2) * 100
+            ),
+            (Genotype.HET, Genotype.WT): GenotypeSurplus(
+                total_n=25, total_n_surplus=2, percent_surplus=(2 / 25) * 100
+            ),
+            (Genotype.HOM, Genotype.WT): GenotypeSurplus(
+                total_n=22, total_n_surplus=2, percent_surplus=(2 / 22) * 100
+            ),
+            (Genotype.WT, Genotype.HET): GenotypeSurplus(
+                total_n=51, total_n_surplus=3, percent_surplus=(3 / 51) * 100
             ),
             (Genotype.WT, Genotype.WT): GenotypeSurplus(
-                total_n=5,
-                total_n_surplus=1,
-                percent_surplus=pytest.approx((1 / 5) * 100),
+                total_n=5, total_n_surplus=1, percent_surplus=(1 / 5) * 100
+            ),
+            (Genotype.WT, Genotype.HOM): GenotypeSurplus(
+                total_n=8, total_n_surplus=1, percent_surplus=(1 / 8) * 100
             ),
         },
     )
