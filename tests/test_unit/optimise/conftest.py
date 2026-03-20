@@ -152,13 +152,6 @@ def offspring_per_scheme_2_mutations():
                 (Genotype.HET, Genotype.HET): 5.79,
             },
         ),
-        BreedingScheme("wt_het", "wt_hom"): ExpectedOffspring(
-            total_n=5.79,
-            n_per_genotype={
-                (Genotype.WT, Genotype.HET): 2.895,
-                (Genotype.WT, Genotype.HOM): 2.895,
-            },
-        ),
         BreedingScheme("wt_het", "het_wt"): ExpectedOffspring(
             total_n=5.79,
             n_per_genotype={
@@ -192,7 +185,7 @@ def offspring_per_scheme_2_mutations():
             total_n=5.79,
             n_per_genotype={
                 (Genotype.HET, Genotype.HET): 2.895,
-                (Genotype.HET, Genotype.WT): 2.985,
+                (Genotype.HET, Genotype.WT): 2.895,
             },
         ),
         BreedingScheme("wt_het", "hom_het"): ExpectedOffspring(
