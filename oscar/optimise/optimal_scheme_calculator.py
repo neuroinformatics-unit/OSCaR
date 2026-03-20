@@ -192,6 +192,4 @@ def _optimise_n_matings(
         if n_matings == 0:
             del n_matings_per_scheme[scheme]
 
-    print(n_matings_per_scheme)
-
     return n_matings_per_scheme
