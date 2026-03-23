@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum
 
 import pandas as pd
 
@@ -6,6 +7,105 @@ from oscar.breeding_scheme import (
     BreedingScheme,
     Genotype,
 )
+
+
+# ---------------------------------------------------------------------------
+# Surplus type classification
+# ---------------------------------------------------------------------------
+
+class SurplusType(Enum):
+    """Categories of surplus animals, as defined in issue #3."""
+
+    EXPERIMENTAL = "Experimental"
+    UNAVOIDABLE = "Unavoidable"
+    AVOIDABLE = "Avoidable"
+    OTHER = "Other"
+
+    @classmethod
+    def from_sacrifice_reason(cls, reason: str | None) -> "SurplusType":
+        """Map a raw sacrifice_reason string to a SurplusType.
+
+        Parameters
+        ----------
+        reason : str | None
+            Raw value from the 'sacrifice_reason' column.
+
+        Returns
+        -------
+        SurplusType
+            Matched surplus category, or SurplusType.OTHER if unrecognised.
+        """
+        if reason is None or (isinstance(reason, float)):
+            # NaN / missing → Other
+            return cls.OTHER
+
+        reason_lower = reason.strip().lower()
+
+        # Map known pyRAT sacrifice reasons to surplus categories.
+        # Adjust these mappings to match real pyRAT vocabulary as needed.
+        _EXPERIMENTAL = {
+            "experimental", "experiment", "used for experiment",
+            "killed for experiment", "terminal", "scientific procedure",
+        }
+        _UNAVOIDABLE = {
+            "found dead", "died", "natural death", "spontaneous death",
+            "illness", "sick", "humane endpoint", "welfare",
+            "unexpected death",
+        }
+        _AVOIDABLE = {
+            "surplus", "cull", "culled", "excess", "overproduction",
+            "wrong genotype", "not required",
+        }
+
+        if reason_lower in _EXPERIMENTAL:
+            return cls.EXPERIMENTAL
+        if reason_lower in _UNAVOIDABLE:
+            return cls.UNAVOIDABLE
+        if reason_lower in _AVOIDABLE:
+            return cls.AVOIDABLE
+        return cls.OTHER
+
+
+# ---------------------------------------------------------------------------
+# Dataclasses
+# ---------------------------------------------------------------------------
+
+@dataclass
+class SurplusStatistics:
+    """Counts and proportions for each surplus type."""
+
+    n_per_surplus_type: dict[SurplusType, int] = field(default_factory=dict)
+    proportion_per_surplus_type: dict[SurplusType, float] = field(
+        default_factory=dict
+    )
+    total_n: int = 0
+
+    def _compute_proportions(self) -> None:
+        """Derive proportions from counts. Called after all counts are set."""
+        for surplus_type, n in self.n_per_surplus_type.items():
+            self.proportion_per_surplus_type[surplus_type] = (
+                n / self.total_n if self.total_n > 0 else 0.0
+            )
+
+
+@dataclass
+class LineUsageStatistics:
+    """Animal usage statistics for a single line (issue #3).
+
+    Attributes
+    ----------
+    surplus_per_genotype : dict
+        SurplusStatistics broken down by offspring genotype.
+    overall_surplus : SurplusStatistics
+        Aggregate SurplusStatistics across all offspring genotypes.
+    """
+
+    surplus_per_genotype: dict[tuple[Genotype, ...], SurplusStatistics] = field(
+        default_factory=dict
+    )
+    overall_surplus: SurplusStatistics = field(
+        default_factory=SurplusStatistics
+    )
 
 
 @dataclass
@@ -29,11 +129,17 @@ class LineStatistics:
     total_n_offspring_per_genotype: dict[tuple[Genotype, ...], int] = field(
         default_factory=dict
     )
-
     stats_per_breeding_scheme: dict[
         BreedingScheme, BreedingSchemeStatistics
     ] = field(default_factory=dict)
+    usage_statistics: LineUsageStatistics = field(
+        default_factory=LineUsageStatistics
+    )
 
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
 
 def calculate_historical_stats_for_line(
     standardised_data: pd.DataFrame, line_name: str
@@ -51,7 +157,8 @@ def calculate_historical_stats_for_line(
     Returns
     -------
     LineStatistics
-        Summary statistics for the given line
+        Summary statistics for the given line, including usage statistics
+        (surplus breakdown) as required by issue #3.
     """
 
     line_data = standardised_data.loc[
@@ -89,7 +196,83 @@ def calculate_historical_stats_for_line(
                     n_offspring
                 )
 
+    # Issue #3: calculate animal usage (surplus) statistics
+    line_stats.usage_statistics = _calculate_usage_statistics(data_with_schemes)
+
     return line_stats
+
+
+def _calculate_usage_statistics(line_data: pd.DataFrame) -> LineUsageStatistics:
+    """Calculate surplus/usage statistics for a line (issue #3).
+
+    Splits sacrifice_reason into SurplusType categories, then computes
+    counts and percentages both per genotype and overall.
+
+    Parameters
+    ----------
+    line_data : pd.DataFrame
+        Standardised data for a single line, must contain
+        'genotype_offspring' and 'sacrifice_reason' columns.
+
+    Returns
+    -------
+    LineUsageStatistics
+    """
+    usage_stats = LineUsageStatistics()
+
+    # Map each row's sacrifice_reason to a SurplusType
+    surplus_series: pd.Series = line_data["sacrifice_reason"].apply(
+        SurplusType.from_sacrifice_reason
+    )
+
+    # Parse genotype strings once → reuse for grouping
+    genotype_series: pd.Series = line_data["genotype_offspring"].apply(
+        Genotype.from_string
+    )
+
+    # ---- per genotype -------------------------------------------------------
+    for genotype in genotype_series.unique():
+        mask = genotype_series == genotype
+        surplus_for_genotype = surplus_series[mask]
+        usage_stats.surplus_per_genotype[genotype] = _surplus_stats_from_series(
+            surplus_for_genotype
+        )
+
+    # ---- overall (all offspring) --------------------------------------------
+    usage_stats.overall_surplus = _surplus_stats_from_series(surplus_series)
+
+    return usage_stats
+
+
+# ---------------------------------------------------------------------------
+# Private helpers
+# ---------------------------------------------------------------------------
+
+def _surplus_stats_from_series(surplus_series: pd.Series) -> SurplusStatistics:
+    """Build a SurplusStatistics from a Series of SurplusType values.
+
+    Parameters
+    ----------
+    surplus_series : pd.Series
+        Each element is a SurplusType.
+
+    Returns
+    -------
+    SurplusStatistics
+        Counts and proportions for every SurplusType.
+    """
+    stats = SurplusStatistics()
+    stats.total_n = len(surplus_series)
+
+    # Initialise all four types to 0 so every key is always present
+    stats.n_per_surplus_type = {st: 0 for st in SurplusType}
+
+    counts = surplus_series.value_counts()
+    for surplus_type, count in counts.items():
+        stats.n_per_surplus_type[surplus_type] = int(count)
+
+    stats._compute_proportions()
+    return stats
 
 
 def _create_breeding_scheme(row: pd.Series) -> BreedingScheme:
