@@ -1,3 +1,5 @@
+import platform
+
 import pytest
 
 from oscar.breeding_scheme import BreedingScheme, Genotype
@@ -105,18 +107,41 @@ def required_n_per_genotype_2_mutations():
 
 @pytest.fixture
 def n_matings_2_mutations():
-    return {
-        BreedingScheme("het_hom", "hom_het"): 1,
-        BreedingScheme("het_wt", "het_het"): 6,
-        BreedingScheme("het_wt", "het_hom"): 20,
-        BreedingScheme("het_wt", "hom_het"): 9,
-        BreedingScheme("hom_wt", "hom_het"): 1,
-        BreedingScheme("wt_het", "hom_het"): 1,
-        BreedingScheme("wt_hom", "het_het"): 5,
-        BreedingScheme("wt_hom", "hom_het"): 3,
-        BreedingScheme("wt_wt", "het_hom"): 3,
-        BreedingScheme("wt_wt", "hom_hom"): 47,
-    }
+    """The solution returned by _optimise_n_matings differs on Mac vs other
+    operating systems.
+
+    Both solutions below are equally optimal (same total number of matings),
+    but it's likely small differences in the compiler used etc. on Mac cause
+    scipy.milp to make slightly different decisions and return a slightly
+    different solution.
+    """
+
+    if platform.system() == "Darwin":  # check if running on Mac
+        return {
+            BreedingScheme("het_het", "hom_het"): 2,
+            BreedingScheme("het_wt", "het_het"): 6,
+            BreedingScheme("het_wt", "het_hom"): 20,
+            BreedingScheme("het_wt", "hom_het"): 8,
+            BreedingScheme("hom_wt", "hom_het"): 1,
+            BreedingScheme("wt_het", "hom_het"): 1,
+            BreedingScheme("wt_hom", "het_het"): 5,
+            BreedingScheme("wt_hom", "hom_het"): 3,
+            BreedingScheme("wt_wt", "het_hom"): 3,
+            BreedingScheme("wt_wt", "hom_hom"): 47,
+        }
+    else:
+        return {
+            BreedingScheme("het_hom", "hom_het"): 1,
+            BreedingScheme("het_wt", "het_het"): 6,
+            BreedingScheme("het_wt", "het_hom"): 20,
+            BreedingScheme("het_wt", "hom_het"): 9,
+            BreedingScheme("hom_wt", "hom_het"): 1,
+            BreedingScheme("wt_het", "hom_het"): 1,
+            BreedingScheme("wt_hom", "het_het"): 5,
+            BreedingScheme("wt_hom", "hom_het"): 3,
+            BreedingScheme("wt_wt", "het_hom"): 3,
+            BreedingScheme("wt_wt", "hom_hom"): 47,
+        }
 
 
 @pytest.fixture
