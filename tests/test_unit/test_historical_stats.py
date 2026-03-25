@@ -366,3 +366,75 @@ def test_calculate_historical_stats_for_line(
         standardised_csv, line_name
     )
     assert line_stats == expected_stats
+
+
+@pytest.fixture
+def expected_stats_ungenotyped():
+    return LineStatistics(
+        n_mutations=2,
+        total_n_offspring=9,
+        total_n_genotyped_offspring=6,
+        total_n_offspring_per_genotype={
+            (Genotype.HET, Genotype.WT): 1,
+            (Genotype.HET, Genotype.HOM): 3,
+            (Genotype.HET, Genotype.HET): 2,
+        },
+        total_n_successful_matings=3,
+        average_litter_size=3.0,
+        stats_per_breeding_scheme={
+            BreedingScheme("wt_hom", "hom_het"): BreedingSchemeStatistics(
+                n_breeding_pairs=1,
+                n_successful_matings=1,
+                average_litter_size=6.0,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=6,
+                total_n_genotyped_offspring=4,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT): 1,
+                    (Genotype.HET, Genotype.HOM): 3,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT): 0.25,
+                    (Genotype.HET, Genotype.HOM): 0.75,
+                },
+            ),
+            BreedingScheme("het_het", "het_het"): BreedingSchemeStatistics(
+                n_breeding_pairs=1,
+                n_successful_matings=1,
+                average_litter_size=2.0,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={(Genotype.HET, Genotype.HET): 2},
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET): 1.0
+                },
+            ),
+            BreedingScheme("wt_wt", "wt_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=1,
+                n_successful_matings=1,
+                average_litter_size=1.0,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=0,
+                n_offspring_per_genotype={},
+                proportion_offspring_per_genotype={},
+            ),
+        },
+    )
+
+
+def test_handling_ungenotyped_individuals_in_stats(
+    standardised_forbidden_genotypes_csv_path, expected_stats_ungenotyped
+):
+    """
+    Test that un-genotyped individuals (empty genotype_offspring column)
+    are included in totals for litter size calculations, but _excluded_ from
+    totals for genotype proportions.
+    """
+
+    # This csv contains 3 un-genotyped individuals
+    standard_csv = pd.read_csv(standardised_forbidden_genotypes_csv_path)
+
+    line_stats = calculate_historical_stats_for_line(standard_csv, "Line-AB")
+    assert line_stats == expected_stats_ungenotyped
