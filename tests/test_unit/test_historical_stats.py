@@ -14,6 +14,7 @@ def expected_stats_single_mutation():
     return LineStatistics(
         n_mutations=1,
         total_n_offspring=18,
+        total_n_genotyped_offspring=18,
         total_n_offspring_per_genotype={
             (Genotype.WT,): 6,
             (Genotype.HET,): 10,
@@ -28,6 +29,7 @@ def expected_stats_single_mutation():
                 average_litter_size=pytest.approx(2.666, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.5, abs=1e-3),
                 total_n_offspring=8,
+                total_n_genotyped_offspring=8,
                 n_offspring_per_genotype={
                     (Genotype.WT,): 4,
                     (Genotype.HET,): 4,
@@ -43,6 +45,7 @@ def expected_stats_single_mutation():
                 average_litter_size=pytest.approx(2, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=4,
+                total_n_genotyped_offspring=4,
                 n_offspring_per_genotype={(Genotype.HET,): 4},
                 proportion_offspring_per_genotype={
                     (Genotype.HET,): pytest.approx(1.0, abs=1e-3)
@@ -54,6 +57,7 @@ def expected_stats_single_mutation():
                 average_litter_size=pytest.approx(2, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=4,
+                total_n_genotyped_offspring=4,
                 n_offspring_per_genotype={
                     (Genotype.WT,): 2,
                     (Genotype.HET,): 1,
@@ -71,6 +75,7 @@ def expected_stats_single_mutation():
                 average_litter_size=pytest.approx(1.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=2,
+                total_n_genotyped_offspring=2,
                 n_offspring_per_genotype={
                     (Genotype.HET,): 1,
                     (Genotype.HOM,): 1,
@@ -89,6 +94,7 @@ def expected_stats_2_mutations():
     return LineStatistics(
         n_mutations=2,
         total_n_offspring=20,
+        total_n_genotyped_offspring=20,
         total_n_offspring_per_genotype={
             (Genotype.HOM, Genotype.HOM): 2,
             (Genotype.HET, Genotype.HOM): 6,
@@ -106,6 +112,7 @@ def expected_stats_2_mutations():
                 average_litter_size=pytest.approx(2.666, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.5, abs=1e-3),
                 total_n_offspring=8,
+                total_n_genotyped_offspring=8,
                 n_offspring_per_genotype={
                     (Genotype.HOM, Genotype.HOM): 2,
                     (Genotype.HET, Genotype.HOM): 6,
@@ -125,6 +132,7 @@ def expected_stats_2_mutations():
                 average_litter_size=pytest.approx(2.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=4,
+                total_n_genotyped_offspring=4,
                 n_offspring_per_genotype={
                     (
                         Genotype.HOM,
@@ -144,6 +152,7 @@ def expected_stats_2_mutations():
                 average_litter_size=pytest.approx(1.5, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=3,
+                total_n_genotyped_offspring=3,
                 n_offspring_per_genotype={
                     (Genotype.HET, Genotype.WT): 2,
                     (Genotype.WT, Genotype.HET): 1,
@@ -163,6 +172,7 @@ def expected_stats_2_mutations():
                 average_litter_size=pytest.approx(1.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=2,
+                total_n_genotyped_offspring=2,
                 n_offspring_per_genotype={
                     (
                         Genotype.WT,
@@ -179,6 +189,7 @@ def expected_stats_2_mutations():
                 average_litter_size=pytest.approx(3.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=3,
+                total_n_genotyped_offspring=3,
                 n_offspring_per_genotype={
                     (
                         Genotype.HET,
@@ -204,6 +215,7 @@ def expected_stats_3_mutations():
     return LineStatistics(
         n_mutations=3,
         total_n_offspring=20,
+        total_n_genotyped_offspring=20,
         total_n_offspring_per_genotype={
             (Genotype.HET, Genotype.WT, Genotype.HOM): 8,
             (Genotype.WT, Genotype.HET, Genotype.HOM): 2,
@@ -225,6 +237,7 @@ def expected_stats_3_mutations():
                 average_litter_size=pytest.approx(2.666, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.5, abs=1e-3),
                 total_n_offspring=8,
+                total_n_genotyped_offspring=8,
                 n_offspring_per_genotype={
                     (Genotype.HET, Genotype.WT, Genotype.HOM): 4,
                     (Genotype.WT, Genotype.HET, Genotype.HOM): 2,
@@ -250,6 +263,7 @@ def expected_stats_3_mutations():
                 average_litter_size=pytest.approx(2.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=4,
+                total_n_genotyped_offspring=4,
                 n_offspring_per_genotype={
                     (Genotype.HET, Genotype.WT, Genotype.HOM): 4
                 },
@@ -267,6 +281,7 @@ def expected_stats_3_mutations():
                 average_litter_size=pytest.approx(1.5, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=3,
+                total_n_genotyped_offspring=3,
                 n_offspring_per_genotype={
                     (Genotype.WT, Genotype.WT, Genotype.HET): 1,
                     (Genotype.HET, Genotype.WT, Genotype.WT): 1,
@@ -292,6 +307,7 @@ def expected_stats_3_mutations():
                 average_litter_size=pytest.approx(1.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=2,
+                total_n_genotyped_offspring=2,
                 n_offspring_per_genotype={
                     (Genotype.WT, Genotype.HET, Genotype.WT): 2,
                 },
@@ -309,6 +325,7 @@ def expected_stats_3_mutations():
                 average_litter_size=pytest.approx(3.0, abs=1e-3),
                 average_n_litters_per_pair=pytest.approx(1.0, abs=1e-3),
                 total_n_offspring=3,
+                total_n_genotyped_offspring=3,
                 n_offspring_per_genotype={
                     (Genotype.HET, Genotype.HET, Genotype.WT): 2,
                     (Genotype.WT, Genotype.HET, Genotype.HET): 1,
