@@ -39,7 +39,6 @@ dev = [
   "setuptools-scm",
   "pooch",
   "python-dotenv",
-  "types-requests",
 ]
 
 [build-system]
