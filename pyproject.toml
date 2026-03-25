@@ -38,7 +38,8 @@ dev = [
   "ruff",
   "setuptools-scm",
   "pooch",
-  "python-dotenv>=1.2.2",
+  "python-dotenv",
+  "types-requests",
 ]
 
 [build-system]
