@@ -23,6 +23,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.lock
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -85,3 +86,4 @@ venv/
 # test data and temporary files
 /test_data
 /tmp
+.env

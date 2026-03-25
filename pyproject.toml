@@ -37,7 +37,8 @@ dev = [
   "pre-commit",
   "ruff",
   "setuptools-scm",
-  "pooch"
+  "pooch",
+  "python-dotenv>=1.2.2",
 ]
 
 [build-system]
