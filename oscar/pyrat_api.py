@@ -1,3 +1,4 @@
+import datetime
 import os
 from typing import Any
 
@@ -7,9 +8,14 @@ import requests
 def get_pyrat_data(
     line_name: str | None = None,
     species_name: str | None = None,
-    start_date: None = None,
-    end_date: None = None,
+    birth_date_from: datetime.date | None = None,
+    birth_date_to: datetime.date | None = None,
 ):
+    if (birth_date_to is not None and birth_date_from is not None) and (
+        birth_date_to < birth_date_from
+    ):
+        raise ValueError("birth_date_to must be after birth_date_from")
+
     payload = {
         "k": [
             "animalid",
@@ -31,6 +37,12 @@ def get_pyrat_data(
 
     if species_name is not None:
         payload["species"] = _get_species_id(species_name)
+
+    if birth_date_from is not None:
+        payload["birth_date_from"] = birth_date_from.isoformat()
+
+    if birth_date_to is not None:
+        payload["birth_date_to"] = birth_date_to.isoformat()
 
     animals = _make_pyrat_request("animals", payload)
 
