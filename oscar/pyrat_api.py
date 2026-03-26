@@ -2,6 +2,7 @@ import datetime
 import os
 from typing import Any
 
+import pandas as pd
 import requests
 
 
@@ -44,9 +45,12 @@ def get_pyrat_data(
     if birth_date_to is not None:
         params["birth_date_to"] = birth_date_to.isoformat()
 
-    animals = _make_pyrat_request("animals", params)
+    animals_data = _make_pyrat_request("animals", params)
 
-    return animals
+    # Convert to a pandas dataframe to make processing easier
+    animals_df = _convert_animals_to_df(animals_data)
+
+    return animals_df
 
 
 def _make_pyrat_request(endpoint_name: str, params: dict[str, Any]) -> Any:
@@ -101,3 +105,30 @@ def _get_species_id(species_name: str) -> int:
         f"No ID found for species {species_name}: available values "
         f"are {available_names}"
     )
+
+
+def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
+    animals_df = pd.DataFrame(animals_data)
+
+    mutations_df = pd.DataFrame(animals_df.mutations.explode().tolist())
+    mutations_df = mutations_df[["animalid", "mutationname", "mutationgrade"]]
+
+    parents_df = pd.DataFrame(animals_df.parents.explode().tolist())
+
+    mother_df = parents_df.loc[
+        parents_df.parent_sex == "f", ["animalid", "parent_eartag"]
+    ]
+    mother_df = mother_df.rename(columns={"parent_eartag": "Mother"})
+
+    # Deal with potential of multiple fathers / mothers
+
+    father_df = parents_df.loc[
+        parents_df.parent_sex == "m", ["animalid", "parent_eartag"]
+    ]
+    father_df = father_df.rename(columns={"parent_eartag": "Father"})
+
+    animals_df = animals_df.drop(["mutations", "parents"], axis=1)
+    animals_df = animals_df.merge(mother_df, on="animalid", how="left")
+    animals_df = animals_df.merge(father_df, on="animalid", how="left")
+
+    return animals_df
