@@ -23,7 +23,14 @@ def get_pyrat_data(
         ],
         "s": ["eartag_or_id:asc"],
         "state": ["live", "sacrificed", "exported"],
+        "l": 5,
     }
+
+    if line_name is not None:
+        payload["strain_name_with_id_like"] = line_name
+
+    if species_name is not None:
+        payload["species"] = _get_species_id(species_name)
 
     animals = _make_pyrat_request("animals", payload)
 
