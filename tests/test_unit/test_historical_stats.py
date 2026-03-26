@@ -12,12 +12,15 @@ from oscar.historical_stats import (
 @pytest.fixture
 def expected_stats_single_mutation():
     return LineStatistics(
+        n_mutations=1,
         total_n_offspring=18,
         total_n_offspring_per_genotype={
             (Genotype.WT,): 6,
             (Genotype.HET,): 10,
             (Genotype.HOM,): 2,
         },
+        total_n_successful_matings=9,
+        average_litter_size=pytest.approx(2, abs=1e-3),
         stats_per_breeding_scheme={
             BreedingScheme("wt", "het"): BreedingSchemeStatistics(
                 n_breeding_pairs=2,
@@ -84,6 +87,7 @@ def expected_stats_single_mutation():
 @pytest.fixture
 def expected_stats_2_mutations():
     return LineStatistics(
+        n_mutations=2,
         total_n_offspring=20,
         total_n_offspring_per_genotype={
             (Genotype.HOM, Genotype.HOM): 2,
@@ -93,6 +97,8 @@ def expected_stats_2_mutations():
             (Genotype.WT, Genotype.HET): 4,
             (Genotype.HET, Genotype.HET): 2,
         },
+        total_n_successful_matings=10,
+        average_litter_size=pytest.approx(2, abs=1e-3),
         stats_per_breeding_scheme={
             BreedingScheme("het_hom", "hom_het"): BreedingSchemeStatistics(
                 n_breeding_pairs=2,
@@ -196,6 +202,7 @@ def expected_stats_2_mutations():
 @pytest.fixture
 def expected_stats_3_mutations():
     return LineStatistics(
+        n_mutations=3,
         total_n_offspring=20,
         total_n_offspring_per_genotype={
             (Genotype.HET, Genotype.WT, Genotype.HOM): 8,
@@ -207,6 +214,8 @@ def expected_stats_3_mutations():
             (Genotype.HET, Genotype.HET, Genotype.WT): 2,
             (Genotype.WT, Genotype.HET, Genotype.HET): 1,
         },
+        total_n_successful_matings=10,
+        average_litter_size=pytest.approx(2, abs=1e-3),
         stats_per_breeding_scheme={
             BreedingScheme(
                 "wt_wt_het", "het_het_het"

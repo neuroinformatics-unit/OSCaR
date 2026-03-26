@@ -25,10 +25,13 @@ class BreedingSchemeStatistics:
 
 @dataclass
 class LineStatistics:
+    n_mutations: int = 0
     total_n_offspring: int = 0
     total_n_offspring_per_genotype: dict[tuple[Genotype, ...], int] = field(
         default_factory=dict
     )
+    total_n_successful_matings: int = 0
+    average_litter_size: float = 0
 
     stats_per_breeding_scheme: dict[
         BreedingScheme, BreedingSchemeStatistics
@@ -64,7 +67,10 @@ def calculate_historical_stats_for_line(
     data_with_schemes = line_data.copy()
     data_with_schemes["breeding_scheme"] = breeding_schemes
 
-    line_stats = LineStatistics(total_n_offspring=len(line_data))
+    line_stats = LineStatistics(
+        n_mutations=line_data.n_mutations.iloc[0],
+        total_n_offspring=len(line_data),
+    )
 
     for breeding_scheme in data_with_schemes["breeding_scheme"].unique():
         breeding_scheme_data = data_with_schemes.loc[
@@ -73,7 +79,11 @@ def calculate_historical_stats_for_line(
         scheme_stats = _historical_stats_for_breeding_scheme(
             breeding_scheme_data
         )
+
         line_stats.stats_per_breeding_scheme[breeding_scheme] = scheme_stats
+        line_stats.total_n_successful_matings += (
+            scheme_stats.n_successful_matings
+        )
 
         # Update summary of number of offspring per genotype across entire line
         for (
@@ -88,6 +98,10 @@ def calculate_historical_stats_for_line(
                 line_stats.total_n_offspring_per_genotype[genotype] = (
                     n_offspring
                 )
+
+    line_stats.average_litter_size = (
+        line_stats.total_n_offspring / line_stats.total_n_successful_matings
+    )
 
     return line_stats
 
