@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 import requests
 
@@ -24,8 +25,14 @@ def get_pyrat_data(
         "state": ["live", "sacrificed", "exported"],
     }
 
+    animals = _make_pyrat_request("animals", payload)
+
+    return animals
+
+
+def _make_pyrat_request(endpoint_name: str, payload: dict[str, Any]) -> Any:
     response = requests.get(
-        url=f"{os.environ['PYRAT_URL']}/api/v3/animals",
+        url=f"{os.environ['PYRAT_URL']}/api/v3/{endpoint_name}",
         auth=(
             os.environ["PYRAT_CLIENT_TOKEN"],
             os.environ["PYRAT_USER_TOKEN"],
@@ -39,3 +46,25 @@ def get_pyrat_data(
     response.raise_for_status()
 
     return response.json()
+
+
+def _get_species_id(species_name: str) -> int:
+    """Get pyRAT database ID for named species"""
+
+    payload = {
+        "k": ["id", "name"],
+        "s": ["name:asc"],
+    }
+    species_ids = _make_pyrat_request("species", payload)
+
+    available_names = []
+    for species in species_ids:
+        if species["name"] == species_name:
+            return species["id"]
+        else:
+            available_names.append(species["name"])
+
+    raise ValueError(
+        f"No ID found for species {species_name}: available values "
+        f"are {available_names}"
+    )
