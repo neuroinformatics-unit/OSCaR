@@ -10,6 +10,7 @@ dependencies = [
     "numpy",
     "pandas",
     "requests",
+    "scipy"
 ]
 
 license = "BSD-3-Clause"

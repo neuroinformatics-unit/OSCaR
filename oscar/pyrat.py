@@ -23,11 +23,11 @@ def standardise_pyrat_csv(
 
     Processing steps include:
     - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko
-    - removing ungenotyped individuals
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
     - adding summary columns for 'genotype_offspring', 'genotype_father' and
     'genotype_mother' that match the order of 'mutations'.
+    - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
     - filling any missing genotypes with wildtype
     - removing columns that aren't needed for further processing steps
 
@@ -76,9 +76,6 @@ def standardise_pyrat_csv(
 
     standard_csv = _filter_or_correct_genotypes(
         standard_csv, all_genotype_cols_list
-    )
-    standard_csv = _filter_ungenotyped(
-        standard_csv, genotype_cols[Identifier.OFFSPRING]
     )
 
     standard_csv = _add_n_mutations_column(
@@ -244,33 +241,6 @@ def _filter_or_correct_genotypes(
     return filtered_data
 
 
-def _filter_ungenotyped(
-    standard_csv: pd.DataFrame, offspring_genotype_cols: list[str]
-) -> pd.DataFrame:
-    """Remove rows for ungenotyped individuals.
-
-    These offspring have na for all offspring genotype columns.
-
-    Parameters
-    ----------
-    standard_csv : pd.DataFrame
-        Dataframe to filter
-    offspring_genotype_cols : list[str]
-        Names of offspring genotype columns
-
-    Returns
-    -------
-    pd.DataFrame
-        Dataframe with ungenotyped individuals removed
-    """
-    ungenotyped = (
-        standard_csv.loc[:, offspring_genotype_cols].isna().all(axis=1)
-    )
-    filtered_data = standard_csv.loc[~ungenotyped, :]
-
-    return filtered_data
-
-
 def _make_combined_genotype_columns_for_line(
     line_data: pd.DataFrame,
     mutation_cols: dict[Identifier, list[str]],
@@ -280,7 +250,11 @@ def _make_combined_genotype_columns_for_line(
     'genotype_offspring', 'genotype_father' and 'genotype_mother'.
 
     All genotype columns list genotypes in the same order as given in
-    'mutations'. Any missing genotypes are assumed to be wildtype.
+    'mutations'. If all the offspring genotype columns are empty, they
+    are assumed to be un-genotyped (i.e. their genotype was never checked,
+    and is unknown) - in these cases, the 'genotype_offspring' value will
+    be left empty. In all other cases, individual missing genotypes are
+    assumed to be wildtype.
 
     Parameters
     ----------
@@ -330,7 +304,10 @@ def _make_combined_genotype_column_for_identifier(
     """Add a genotype_IDENTIFIER column summarising all genotype columns.
 
     E.g. combining Grade 1 / 2 / 3 into a single genotype_offspring column.
-    Any missing genotypes are assumed to be wildtype.
+
+    All individual missing genotypes are assumed to be wildtype, except in
+    the case of un-genotyped offspring (identifier == OFFSPRING and all
+    genotype columns empty) - these are left empty.
 
     Parameters
     ----------
@@ -381,15 +358,29 @@ def _make_combined_genotype_column_for_identifier(
             pivoted_cols = pivoted_cols.drop(common_cols, axis=1)
             pivoted_mutations = pivoted_mutations.join(pivoted_cols)
 
-    # Any remaining NaN values are assumed to be wildtype
-    pivoted_mutations = pivoted_mutations.fillna(wildtype_str)
-
-    # If a mutation name doesn't have a corresponding column -> assume all wt
+    # Add columns for any missing mutation names
     for mutation in unique_mutations:
         if mutation not in pivoted_mutations:
-            pivoted_mutations[mutation] = wildtype_str
+            pivoted_mutations[mutation] = pd.Series(dtype=str)
+
+    if identifier == Identifier.OFFSPRING:
+        # If all offspring mutations in a row are NaN, leave as-is -> these are
+        # un-genotyped individuals.
+        # If only some are NaN, then fill with wt
+        genotyped_rows = ~pivoted_mutations.isna().all(axis=1)
+        pivoted_mutations.loc[genotyped_rows, :] = pivoted_mutations.loc[
+            genotyped_rows, :
+        ].fillna(wildtype_str)
+
+    else:
+        # All remaining NaN values are assumed to be wildtype
+        pivoted_mutations = pivoted_mutations.fillna(wildtype_str)
 
     # Combine pivoted mutations into a single summary column
-    line_data[f"genotype_{identifier.name.lower()}"] = pivoted_mutations[
-        unique_mutations
+    new_col_name = f"genotype_{identifier.name.lower()}"
+    line_data[new_col_name] = pd.Series(dtype=str)
+
+    genotyped_rows = ~pivoted_mutations.isna().all(axis=1)
+    line_data.loc[genotyped_rows, new_col_name] = pivoted_mutations.loc[
+        genotyped_rows, unique_mutations
     ].agg("_".join, axis=1)
