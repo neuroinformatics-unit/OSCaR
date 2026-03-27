@@ -11,7 +11,29 @@ def get_pyrat_data(
     species_name: str | None = None,
     birth_date_from: datetime.date | None = None,
     birth_date_to: datetime.date | None = None,
-):
+) -> pd.DataFrame:
+    """Fetch animal data directly from the pyRAT api.
+
+    This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
+    be set as environment variables.
+
+    Parameters
+    ----------
+    line_name : str | None, optional
+        Name of line to fetch
+    species_name : str | None, optional
+        Name of species to fetch
+    birth_date_from : datetime.date | None, optional
+        Earliest birth date to include
+    birth_date_to : datetime.date | None, optional
+        Latest birth date to include
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataframe of returned animal data, in format matching that
+        exported via the pyRAT UI.
+    """
     if (birth_date_to is not None and birth_date_from is not None) and (
         birth_date_to < birth_date_from
     ):
@@ -55,6 +77,9 @@ def get_pyrat_data(
 
 def _make_pyrat_request(endpoint_name: str, params: dict[str, Any]) -> Any:
     """Make request to the pyRAT api.
+
+    This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
+    be set as environment variables.
 
     Parameters
     ----------
@@ -108,6 +133,8 @@ def _get_species_id(species_name: str) -> int:
 
 
 def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
+    """Get mutation information for the given animal eartags"""
+
     params = {
         "k": ["animalid", "eartag_or_id", "mutations"],
         "s": ["eartag_or_id:asc"],
@@ -126,6 +153,12 @@ def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
 
 
 def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
+    """Convert animal data fetched from the pyRAT api to a pandas DataFrame.
+
+    The structure / column names are matched to that exported from the pyRAT
+    UI.
+    """
+
     animals_df = pd.DataFrame(animals_data)
 
     # Expand column with information for multiple mutations into their own
@@ -227,6 +260,12 @@ def _expand_mutations_data(
 
 
 def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
+    """Expand column containing multiple parents' information into separate
+    columns.
+
+    This adds columns for Mother / Father ID, as well as their respective
+    mutations.
+    """
     parents_df = pd.DataFrame(animals_df.parents.explode().tolist())
 
     # Create dataframe with one row per animalid, and one column each for
