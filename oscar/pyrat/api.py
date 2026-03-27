@@ -128,12 +128,28 @@ def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
 def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     animals_df = pd.DataFrame(animals_data)
 
-    mutations_df = _expand_mutations_data(animals_df)
-    parents_df = _expand_parents_data(animals_df)
+    # Expand column with information for multiple mutations into their own
+    # columns
+    animals_df = _expand_mutations_data(animals_df)
 
-    animals_df = animals_df.merge(mutations_df, on="animalid", how="left")
+    # Expand column with information about multiple parents into a new
+    # dataframe, including their mutation info
+    parents_df = _expand_parents_data(animals_df)
+    animals_df = animals_df.drop(["parents"], axis=1)
     animals_df = animals_df.merge(parents_df, on="animalid", how="left")
-    animals_df = animals_df.drop(["Mutation", "Grade", "count"], axis=1)
+
+    animals_df = animals_df.drop(["animalid"], axis=1)
+
+    # re-name to match data exported via the pyRAT UI, to make downstream
+    # analysis easier
+    animals_df = animals_df.rename(
+        columns={
+            "eartag_or_id": "ID",
+            "sacrifice_reason_name": "Sacrifice reason",
+            "dateborn": "DOB",
+            "strain_name": "Line / Strain (Name)",
+        }
+    )
 
     return animals_df
 
@@ -168,6 +184,14 @@ def _expand_mutations_data(
 
     mutation_col_name = f"{column_prefix}Mutation"
     grade_col_name = f"{column_prefix}Grade"
+
+    # If no mutations are listed for any animals, return an empty Mutation 1 /
+    # Grade 1 column
+    if mutations_df.empty:
+        animals_df = animals_df.drop(["mutations"], axis=1)
+        animals_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
+        animals_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
+        return animals_df
 
     mutations_df = mutations_df[["animalid", "mutationname", "mutationgrade"]]
     mutations_df = mutations_df.rename(
@@ -214,13 +238,12 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
     expanded_df = expanded_df.rename(columns={"f": "Mother", "m": "Father"})
 
+    # Fetch mutation info for all parents and merge
     for parent in ["Mother", "Father"]:
         parent_df = _get_mutations_for_parent(expanded_df, parent)
         expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
 
-    animals_df = animals_df.drop(["mutations", "parents"], axis=1)
-    animals_df = animals_df.merge(parent_df, on="animalid", how="left")
-    # animals_df = animals_df.merge(father_df, on="animalid", how="left")
+    return expanded_df
 
 
 def _get_mutations_for_parent(
