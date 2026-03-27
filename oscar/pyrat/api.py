@@ -110,8 +110,7 @@ def _get_species_id(species_name: str) -> int:
 def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     animals_df = pd.DataFrame(animals_data)
 
-    mutations_df = pd.DataFrame(animals_df.mutations.explode().tolist())
-    mutations_df = mutations_df[["animalid", "mutationname", "mutationgrade"]]
+    mutations_df = _expand_mutations_data(animals_df)
 
     parents_df = pd.DataFrame(animals_df.parents.explode().tolist())
 
@@ -131,4 +130,49 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     animals_df = animals_df.merge(mother_df, on="animalid", how="left")
     animals_df = animals_df.merge(father_df, on="animalid", how="left")
 
+    animals_df = animals_df.merge(mutations_df, on="animalid", how="left")
+    animals_df = animals_df.drop(["Mutation", "Grade", "count"], axis=1)
+
     return animals_df
+
+
+def _expand_mutations_data(animals_df: pd.DataFrame) -> pd.DataFrame:
+    """Expand the mutations column into a full dataframe.
+
+    Each row of the mutations column contains a list of dictionaries
+    (one per mutation for the animal). This function expands these into
+    their own columns labelled Mutation 1, 2... and Grade 1, 2...
+
+    Parameters
+    ----------
+    animals_df : pd.DataFrame
+        DataFrame of animals data, with raw mutations column
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataframe with separate Mutation and Grade columns
+    """
+
+    mutations_df = pd.DataFrame(animals_df.mutations.explode().tolist())
+    mutations_df = mutations_df[["animalid", "mutationname", "mutationgrade"]]
+    mutations_df = mutations_df.rename(
+        columns={"mutationname": "Mutation", "mutationgrade": "Grade"}
+    )
+
+    # Adds a counter for the number of mutation rows per animal id
+    mutations_df["count"] = (
+        mutations_df.groupby("animalid").cumcount() + 1
+    ).astype("string")
+
+    # Create one row per animalid, with separate columns for
+    # Mutation 1 / Grade 1, Mutation 2 / Grade 2 ...
+    pivoted_mutations = mutations_df.pivot(
+        columns="count", index="animalid", values=["Mutation", "Grade"]
+    ).reset_index()
+    pivoted_mutations.columns = [
+        " ".join(column_names).strip()
+        for column_names in pivoted_mutations.columns.to_flat_index()
+    ]
+
+    return pivoted_mutations
