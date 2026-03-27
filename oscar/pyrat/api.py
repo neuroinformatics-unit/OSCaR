@@ -181,6 +181,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
             "sacrifice_reason_name": "Sacrifice reason",
             "dateborn": "DOB",
             "strain_name": "Line / Strain (Name)",
+            "species_name": "Species",
         }
     )
 
