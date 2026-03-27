@@ -55,8 +55,8 @@ def test_standardise_genotypes(
     standardised_forbidden_genotypes_csv_path,
 ):
     """
-    Test standardisation of a dataframe containing forbidden genotypes e.g.
-    +, -, T, Tg, ko/ko.
+    Test standardisation of a dataframe containing forbidden genotypes (e.g.
+    +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
     """
 
     pyrat_csv = pd.read_csv(pyrat_forbidden_genotypes_csv_path)
