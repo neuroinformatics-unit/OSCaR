@@ -69,6 +69,8 @@ filterwarnings = [
 
 [tool.pytest_env]
 PYRAT_URL = "https://fake-pyRAT"
+PYRAT_USER_TOKEN = "FAKE-USER"
+PYRAT_CLIENT_TOKEN = "FAKE-CLIENT"
 
 [tool.setuptools_scm]
 
