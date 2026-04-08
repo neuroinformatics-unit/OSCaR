@@ -33,6 +33,7 @@ classifiers = [
 dev = [
   "pytest",
   "pytest-cov",
+  "pytest-env",
   "coverage",
   "tox",
   "mypy",
@@ -41,6 +42,7 @@ dev = [
   "setuptools-scm",
   "pooch",
   "python-dotenv",
+  "responses"
 ]
 
 [build-system]
@@ -64,6 +66,9 @@ addopts = "--cov=oscar"
 filterwarnings = [
     "error",
 ]
+
+[tool.pytest_env]
+PYRAT_URL = "https://fake-pyRAT"
 
 [tool.setuptools_scm]
 

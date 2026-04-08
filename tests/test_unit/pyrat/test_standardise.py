@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from oscar.pyrat import standardise_pyrat_csv
+from oscar.pyrat.standardise import standardise_pyrat_csv
 
 
 @pytest.mark.parametrize(

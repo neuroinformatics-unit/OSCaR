@@ -1,6 +1,6 @@
 import datetime
 import os
-from typing import Any
+from typing import Any, Iterator
 
 import pandas as pd
 import requests
@@ -11,8 +11,13 @@ def get_pyrat_data(
     species_name: str | None = None,
     birth_date_from: datetime.date | None = None,
     birth_date_to: datetime.date | None = None,
-) -> pd.DataFrame:
+    max_n_rows: int = 10000,
+) -> Iterator[pd.DataFrame]:
     """Fetch animal data directly from the pyRAT api.
+
+    To handle the potentially large number of animals returned from pyRAT,
+    this function returns a generator of pandas dataframes (each with no
+    more than max_n_rows).
 
     This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
     be set as environment variables.
@@ -27,6 +32,9 @@ def get_pyrat_data(
         Earliest birth date to include
     birth_date_to : datetime.date | None, optional
         Latest birth date to include
+    max_no_rows : int
+        Maximum number of items in each returned dataframe (and therefore
+        returned per request to the pyRAT api)
 
     Returns
     -------
@@ -52,7 +60,7 @@ def get_pyrat_data(
         ],
         "s": ["eartag_or_id:asc"],
         "state": ["live", "sacrificed", "exported"],
-        "l": 5,
+        "l": max_n_rows,
     }
 
     if line_name is not None:
@@ -67,15 +75,22 @@ def get_pyrat_data(
     if birth_date_to is not None:
         params["birth_date_to"] = birth_date_to.isoformat()
 
-    animals_data = _make_pyrat_request("animals", params)
+    # Make one request to determine how many results there are
+    animals_response = _make_pyrat_request("animals", params)
+    yield _convert_animals_to_df(animals_response.json())
+    headers = animals_response.headers
+    total_n = int(headers["x-total-count"])
 
-    # Convert to a pandas dataframe to make processing easier
-    animals_df = _convert_animals_to_df(animals_data)
+    # If more results than max_n_rows, keep making requests and yielding result
+    for start_n in range(max_n_rows, total_n, max_n_rows):
+        params["o"] = start_n
+        animals_response = _make_pyrat_request("animals", params)
+        yield _convert_animals_to_df(animals_response.json())
 
-    return animals_df
 
-
-def _make_pyrat_request(endpoint_name: str, params: dict[str, Any]) -> Any:
+def _make_pyrat_request(
+    endpoint_name: str, params: dict[str, Any]
+) -> requests.Response:
     """Make request to the pyRAT api.
 
     This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
@@ -100,14 +115,14 @@ def _make_pyrat_request(endpoint_name: str, params: dict[str, Any]) -> Any:
             os.environ["PYRAT_USER_TOKEN"],
         ),
         params=params,
-        timeout=2,  # number of seconds before timeout
+        timeout=5,  # number of seconds before timeout
     )
 
     # If the request didn't succeed, raise an error containing the status
     # code
     response.raise_for_status()
 
-    return response.json()
+    return response
 
 
 def _get_species_id(species_name: str) -> int:
@@ -117,7 +132,7 @@ def _get_species_id(species_name: str) -> int:
         "k": ["id", "name"],
         "s": ["name:asc"],
     }
-    species_ids = _make_pyrat_request("species", params)
+    species_ids = _make_pyrat_request("species", params).json()
 
     available_names = []
     for species in species_ids:
@@ -141,7 +156,7 @@ def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
         "state": ["live", "sacrificed", "exported"],
         "eartag": eartags,
     }
-    mutation_data = _make_pyrat_request("animals", params)
+    mutation_data = _make_pyrat_request("animals", params).json()
 
     if len(mutation_data) != len(eartags):
         raise ValueError(
