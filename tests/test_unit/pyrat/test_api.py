@@ -2,11 +2,13 @@ import datetime
 import os
 from typing import Any
 
+import pandas as pd
 import pytest
 import responses
 from responses import matchers
 
 from oscar.pyrat.api import get_pyrat_data
+from tests.pooch_test_data import GIN_REPO, pooch_data_path
 
 
 def create_animal_response(
@@ -30,10 +32,9 @@ def create_animal_response(
 
 
 @pytest.mark.parametrize(
-    "line_name, father_response, mother_response, offspring_response",
+    "father_response, mother_response, offspring_response, expected_csv_name",
     [
         pytest.param(
-            "Line-A",
             create_animal_response(
                 json=[
                     {
@@ -103,14 +104,21 @@ def create_animal_response(
                     }
                 ]
             ),
+            "pyrat-api-single-response.csv",
             id="Single item returned",
         ),
     ],
 )
 @responses.activate
 def test_get_pyrat_data(
-    line_name, father_response, mother_response, offspring_response
+    father_response,
+    mother_response,
+    offspring_response,
+    expected_csv_name,
 ):
+    # stop responses library interfering with pooch requests
+    responses.add_passthru(GIN_REPO.base_url)
+
     # mock species response
     responses.get(
         f"{os.environ['PYRAT_URL']}/api/v3/species",
@@ -122,11 +130,13 @@ def test_get_pyrat_data(
         responses.add(response)
 
     pyrat_dfs = get_pyrat_data(
-        line_name=line_name,
+        line_name="Line-A",
         species_name="Mouse",
         birth_date_from=datetime.date(2026, 2, 1),
         birth_date_to=datetime.date(2026, 2, 6),
     )
     pyrat_dfs = list(pyrat_dfs)
 
+    expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
     assert len(pyrat_dfs) == 1
+    pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv)
