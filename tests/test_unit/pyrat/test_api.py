@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 from typing import Any
 
@@ -13,6 +14,8 @@ from tests.pooch_test_data import GIN_REPO, pooch_data_path
 
 @pytest.fixture
 def species_response():
+    """Default response to give for a request to the /species endpoint"""
+
     return responses.Response(
         method="GET",
         url=f"{os.environ['PYRAT_URL']}/api/v3/species",
@@ -21,13 +24,23 @@ def species_response():
 
 
 def create_animal_response(
-    json: list[Any], query_params: dict[str, Any] | None = None
+    json_filename: str | None = None,
+    query_params: dict[str, Any] | None = None,
 ) -> responses.Response:
+    if json_filename is not None:
+        with open(pooch_data_path(json_filename)) as f:
+            json_data = json.load(f)
+    else:
+        json_data = []
+
     response = responses.Response(
         method="GET",
         url=f"{os.environ['PYRAT_URL']}/api/v3/animals",
-        json=json,
-        headers={"x-count": str(len(json)), "x-total-count": str(len(json))},
+        json=json_data,
+        headers={
+            "x-count": str(len(json_data)),
+            "x-total-count": str(len(json_data)),
+        },
     )
 
     if query_params is not None:
@@ -43,426 +56,34 @@ def create_animal_response(
     [
         pytest.param(
             create_animal_response(
-                json=[
-                    {
-                        "animalid": 100,
-                        "eartag_or_id": "ID-100",
-                        "mutations": [],
-                    }
-                ],
+                json_filename="pyrat-api-single-response-father.json",
                 query_params={"eartag": "ID-100"},
             ),
             create_animal_response(
-                json=[
-                    {
-                        "animalid": 101,
-                        "eartag_or_id": "ID-101",
-                        "mutations": [
-                            {
-                                "animalid": 101,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            }
-                        ],
-                    },
-                ],
+                json_filename="pyrat-api-single-response-mother.json",
                 query_params={"eartag": "ID-101"},
             ),
             create_animal_response(
-                json=[
-                    {
-                        "animalid": 1,
-                        "eartag_or_id": "ID-001",
-                        "species_name": "Mouse",
-                        "sacrifice_reason_name": "Not usable age",
-                        "dateborn": "2026-02-03T00:00:00",
-                        "strain_name": "Line-A",
-                        "mutations": [
-                            {
-                                "animalid": 1,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            }
-                        ],
-                        "parents": [
-                            {
-                                "animalid": 1,
-                                "parent_id": 100,
-                                "parent_eartag": "ID-100",
-                                "parent_sex": "m",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                            {
-                                "animalid": 1,
-                                "parent_id": 101,
-                                "parent_eartag": "ID-101",
-                                "parent_sex": "f",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                        ],
-                    }
-                ]
+                json_filename="pyrat-api-single-response-offspring.json"
             ),
             "pyrat-api-single-response.csv",
             id="Single item returned",
         ),
         pytest.param(
             create_animal_response(
-                json=[
-                    {
-                        "animalid": 100,
-                        "eartag_or_id": "ID-100",
-                        "mutations": [
-                            {
-                                "animalid": 100,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "wt",
-                            }
-                        ],
-                    },
-                    {
-                        "animalid": 102,
-                        "eartag_or_id": "ID-102",
-                        "mutations": [
-                            {
-                                "animalid": 102,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "wt",
-                            },
-                            {
-                                "animalid": 102,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "hom",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 104,
-                        "eartag_or_id": "ID-104",
-                        "mutations": [
-                            {
-                                "animalid": 104,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "hom",
-                            }
-                        ],
-                    },
-                    {
-                        "animalid": 106,
-                        "eartag_or_id": "ID-106",
-                        "mutations": [],
-                    },
-                ],
+                json_filename="pyrat-api-multiple-responses-father.json",
                 query_params={
                     "eartag": ["ID-100", "ID-102", "ID-104", "ID-106"]
                 },
             ),
             create_animal_response(
-                json=[
-                    {
-                        "animalid": 101,
-                        "eartag_or_id": "ID-101",
-                        "mutations": [
-                            {
-                                "animalid": 101,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 103,
-                        "eartag_or_id": "ID-103",
-                        "mutations": [
-                            {
-                                "animalid": 103,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                            {
-                                "animalid": 103,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "wt",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 105,
-                        "eartag_or_id": "ID-105",
-                        "mutations": [
-                            {
-                                "animalid": 105,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 107,
-                        "eartag_or_id": "ID-107",
-                        "mutations": [
-                            {
-                                "animalid": 107,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                            {
-                                "animalid": 107,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "wt",
-                            },
-                        ],
-                    },
-                ],
+                json_filename="pyrat-api-multiple-responses-mother.json",
                 query_params={
                     "eartag": ["ID-101", "ID-103", "ID-105", "ID-107"]
                 },
             ),
             create_animal_response(
-                json=[
-                    {
-                        "animalid": 1,
-                        "eartag_or_id": "ID-001",
-                        "species_name": "Mouse",
-                        "sacrifice_reason_name": "Not usable age",
-                        "dateborn": "2026-02-03T00:00:00",
-                        "strain_name": "Line-A",
-                        "mutations": [
-                            {
-                                "animalid": 1,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            }
-                        ],
-                        "parents": [
-                            {
-                                "animalid": 1,
-                                "parent_id": 100,
-                                "parent_eartag": "ID-100",
-                                "parent_sex": "m",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                            {
-                                "animalid": 1,
-                                "parent_id": 101,
-                                "parent_eartag": "ID-101",
-                                "parent_sex": "f",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 2,
-                        "eartag_or_id": "ID-002",
-                        "species_name": "Mouse",
-                        "sacrifice_reason_name": "Not usable age",
-                        "dateborn": "2026-02-04T00:00:00",
-                        "strain_name": "Line-A",
-                        "mutations": [
-                            {
-                                "animalid": 2,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "hom",
-                            }
-                        ],
-                        "parents": [
-                            {
-                                "animalid": 2,
-                                "parent_id": 100,
-                                "parent_eartag": "ID-100",
-                                "parent_sex": "m",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                            {
-                                "animalid": 2,
-                                "parent_id": 101,
-                                "parent_eartag": "ID-101",
-                                "parent_sex": "f",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 3,
-                        "eartag_or_id": "ID-003",
-                        "species_name": "Mouse",
-                        "sacrifice_reason_name": "Not usable age",
-                        "dateborn": "2026-02-05T00:00:00",
-                        "strain_name": "Line-AB",
-                        "mutations": [
-                            {
-                                "animalid": 3,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                            {
-                                "animalid": 3,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "hom",
-                            },
-                        ],
-                        "parents": [
-                            {
-                                "animalid": 3,
-                                "parent_id": 102,
-                                "parent_eartag": "ID-102",
-                                "parent_sex": "m",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                            {
-                                "animalid": 3,
-                                "parent_id": 103,
-                                "parent_eartag": "ID-103",
-                                "parent_sex": "f",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 4,
-                        "eartag_or_id": "ID-004",
-                        "species_name": "Mouse",
-                        "sacrifice_reason_name": "Not usable age",
-                        "dateborn": "2026-02-06T00:00:00",
-                        "strain_name": "Line-AB",
-                        "mutations": [
-                            {
-                                "animalid": 4,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                            {
-                                "animalid": 4,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                        ],
-                        "parents": [
-                            {
-                                "animalid": 4,
-                                "parent_id": 104,
-                                "parent_eartag": "ID-104",
-                                "parent_sex": "m",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                            {
-                                "animalid": 4,
-                                "parent_id": 105,
-                                "parent_eartag": "ID-105",
-                                "parent_sex": "f",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                        ],
-                    },
-                    {
-                        "animalid": 5,
-                        "eartag_or_id": "ID-005",
-                        "species_name": "Mouse",
-                        "sacrifice_reason_name": "Not usable age",
-                        "dateborn": "2026-02-07T00:00:00",
-                        "strain_name": "Line-AB",
-                        "mutations": [
-                            {
-                                "animalid": 5,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-A",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                            {
-                                "animalid": 5,
-                                "mutation_id": 5,
-                                "mutationname": "Mut-B",
-                                "mutationtype": "BAC transgenic",
-                                "grade_id": 5,
-                                "mutationgrade": "het",
-                            },
-                        ],
-                        "parents": [
-                            {
-                                "animalid": 5,
-                                "parent_id": 106,
-                                "parent_eartag": "ID-106",
-                                "parent_sex": "m",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                            {
-                                "animalid": 5,
-                                "parent_id": 107,
-                                "parent_eartag": "ID-107",
-                                "parent_sex": "f",
-                                "parent_labid": "B",
-                                "parent_cagenumber": "B2",
-                            },
-                        ],
-                    },
-                ]
+                json_filename="pyrat-api-multiple-responses-offspring.json",
             ),
             "pyrat-api-multiple-responses.csv",
             id="Multiple items returned",
@@ -508,7 +129,7 @@ def test_no_pyrat_data_exists(species_response):
     # add mock responses
     responses.add(species_response)
     responses.add(
-        create_animal_response(json=[])  # All animal responses empty
+        create_animal_response()  # All animal responses empty []
     )
 
     pyrat_dfs = get_pyrat_data(
