@@ -289,7 +289,11 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     This adds columns for Mother / Father ID, as well as their respective
     mutations.
     """
-    parents_df = pd.DataFrame(animals_df.parents.explode().tolist())
+
+    exploded_parents_col = animals_df.parents.explode()
+    parents_df = pd.DataFrame(
+        exploded_parents_col[~exploded_parents_col.isna()].tolist()
+    )
 
     # Create dataframe with one row per animalid, and one column each for
     # ID of mother and father
@@ -304,6 +308,12 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     for parent in ["Mother", "Father"]:
         parent_df = _get_mutations_for_parent(expanded_df, parent)
         expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
+
+    # merge into the original animals_df, so animalids are in the same order,
+    # and any animals with no listed parents appear with NaN in the correct
+    # slots
+    merged_df = animals_df.loc[:, ["animalid"]]
+    merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
 
     return expanded_df
 
