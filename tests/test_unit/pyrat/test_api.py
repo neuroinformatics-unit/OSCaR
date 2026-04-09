@@ -11,14 +11,21 @@ from oscar.pyrat.api import get_pyrat_data
 from tests.pooch_test_data import GIN_REPO, pooch_data_path
 
 
+@pytest.fixture
+def species_response():
+    return responses.Response(
+        method="GET",
+        url=f"{os.environ['PYRAT_URL']}/api/v3/species",
+        json=[{"id": 1, "name": "Mouse"}, {"id": 2, "name": "Rat"}],
+    )
+
+
 def create_animal_response(
     json: list[Any], query_params: dict[str, Any] | None = None
 ) -> responses.Response:
-    pyrat_url = os.environ["PYRAT_URL"]
-
     response = responses.Response(
         method="GET",
-        url=f"{pyrat_url}/api/v3/animals",
+        url=f"{os.environ['PYRAT_URL']}/api/v3/animals",
         json=json,
         headers={"x-count": str(len(json)), "x-total-count": str(len(json))},
     )
@@ -115,17 +122,13 @@ def test_get_pyrat_data(
     mother_response,
     offspring_response,
     expected_csv_name,
+    species_response,
 ):
     # stop responses library interfering with pooch requests
     responses.add_passthru(GIN_REPO.base_url)
 
-    # mock species response
-    responses.get(
-        f"{os.environ['PYRAT_URL']}/api/v3/species",
-        json=[{"id": 1, "name": "Mouse"}, {"id": 2, "name": "Rat"}],
-    )
-
-    # add mock animal responses
+    # add mock responses
+    responses.add(species_response)
     for response in [father_response, mother_response, offspring_response]:
         responses.add(response)
 
@@ -140,3 +143,26 @@ def test_get_pyrat_data(
     expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
     assert len(pyrat_dfs) == 1
     pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv)
+
+
+@responses.activate
+def test_no_pyrat_data_exists(species_response):
+    # stop responses library interfering with pooch requests
+    responses.add_passthru(GIN_REPO.base_url)
+
+    # add mock responses
+    responses.add(species_response)
+    responses.add(
+        create_animal_response(json=[])  # All animal responses empty
+    )
+
+    pyrat_dfs = get_pyrat_data(
+        line_name="Line-A",
+        species_name="Mouse",
+        birth_date_from=datetime.date(2026, 2, 1),
+        birth_date_to=datetime.date(2026, 2, 6),
+    )
+    pyrat_dfs = list(pyrat_dfs)
+
+    assert len(pyrat_dfs) == 1
+    assert pyrat_dfs[0].empty

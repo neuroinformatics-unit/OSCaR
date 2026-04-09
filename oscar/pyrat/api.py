@@ -38,9 +38,10 @@ def get_pyrat_data(
 
     Returns
     -------
-    pd.DataFrame
-        Dataframe of returned animal data, in format matching that
-        exported via the pyRAT UI.
+    Iterator[pd.DataFrame]
+        Generator of dataframes of returned animal data, in format matching
+        that exported via the pyRAT UI. If no data is available for the query,
+        the dataframe will be empty.
     """
     if (birth_date_to is not None and birth_date_from is not None) and (
         birth_date_to < birth_date_from
@@ -175,6 +176,8 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     """
 
     animals_df = pd.DataFrame(animals_data)
+    if animals_df.empty:
+        return animals_df
 
     # Convert dateborn to Year-Month-Day format (removing time info)
     new_dates = pd.to_datetime(animals_df.dateborn).dt.strftime("%Y-%m-%d")
