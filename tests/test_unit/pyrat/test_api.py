@@ -129,10 +129,9 @@ def test_get_pyrat_data(
             responses.add(response)
 
     pyrat_dfs = get_pyrat_data(
-        line_name="Line-A",
         species_name="Mouse",
         birth_date_from=datetime.date(2026, 2, 1),
-        birth_date_to=datetime.date(2026, 2, 6),
+        birth_date_to=datetime.date(2026, 3, 1),
     )
     pyrat_dfs = list(pyrat_dfs)
 
