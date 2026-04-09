@@ -88,6 +88,15 @@ def create_animal_response(
             "pyrat-api-multiple-responses.csv",
             id="Multiple items returned",
         ),
+        pytest.param(
+            None,
+            None,
+            create_animal_response(
+                json_filename="pyrat-api-no-parents-mutations-offspring.json",
+            ),
+            "pyrat-api-no-parents-mutations.csv",
+            id="No listed mutations or parents",
+        ),
     ],
 )
 @responses.activate
@@ -104,7 +113,8 @@ def test_get_pyrat_data(
     # add mock responses
     responses.add(species_response)
     for response in [father_response, mother_response, offspring_response]:
-        responses.add(response)
+        if response is not None:
+            responses.add(response)
 
     pyrat_dfs = get_pyrat_data(
         line_name="Line-A",

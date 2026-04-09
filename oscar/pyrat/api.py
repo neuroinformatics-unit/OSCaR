@@ -295,6 +295,22 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         exploded_parents_col[~exploded_parents_col.isna()].tolist()
     )
 
+    # If no parents are listed for any animals, return empty mother / father
+    # columns, with empty mutation / grade
+    if parents_df.empty:
+        animals_df = animals_df.loc[:, ["animalid"]]
+        for col_name in [
+            "Mother",
+            "Father",
+            "Mother: Mutation 1",
+            "Mother: Grade 1",
+            "Father: Mutation 1",
+            "Father: Grade 1",
+        ]:
+            animals_df[col_name] = pd.Series(dtype=str)
+
+        return animals_df
+
     # Create dataframe with one row per animalid, and one column each for
     # ID of mother and father
     expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
