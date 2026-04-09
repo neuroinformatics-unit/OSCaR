@@ -353,7 +353,7 @@ def _get_mutations_for_parent(
     """
 
     mutations_df = _get_mutations_for_eartags(
-        parents_df[parent].unique().tolist()
+        parents_df[parent].dropna().unique().tolist()
     )
     mutations_df = _expand_mutations_data(
         mutations_df, column_prefix=f"{parent}: "
