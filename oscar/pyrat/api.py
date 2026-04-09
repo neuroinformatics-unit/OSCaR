@@ -176,6 +176,10 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
 
     animals_df = pd.DataFrame(animals_data)
 
+    # Convert dateborn to Year-Month-Day format (removing time info)
+    new_dates = pd.to_datetime(animals_df.dateborn).dt.strftime("%Y-%m-%d")
+    animals_df.dateborn = new_dates
+
     # Expand column with information for multiple mutations into their own
     # columns
     animals_df = _expand_mutations_data(animals_df)

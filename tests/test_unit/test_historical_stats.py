@@ -7,6 +7,7 @@ from oscar.historical_stats import (
     LineStatistics,
     calculate_historical_stats_for_line,
 )
+from tests.pooch_test_data import pooch_data_path
 
 
 @pytest.fixture
@@ -344,22 +345,22 @@ def expected_stats_3_mutations():
 
 
 @pytest.mark.parametrize(
-    "standardised_csv_path, line_name, expected_stats",
+    "standardised_csv_name, line_name, expected_stats",
     [
         pytest.param(
-            "standardised_single_mutation_csv_path",
+            "standardised-data-single-mutation.csv",
             "Line-A",
             "expected_stats_single_mutation",
             id="1 mutation",
         ),
         pytest.param(
-            "standardised_2_mutations_csv_path",
+            "standardised-data-2-mutations.csv",
             "Line-AB",
             "expected_stats_2_mutations",
             id="2 mutations",
         ),
         pytest.param(
-            "standardised_3_mutations_csv_path",
+            "standardised-data-3-mutations.csv",
             "Line-ABC",
             "expected_stats_3_mutations",
             id="3 mutations",
@@ -367,16 +368,14 @@ def expected_stats_3_mutations():
     ],
 )
 def test_calculate_historical_stats_for_line(
-    standardised_csv_path, line_name, expected_stats, request
+    standardised_csv_name, line_name, expected_stats, request
 ):
     """
     Test calculation of summary historical statistics for lines with 1, 2 or
     3 mutations.
     """
 
-    standardised_csv = pd.read_csv(
-        request.getfixturevalue(standardised_csv_path)
-    )
+    standardised_csv = pd.read_csv(pooch_data_path(standardised_csv_name))
     expected_stats = request.getfixturevalue(expected_stats)
 
     line_stats = calculate_historical_stats_for_line(
@@ -441,9 +440,7 @@ def expected_stats_ungenotyped():
     )
 
 
-def test_handling_ungenotyped_individuals_in_stats(
-    standardised_forbidden_genotypes_csv_path, expected_stats_ungenotyped
-):
+def test_handling_ungenotyped_individuals_in_stats(expected_stats_ungenotyped):
     """
     Test that un-genotyped individuals (empty genotype_offspring column)
     are included in totals for litter size calculations, but _excluded_ from
@@ -451,7 +448,9 @@ def test_handling_ungenotyped_individuals_in_stats(
     """
 
     # This csv contains 3 un-genotyped individuals
-    standard_csv = pd.read_csv(standardised_forbidden_genotypes_csv_path)
+    standard_csv = pd.read_csv(
+        pooch_data_path("standardised-data-forbidden-genotypes.csv")
+    )
 
     line_stats = calculate_historical_stats_for_line(standard_csv, "Line-AB")
     assert line_stats == expected_stats_ungenotyped

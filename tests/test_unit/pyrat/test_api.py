@@ -30,7 +30,7 @@ def create_animal_response(
 
 
 @pytest.mark.parametrize(
-    "line_name, mother_response, father_response, offspring_response",
+    "line_name, father_response, mother_response, offspring_response",
     [
         pytest.param(
             "Line-A",
@@ -69,7 +69,7 @@ def create_animal_response(
                         "animalid": 1,
                         "eartag_or_id": "ID-001",
                         "species_name": "Mouse",
-                        "sacrificice_reason_name": "Not usable age",
+                        "sacrifice_reason_name": "Not usable age",
                         "dateborn": "2026-02-03T00:00:00",
                         "strain_name": "Line-A",
                         "mutations": [
@@ -109,7 +109,7 @@ def create_animal_response(
 )
 @responses.activate
 def test_get_pyrat_data(
-    line_name, mother_response, father_response, offspring_response
+    line_name, father_response, mother_response, offspring_response
 ):
     # mock species response
     responses.get(
@@ -118,7 +118,7 @@ def test_get_pyrat_data(
     )
 
     # add mock animal responses
-    for response in [mother_response, father_response, offspring_response]:
+    for response in [father_response, mother_response, offspring_response]:
         responses.add(response)
 
     pyrat_dfs = get_pyrat_data(
