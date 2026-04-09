@@ -282,6 +282,12 @@ def _expand_mutations_data(
     return merged_df
 
 
+def _add_empty_parent_cols(df: pd.DataFrame, parent: str) -> None:
+    df[parent] = pd.Series(dtype=str)
+    df[f"{parent}: Mutation 1"] = pd.Series(dtype=str)
+    df[f"{parent}: Grade 1"] = pd.Series(dtype=str)
+
+
 def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     """Expand column containing multiple parents' information into separate
     columns.
@@ -299,16 +305,8 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     # columns, with empty mutation / grade
     if parents_df.empty:
         animals_df = animals_df.loc[:, ["animalid"]]
-        for col_name in [
-            "Mother",
-            "Father",
-            "Mother: Mutation 1",
-            "Mother: Grade 1",
-            "Father: Mutation 1",
-            "Father: Grade 1",
-        ]:
-            animals_df[col_name] = pd.Series(dtype=str)
-
+        _add_empty_parent_cols(animals_df, "Mother")
+        _add_empty_parent_cols(animals_df, "Father")
         return animals_df
 
     # Create dataframe with one row per animalid, and one column each for
@@ -322,8 +320,11 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
 
     # Fetch mutation info for all parents and merge
     for parent in ["Mother", "Father"]:
-        parent_df = _get_mutations_for_parent(expanded_df, parent)
-        expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
+        if parent in expanded_df:
+            parent_df = _get_mutations_for_parent(expanded_df, parent)
+            expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
+        else:
+            _add_empty_parent_cols(expanded_df, parent)
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no listed parents appear with NaN in the correct
@@ -342,9 +343,9 @@ def _get_mutations_for_parent(
     Parameters
     ----------
     parents_df : pd.DataFrame
-        Dataframe with animalid, Mother and Father columns
+        Dataframe with animalid and 'parent' column
     parent : str
-        Parent to return mutations for: "Mother" or "Father"
+        Name of column of parent ids
 
     Returns
     -------

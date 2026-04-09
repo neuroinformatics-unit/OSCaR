@@ -90,6 +90,18 @@ def create_animal_response(
         ),
         pytest.param(
             None,
+            create_animal_response(
+                json_filename="pyrat-api-single-parent-mother.json",
+                query_params={"eartag": "ID-101"},
+            ),
+            create_animal_response(
+                json_filename="pyrat-api-single-parent-offspring.json",
+            ),
+            "pyrat-api-single-parent.csv",
+            id="All missing one parent",
+        ),
+        pytest.param(
+            None,
             None,
             create_animal_response(
                 json_filename="pyrat-api-no-parents-mutations-offspring.json",
@@ -126,7 +138,8 @@ def test_get_pyrat_data(
 
     expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
     assert len(pyrat_dfs) == 1
-    pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv)
+    # use check_like=True to ignore column order
+    pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
 
 
 @responses.activate
