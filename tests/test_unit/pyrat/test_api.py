@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import re
 from typing import Any
 
 import pandas as pd
@@ -164,3 +165,42 @@ def test_no_pyrat_data_exists(species_response):
 
     assert len(pyrat_dfs) == 1
     assert pyrat_dfs[0].empty
+
+
+def test_invalid_date_range():
+    """
+    Test fetching pyrat api data when birth_date_from is after
+    birth_date_to
+    """
+
+    error_msg = "birth_date_to must be after birth_date_from"
+    with pytest.raises(ValueError, match=error_msg):
+        pyrat_dfs = get_pyrat_data(
+            line_name="Line-A",
+            species_name="Mouse",
+            birth_date_from=datetime.date(2026, 2, 6),
+            birth_date_to=datetime.date(2026, 2, 1),
+        )
+        pyrat_dfs = list(pyrat_dfs)
+
+
+@responses.activate
+def test_invalid_species_name(species_response):
+    """
+    Test fetching pyrat api data when given species name is invalid
+    """
+
+    # add mock species response
+    responses.add(species_response)
+
+    error_msg = re.escape(
+        "No ID found for species Fish: available values are ['Mouse', 'Rat']"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        pyrat_dfs = get_pyrat_data(
+            line_name="Line-A",
+            species_name="Fish",
+            birth_date_from=datetime.date(2026, 2, 1),
+            birth_date_to=datetime.date(2026, 2, 6),
+        )
+        pyrat_dfs = list(pyrat_dfs)
