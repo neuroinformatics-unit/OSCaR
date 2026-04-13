@@ -9,7 +9,7 @@ import pytest
 import responses
 from responses import matchers
 
-from oscar.pyrat.api import get_pyrat_data
+from oscar.colony_management.pyrat.api import get_pyrat_data
 from tests.pooch_test_data import GIN_REPO, pooch_data_path
 
 

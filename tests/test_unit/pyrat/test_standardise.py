@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from oscar.pyrat.standardise import standardise_pyrat_csv
+from oscar.colony_management.pyrat.standardise import standardise_pyrat_csv
 from tests.pooch_test_data import pooch_data_path
 
 
