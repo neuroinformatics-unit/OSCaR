@@ -28,6 +28,23 @@ def create_animal_response(
     json_filename: str | None = None,
     query_params: dict[str, Any] | None = None,
 ) -> responses.Response:
+    """Create a mock response for a request to the /animals endpoint.
+
+    Parameters
+    ----------
+    json_filename : str | None, optional
+        Json filename of response data. If not given, the json data will
+        be empty.
+    query_params : dict[str, Any] | None, optional
+        The required query parameters to return this response. Note: matching
+        isn't strict, so while the request must contain the given parameters,
+        it may also have additional ones that aren't listed here.
+
+    Returns
+    -------
+    responses.Response
+        The mock responses object
+    """
     if json_filename is not None:
         with open(pooch_data_path(json_filename)) as f:
             json_data = json.load(f)
@@ -145,9 +162,6 @@ def test_get_pyrat_data(
 @responses.activate
 def test_no_pyrat_data_exists(species_response):
     """Test fetching pyrat api data when no animals are available"""
-
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # add mock responses
     responses.add(species_response)

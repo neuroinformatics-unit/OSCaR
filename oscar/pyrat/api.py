@@ -32,7 +32,7 @@ def get_pyrat_data(
         Earliest birth date to include
     birth_date_to : datetime.date | None, optional
         Latest birth date to include
-    max_no_rows : int
+    max_no_rows : int, optional
         Maximum number of items in each returned dataframe (and therefore
         returned per request to the pyRAT api)
 
@@ -106,8 +106,8 @@ def _make_pyrat_request(
 
     Returns
     -------
-    Any
-        Response decoded from json into a python object
+    requests.Response
+        The requests response object, containing data from pyRAT
     """
     response = requests.get(
         url=f"{os.environ['PYRAT_URL']}/api/v3/{endpoint_name}",
@@ -156,6 +156,7 @@ def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
         "s": ["eartag_or_id:asc"],
         "state": ["live", "sacrificed", "exported"],
         "eartag": eartags,
+        "l": len(eartags),
     }
     mutation_data = _make_pyrat_request("animals", params).json()
 
@@ -283,6 +284,8 @@ def _expand_mutations_data(
 
 
 def _add_empty_parent_cols(df: pd.DataFrame, parent: str) -> None:
+    """Add empty columns for parent mutation and grade"""
+
     df[parent] = pd.Series(dtype=str)
     df[f"{parent}: Mutation 1"] = pd.Series(dtype=str)
     df[f"{parent}: Grade 1"] = pd.Series(dtype=str)
