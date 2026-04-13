@@ -86,3 +86,4 @@ venv/
 # test data and temporary files
 /test_data
 /tmp
+.env

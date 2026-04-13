@@ -9,6 +9,7 @@ dynamic = ["version"]
 dependencies = [
     "numpy",
     "pandas",
+    "requests",
     "scipy"
 ]
 
@@ -32,13 +33,16 @@ classifiers = [
 dev = [
   "pytest",
   "pytest-cov",
+  "pytest-env",
   "coverage",
   "tox",
   "mypy",
   "pre-commit",
   "ruff",
   "setuptools-scm",
-  "pooch"
+  "pooch",
+  "python-dotenv",
+  "responses"
 ]
 
 [build-system]
@@ -62,6 +66,11 @@ addopts = "--cov=oscar"
 filterwarnings = [
     "error",
 ]
+
+[tool.pytest_env]
+PYRAT_URL = "https://fake-pyRAT"
+PYRAT_USER_TOKEN = "FAKE-USER"
+PYRAT_CLIENT_TOKEN = "FAKE-CLIENT"
 
 [tool.setuptools_scm]
 
