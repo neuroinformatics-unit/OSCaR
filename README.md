@@ -4,4 +4,6 @@ OSCaR (the Open Source Colony-assessment Resource) is a python package for data-
 
 ## Documentation
 
-To setup a development environment, see the [developer docs](docs/source/developer_setup.md).
+See the [OSCaR documentation](https://oscar.neuroinformatics.dev) for information about how to install / use the package.
+
+To setup a development environment, see the [developer docs](https://oscar.neuroinformatics.dev/developer_setup.html).

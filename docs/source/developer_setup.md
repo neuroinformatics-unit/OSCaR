@@ -83,3 +83,7 @@ folder and re-run the above command:
 rm -rf docs/build
 sphinx-build docs/source docs/build
 ```
+
+## Deploying the docs
+
+The documentation is deployed automatically from `main` when a new tag is created on GitHub (usually when making a new release).
