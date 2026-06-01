@@ -20,9 +20,9 @@ autodoc_mock_imports = []
 # use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath("../.."))
 
-project = "oscar"
-copyright = "2022, Kimberly Meechan"
-author = "Kimberly Meechan"
+project = "OSCaR"
+copyright = "2026, UCL"
+author = "Neuroinformatics Unit"
 try:
     full_version = get_version(project)
     # Splitting the release on '+' to remove the commit hash
@@ -88,7 +88,7 @@ exclude_patterns = [
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 html_theme = "pydata_sphinx_theme"
-html_title = "oscar"
+html_title = "OSCaR"
 
 # Customize the theme
 html_theme_options = {
@@ -97,7 +97,7 @@ html_theme_options = {
             # Label for this link
             "name": "GitHub",
             # URL where the link will redirect
-            "url": "provide later",  # required
+            "url": "https://github.com/neuroinformatics-unit/OSCaR",
             # Icon class (if "type": "fontawesome"),
             # or path to local image (if "type": "local")
             "icon": "fa-brands fa-github",
