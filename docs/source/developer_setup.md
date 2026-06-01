@@ -44,7 +44,7 @@ To access a [PyRAT](https://www.scionics.com/pyrat.html) instance via the code i
 
 This approval process only needs to be done once per pyRAT instance.
 
-Once the client is enabled, any user can request a client token by logging into PyRAT, going to `ADMINISTRATION > API` and clicking the 'Request access' button on the `OSCaR` row.
+Once the client is enabled, any user can request a user token by logging into PyRAT, going to `ADMINISTRATION > API` and clicking the 'Request access' button on the `OSCaR` row.
 
 ### Providing tokens to OSCaR
 
