@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from oscar.breeding_scheme import Genotype
+from oscar.breeding_scheme import BreedingScheme, Genotype
 
 
 class Identifier(Enum):
@@ -93,6 +93,9 @@ def standardise_pyrat_csv(
     # for readability, make sure ID_offspring is first
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
+
+    to_ignore = standard_csv.apply(_remove_impossible_breeding_schemes, axis=1)
+    standard_csv = standard_csv[~to_ignore]
 
     return standard_csv
 
@@ -384,3 +387,41 @@ def _make_combined_genotype_column_for_identifier(
     line_data.loc[genotyped_rows, new_col_name] = pivoted_mutations.loc[
         genotyped_rows, unique_mutations
     ].agg("_".join, axis=1)
+
+
+def _remove_impossible_breeding_schemes(
+    standardised_df_row: pd.Series,
+) -> bool:
+    """Retrieves parent genotypes and pulls the mendalian ratios from
+    BreedingScheme.
+    Compares offspring to these ratios, removing those which are not possible.
+    e.g. hom x hom parents cannot produce wt x wt offspring.
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        rom from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+
+    Returns
+    -------
+    bool
+        bool of whether or not that row contains an impossible breeding scheme
+    """
+
+    pop = False
+
+    genotype_father = standardised_df_row["genotype_father"]
+    genotype_mother = standardised_df_row["genotype_mother"]
+    genotype_offspring = standardised_df_row["genotype_offspring"]
+
+    typed_offspring = Genotype.from_string(genotype_offspring)
+
+    scheme = BreedingScheme(genotype_father, genotype_mother)
+    ratio = scheme.mendelian_ratio()
+
+    if typed_offspring not in ratio:
+        pop = True
+    elif ratio[typed_offspring] == 0:
+        pop = True
+
+    return pop
