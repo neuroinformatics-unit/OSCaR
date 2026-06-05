@@ -101,8 +101,8 @@ def expected_stats_2_mutations():
             (Genotype.HET, Genotype.HOM): 6,
             (Genotype.HOM, Genotype.HET): 4,
             (Genotype.HET, Genotype.WT): 2,
-            (Genotype.WT, Genotype.HET): 4,
-            (Genotype.HET, Genotype.HET): 2,
+            (Genotype.WT, Genotype.HET): 2,
+            (Genotype.HET, Genotype.HET): 4,
         },
         total_n_successful_matings=10,
         average_litter_size=pytest.approx(2, abs=1e-3),
@@ -178,10 +178,15 @@ def expected_stats_2_mutations():
                     (
                         Genotype.WT,
                         Genotype.HET,
-                    ): 2,
+                    ): 1,
+                    (
+                        Genotype.HET,
+                        Genotype.HET,
+                    ): 1,
                 },
                 proportion_offspring_per_genotype={
-                    (Genotype.WT, Genotype.HET): pytest.approx(1.0, abs=1e-3),
+                    (Genotype.WT, Genotype.HET): pytest.approx(0.5, abs=1e-3),
+                    (Genotype.HET, Genotype.HET): pytest.approx(0.5, abs=1e-3),
                 },
             ),
             BreedingScheme("hom_wt", "wt_hom"): BreedingSchemeStatistics(
@@ -195,16 +200,10 @@ def expected_stats_2_mutations():
                     (
                         Genotype.HET,
                         Genotype.HET,
-                    ): 2,
-                    (Genotype.WT, Genotype.HET): 1,
+                    ): 3,
                 },
                 proportion_offspring_per_genotype={
-                    (Genotype.HET, Genotype.HET): pytest.approx(
-                        0.666, abs=1e-3
-                    ),
-                    (Genotype.WT, Genotype.HET): pytest.approx(
-                        0.333, abs=1e-3
-                    ),
+                    (Genotype.HET, Genotype.HET): pytest.approx(1, abs=1e-3),
                 },
             ),
         },
