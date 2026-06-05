@@ -56,6 +56,12 @@ Once all tokens have been created (as above), they can be provided to OSCaR by s
 
 Set these variables however you prefer - just make sure they are _never_ checked in to version control (tokens should be kept secret). One convenient method is to create a `.env` file at the top level of the repository, then use [`python-dotenv`](https://github.com/theskumar/python-dotenv) to read them.
 
+## Test data
+
+All test data is stored in the [oscar-test-data GIN repository](https://gin.g-node.org/neuroinformatics/oscar-test-data), and fetched using [`pooch`](https://www.fatiando.org/pooch/latest/).
+
+If you add / update a test data file, you will need to update the file names and hashes in the pooch registry at `tests/pooch_registry.txt`. Hashes can be generated using [the instructions in poochs' docs](https://www.fatiando.org/pooch/latest/hashes.html#calculating-hashes).
+
 ## Building the docs locally
 
 To build the documentation locally, you will need to install some additional dependencies, then run `sphinx-build` (as below).
