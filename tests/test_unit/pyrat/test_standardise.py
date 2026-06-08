@@ -68,3 +68,23 @@ def test_standardise_genotypes():
             standard_csv.reset_index(drop=True),
             expected_csv.reset_index(drop=True),
         )
+
+
+def test_remove_impossible_breeding_schemes():
+    """
+    Test that impossible breeding schemes are removed from raw data.
+    (e.g. hom x hom parents cannot make wt offspring)
+    """
+
+    pyrat_csv = pd.read_csv(
+        pooch_data_path("pyrat-data-forbidden-schemes.csv")
+    )
+    expected_csv = pd.read_csv(
+        pooch_data_path("standardised-data-forbidden-schemes.csv")
+    )
+
+    standard_csv = standardise_pyrat_csv(pyrat_csv)
+    pd.testing.assert_frame_equal(
+        standard_csv.reset_index(drop=True),
+        expected_csv.reset_index(drop=True),
+    )
