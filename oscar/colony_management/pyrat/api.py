@@ -399,21 +399,27 @@ def _rename_parent_columns(
         _add_empty_parent_cols(expanded_df, parent)
         return expanded_df
 
+    parent_sex = parent
     for i in range(n_parent):
-        if parent == "Father":
+        if parent_sex == "Father":
             parent_key = f"m{i}"
-        elif parent == "Mother":
+        elif parent_sex == "Mother":
             parent_key = f"f{i}"
         else:
             raise Exception(
-                f"Unexpected value entered as parent_sex. - {parent}"
+                f"Unexpected value entered as parent_sex. - {parent_sex}"
             )
 
-        if i != 0:
-            parent = f"{parent + str(i + 1)}"
-        expanded_df = expanded_df.rename(columns={parent_key: parent})
-        if parent in expanded_df:
-            parent_df = _get_mutations_for_parent(expanded_df, parent)
-            expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
+        if i == 0:
+            column_name = parent
+        else:
+            column_name = f"{parent}{i + 1}"
+
+        expanded_df = expanded_df.rename(columns={parent_key: column_name})
+        if column_name in expanded_df:
+            parent_df = _get_mutations_for_parent(expanded_df, column_name)
+            expanded_df = expanded_df.merge(
+                parent_df, on=column_name, how="left"
+            )
 
     return expanded_df
