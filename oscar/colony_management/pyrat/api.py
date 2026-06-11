@@ -312,22 +312,30 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         _add_empty_parent_cols(animals_df, "Father")
         return animals_df
 
-    # Create dataframe with one row per animalid, and one column each for
-    # ID of mother and father
-    expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
-    expanded_df = expanded_df.pivot(
-        columns="parent_sex", values="parent_eartag", index="animalid"
-    )
-    expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
-    expanded_df = expanded_df.rename(columns={"f": "Mother", "m": "Father"})
+    # Create new column for M & F
+    # numbered for how many times they appear for a specific animal id
+    parents_df["parent_sex_n"] = parents_df.groupby(
+        ["animalid", "parent_sex"]
+    ).cumcount()
+    parents_df["parent_sex_n"] = parents_df["parent_sex"] + parents_df[
+        "parent_sex_n"
+    ].astype(str)
 
-    # Fetch mutation info for all parents and merge
-    for parent in ["Mother", "Father"]:
-        if parent in expanded_df:
-            parent_df = _get_mutations_for_parent(expanded_df, parent)
-            expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
-        else:
-            _add_empty_parent_cols(expanded_df, parent)
+    # Create dataframe with one row per animalid, and one column for
+    # ID of mother and father
+    expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex_n"]]
+    expanded_df = expanded_df.pivot(
+        columns="parent_sex_n", values="parent_eartag", index="animalid"
+    )
+
+    # Returns maximum number of male and female parents for that dataset
+    n_mothers = len(expanded_df.filter(like="f").columns)
+    n_fathers = len(expanded_df.filter(like="m").columns)
+
+    expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
+
+    expanded_df = _rename_parent_columns("Mother", n_mothers, expanded_df)
+    expanded_df = _rename_parent_columns("Father", n_fathers, expanded_df)
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no listed parents appear with NaN in the correct
@@ -335,7 +343,7 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     merged_df = animals_df.loc[:, ["animalid"]]
     merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
 
-    return expanded_df
+    return merged_df
 
 
 def _get_mutations_for_parent(
@@ -366,3 +374,46 @@ def _get_mutations_for_parent(
     mutations_df = mutations_df.rename(columns={"eartag_or_id": parent})
 
     return mutations_df
+
+
+def _rename_parent_columns(
+    parent: str, n_parent: int, expanded_df: pd.DataFrame
+) -> pd.DataFrame:
+    """Iterates through the number of a given parent, renames the columns
+    to something more readable and extracts the mutations for that parent
+    before merging it back into the original dataframe.
+    Parameters
+    ----------
+    parent : str
+        Name of column of parent ids
+    n_parent : int
+        total number of that sex
+    expanded_df : pd.DataFrame
+        Dataframe with animalid and 'parent_sex_n' columns
+
+    -------
+    pd.DataFrame
+        Dataframe with parent IDs and mutation / grade columns
+    """
+    if n_parent == 0:
+        _add_empty_parent_cols(expanded_df, parent)
+        return expanded_df
+
+    for i in range(n_parent):
+        if parent == "Father":
+            parent_key = f"m{i}"
+        elif parent == "Mother":
+            parent_key = f"f{i}"
+        else:
+            raise Exception(
+                f"Unexpected value entered as parent_sex. - {parent}"
+            )
+
+        if i != 0:
+            parent = f"{parent + str(i + 1)}"
+        expanded_df = expanded_df.rename(columns={parent_key: parent})
+        if parent in expanded_df:
+            parent_df = _get_mutations_for_parent(expanded_df, parent)
+            expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
+
+    return expanded_df
