@@ -406,9 +406,7 @@ def _rename_parent_columns(
         elif parent_sex == "Mother":
             parent_key = f"f{i}"
         else:
-            raise Exception(
-                f"Unexpected value entered as parent_sex. - {parent_sex}"
-            )
+            raise Exception(f"Expected:'m' or 'f' - Received: {parent_sex}")
 
         if i == 0:
             column_name = parent
