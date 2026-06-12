@@ -67,3 +67,49 @@ def test_standardise_genotypes():
         standard_csv.reset_index(drop=True),
         expected_csv.reset_index(drop=True),
     )
+
+
+@pytest.mark.parametrize(
+    "pyrat_csv_name, expected_csv_name",
+    [
+        pytest.param(
+            "pyrat-data-multiple-parents-1-mutation.csv",
+            "standardised-data-multiple-parents-1-mutation.csv",
+            id="1 mutation",
+        ),
+        pytest.param(
+            "pyrat-data-multiple-parents-2-mutations.csv",
+            "standardised-data-multiple-parents-2-mutations.csv",
+            id="2 mutation",
+        ),
+        pytest.param(
+            "pyrat-data-multiple-parents-3-mutations.csv",
+            "standardised-data-multiple-parents-3-mutations.csv",
+            id="3 mutation",
+        ),
+    ],
+)
+@pytest.mark.parametrize("input_type", ["path", "dataframe"])
+def test_standardise_multiple_parents_pyrat_csv(
+    pyrat_csv_name, expected_csv_name, input_type
+):
+    """
+    Test standardisation of dataframes containing lines with 1, 2 or
+    3 mutations.
+    """
+
+    pyrat_csv_path = pooch_data_path(pyrat_csv_name)
+    expected_csv_path = pooch_data_path(expected_csv_name)
+
+    pyrat_csv = pd.read_csv(pyrat_csv_path)
+    expected_csv = pd.read_csv(expected_csv_path)
+
+    if input_type == "path":
+        standard_csv = standardise_pyrat_csv(pyrat_csv_path)
+    else:
+        standard_csv = standardise_pyrat_csv(pyrat_csv)
+
+    pd.testing.assert_frame_equal(
+        standard_csv.reset_index(drop=True),
+        expected_csv.reset_index(drop=True),
+    )

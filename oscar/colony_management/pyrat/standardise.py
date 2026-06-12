@@ -48,6 +48,9 @@ def standardise_pyrat_csv(
     all_mutation_cols_list = sum(mutation_cols.values(), [])
     all_genotype_cols_list = sum(genotype_cols.values(), [])
 
+    n_mothers = len(input_csv.filter(like="f").columns)
+    n_fathers = len(input_csv.filter(like="m").columns)
+
     required_cols = (
         [
             "ID",
@@ -62,17 +65,18 @@ def standardise_pyrat_csv(
     )
 
     # Get rid of any additional columns + rename to standard names
-    standard_csv = input_csv[required_cols]
-    standard_csv = standard_csv.rename(
-        columns={
-            "ID": "ID_offspring",
-            "Line / Strain (Name)": "line_name",
-            "DOB": "date_of_birth",
-            "Father": "ID_father",
-            "Mother": "ID_mother",
-            "Sacrifice reason": "sacrifice_reason",
-        }
-    )
+    if n_mothers and n_fathers == 1:
+        standard_csv = input_csv[required_cols]
+        standard_csv = standard_csv.rename(
+            columns={
+                "ID": "ID_offspring",
+                "Line / Strain (Name)": "line_name",
+                "DOB": "date_of_birth",
+                "Father": "ID_father",
+                "Mother": "ID_mother",
+                "Sacrifice reason": "sacrifice_reason",
+            }
+        )
 
     standard_csv = _filter_or_correct_genotypes(
         standard_csv, all_genotype_cols_list
