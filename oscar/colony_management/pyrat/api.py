@@ -283,6 +283,36 @@ def _expand_mutations_data(
     return merged_df
 
 
+def _get_mutations_for_parent(
+    parents_df: pd.DataFrame, parent: str
+) -> pd.DataFrame:
+    """Return a dataframe with mutations for all unique parent IDs.
+
+    Parameters
+    ----------
+    parents_df : pd.DataFrame
+        Dataframe with animalid and 'parent' column
+    parent : str
+        Name of column of parent ids
+
+    Returns
+    -------
+    pd.DataFrame
+        Dataframe with parent IDs and mutation / grade columns
+    """
+
+    mutations_df = _get_mutations_for_eartags(
+        parents_df[parent].dropna().unique().tolist()
+    )
+    mutations_df = _expand_mutations_data(
+        mutations_df, column_prefix=f"{parent}: "
+    )
+    mutations_df = mutations_df.drop(["animalid"], axis=1)
+    mutations_df = mutations_df.rename(columns={"eartag_or_id": parent})
+
+    return mutations_df
+
+
 def _add_empty_parent_cols(df: pd.DataFrame, parent: str) -> None:
     """Add empty columns for parent mutation and grade"""
 
@@ -348,36 +378,6 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
 
     return merged_df
-
-
-def _get_mutations_for_parent(
-    parents_df: pd.DataFrame, parent: str
-) -> pd.DataFrame:
-    """Return a dataframe with mutations for all unique parent IDs.
-
-    Parameters
-    ----------
-    parents_df : pd.DataFrame
-        Dataframe with animalid and 'parent' column
-    parent : str
-        Name of column of parent ids
-
-    Returns
-    -------
-    pd.DataFrame
-        Dataframe with parent IDs and mutation / grade columns
-    """
-
-    mutations_df = _get_mutations_for_eartags(
-        parents_df[parent].dropna().unique().tolist()
-    )
-    mutations_df = _expand_mutations_data(
-        mutations_df, column_prefix=f"{parent}: "
-    )
-    mutations_df = mutations_df.drop(["animalid"], axis=1)
-    mutations_df = mutations_df.rename(columns={"eartag_or_id": parent})
-
-    return mutations_df
 
 
 def _rename_and_merge_parent_columns(
