@@ -211,6 +211,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     return animals_df
 
 
+# take api data unpacks into separate columns``
 def _expand_mutations_data(
     animals_df: pd.DataFrame, column_prefix: str = ""
 ) -> pd.DataFrame:
@@ -283,6 +284,7 @@ def _expand_mutations_data(
     return merged_df
 
 
+# call get mutation for eartag
 def _get_mutations_for_parent(
     parents_df: pd.DataFrame, parent: str
 ) -> pd.DataFrame:
@@ -321,6 +323,7 @@ def _add_empty_parent_cols(df: pd.DataFrame, parent: str) -> None:
     df[f"{parent}: Grade 1"] = pd.Series(dtype=str)
 
 
+# organise raw parent data into columns then call rename.. for each sex
 def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     """Expand column containing multiple parents' information into separate
     columns.
@@ -380,6 +383,7 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     return merged_df
 
 
+# loop through each parent and call get mutation
 def _rename_and_merge_parent_columns(
     parent: str, n_parent: int, expanded_df: pd.DataFrame
 ) -> pd.DataFrame:
