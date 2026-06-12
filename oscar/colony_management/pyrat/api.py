@@ -334,8 +334,12 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
 
     expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
 
-    expanded_df = _rename_parent_columns("Mother", n_mothers, expanded_df)
-    expanded_df = _rename_parent_columns("Father", n_fathers, expanded_df)
+    expanded_df = _rename_and_merge_parent_columns(
+        "Mother", n_mothers, expanded_df
+    )
+    expanded_df = _rename_and_merge_parent_columns(
+        "Father", n_fathers, expanded_df
+    )
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no listed parents appear with NaN in the correct
@@ -376,7 +380,7 @@ def _get_mutations_for_parent(
     return mutations_df
 
 
-def _rename_parent_columns(
+def _rename_and_merge_parent_columns(
     parent: str, n_parent: int, expanded_df: pd.DataFrame
 ) -> pd.DataFrame:
     """Iterates through the number of a given parent, renames the columns
