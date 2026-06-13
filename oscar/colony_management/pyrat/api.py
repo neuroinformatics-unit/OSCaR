@@ -148,22 +148,22 @@ def _get_species_id(species_name: str) -> int:
     )
 
 
-def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
+def _get_mutations_for_eartags(all_eartags: list[str]) -> pd.DataFrame:
     """Get mutation information for the given animal eartags"""
 
     params = {
         "k": ["animalid", "eartag_or_id", "mutations"],
         "s": ["eartag_or_id:asc"],
         "state": ["live", "sacrificed", "exported"],
-        "eartag": eartags,
-        "l": len(eartags),
+        "eartag": all_eartags,
+        "l": len(all_eartags),
     }
     mutation_data = _make_pyrat_request("animals", params).json()
 
-    if len(mutation_data) != len(eartags):
+    if len(mutation_data) != len(all_eartags):
         raise ValueError(
             f"{len(mutation_data)} animals returned for "
-            f"{len(eartags)} eartags: {eartags}"
+            f"{len(all_eartags)} eartags: {all_eartags}"
         )
 
     return pd.DataFrame(mutation_data)
@@ -211,7 +211,6 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     return animals_df
 
 
-# take api data unpacks into separate columns``
 def _expand_mutations_data(
     animals_df: pd.DataFrame, column_prefix: str = ""
 ) -> pd.DataFrame:
@@ -284,37 +283,6 @@ def _expand_mutations_data(
     return merged_df
 
 
-# call get mutation for eartag
-def _get_mutations_for_parent(
-    parents_df: pd.DataFrame, parent: str
-) -> pd.DataFrame:
-    """Return a dataframe with mutations for all unique parent IDs.
-
-    Parameters
-    ----------
-    parents_df : pd.DataFrame
-        Dataframe with animalid and 'parent' column
-    parent : str
-        Name of column of parent ids
-
-    Returns
-    -------
-    pd.DataFrame
-        Dataframe with parent IDs and mutation / grade columns
-    """
-
-    mutations_df = _get_mutations_for_eartags(
-        parents_df[parent].dropna().unique().tolist()
-    )
-    mutations_df = _expand_mutations_data(
-        mutations_df, column_prefix=f"{parent}: "
-    )
-    mutations_df = mutations_df.drop(["animalid"], axis=1)
-    mutations_df = mutations_df.rename(columns={"eartag_or_id": parent})
-
-    return mutations_df
-
-
 def _add_empty_parent_cols(df: pd.DataFrame, parent: str) -> None:
     """Add empty columns for parent mutation and grade"""
 
@@ -323,7 +291,6 @@ def _add_empty_parent_cols(df: pd.DataFrame, parent: str) -> None:
     df[f"{parent}: Grade 1"] = pd.Series(dtype=str)
 
 
-# organise raw parent data into columns then call rename.. for each sex
 def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     """Expand column containing multiple parents' information into separate
     columns.
@@ -367,10 +334,17 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
 
     expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
 
-    expanded_df = _rename_and_merge_parent_columns(
+    # expanded_df = _rename_and_merge_parent_columns(
+    #     "Mother", n_mothers, expanded_df
+    # )
+    # expanded_df = _rename_and_merge_parent_columns(
+    #     "Father", n_fathers, expanded_df
+    # )
+
+    expanded_df = _fetch_and_merge_parent_mutations(
         "Mother", n_mothers, expanded_df
     )
-    expanded_df = _rename_and_merge_parent_columns(
+    expanded_df = _fetch_and_merge_parent_mutations(
         "Father", n_fathers, expanded_df
     )
 
@@ -383,49 +357,143 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     return merged_df
 
 
-# loop through each parent and call get mutation
-def _rename_and_merge_parent_columns(
-    parent: str, n_parent: int, expanded_df: pd.DataFrame
+def _fetch_and_merge_parent_mutations(
+    parent: str, n_parents: int, expanded_df: pd.DataFrame
 ) -> pd.DataFrame:
-    """Iterates through the number of a given parent, renames the columns
-    to something more readable and extracts the mutations for that parent
-    before merging it back into the original dataframe.
+    """Groups parents by sex and fetches mutations for them all at once.
+    The results are then re-assigned to each individual parent and merged
+    into a single parent column.
+
     Parameters
     ----------
     parent : str
-        Name of column of parent ids
+        "Mother" or "Father"
     n_parent : int
-        total number of that sex
+        Number of parents of this sex present in the dataset
     expanded_df : pd.DataFrame
-        Dataframe with animalid and 'parent_sex_n' columns
+        Dataframe with animalid and parent key
+        columns (f0, f1, ... or m0, m1, ...)
 
+    Returns
     -------
     pd.DataFrame
-        Dataframe with parent IDs and mutation / grade columns
+        expanded_df with renamed parent ID columns
+        and their mutation / grade columns
     """
-    if n_parent == 0:
+
+    if n_parents == 0:
         _add_empty_parent_cols(expanded_df, parent)
         return expanded_df
 
+    column_names, nparents_keys = _create_columns_and_keys_for_n_parents(
+        parent, n_parents
+    )
+
+    # uses nparents_keys as a dict key to be replaced with column names
+    expanded_df = expanded_df.rename(
+        columns=dict(zip(nparents_keys, column_names))
+    )
+
+    # for each parent in column names, retrieves all unique eartag ID into list
+    all_eartags = (
+        pd.concat([expanded_df[parent_id] for parent_id in column_names])
+        .dropna()
+        .unique()
+        .tolist()
+    )
+
+    mutations_df = _get_mutations_for_eartags(all_eartags)
+    mutations_df = _expand_mutations_data(mutations_df)
+
+    # Split results by parent column where parent_eartags match,
+    # add parentx as a prefix to the column and merge
+
+    expanded_df = assign_parent_mutations(
+        parent, column_names, mutations_df, expanded_df
+    )
+
+    return expanded_df
+
+
+def _create_columns_and_keys_for_n_parents(parent: str, n_parents: int):
+    """Generates and maps the parent keys produced by cumcount
+    to readable column names.
+    """
+
     parent_sex = parent
-    for i in range(n_parent):
+    nparents_keys = []
+    column_names = []
+
+    # Change all 'parent'_keys at once
+    for i in range(n_parents):
         if parent_sex == "Father":
             parent_key = f"m{i}"
         elif parent_sex == "Mother":
             parent_key = f"f{i}"
         else:
             raise Exception(f"Expected:'m' or 'f' - Received: {parent_sex}")
+        nparents_keys.append(parent_key)
 
         if i == 0:
-            column_name = parent
+            column_names.append(parent)
         else:
-            column_name = f"{parent}{i + 1}"
+            column_names.append(f"{parent}{i + 1}")
 
-        expanded_df = expanded_df.rename(columns={parent_key: column_name})
-        if column_name in expanded_df:
-            parent_df = _get_mutations_for_parent(expanded_df, column_name)
-            expanded_df = expanded_df.merge(
-                parent_df, on=column_name, how="left"
-            )
+    return column_names, nparents_keys
+
+
+def assign_parent_mutations(
+    parent: str,
+    column_names: list[str],
+    mutations_df: pd.DataFrame,
+    expanded_df: pd.DataFrame,
+) -> pd.DataFrame:
+    """Split a combined mutations dataframe by parent column and merges back.
+
+    For each parent column, filters by eartags present in that column,
+    adds a readable prefixes to every mutation and grade column, then merges
+    the result into expanded_df.
+
+    Parameters
+    ----------
+    parent : str
+        Display name for the parent sex.
+    column_names : list[str]
+        Ordered list of column names in expanded_df
+    mutations_df : pd.DataFrame
+        Combined mutations dataframe for all parents of this sex
+    expanded_df : pd.DataFrame
+        Dataframe with one row per animal,
+        containing readable parent ID columns.
+
+    Returns
+    -------
+    pd.DataFrame
+        expanded_df with additional prefixed mutation and grade columns
+        merged in for each parent
+    """
+    for parent in column_names:
+        parent_eartags = expanded_df[parent].dropna().unique().tolist()
+        parent_mutations = mutations_df[
+            mutations_df["eartag_or_id"].isin(parent_eartags)
+        ].copy()
+
+        parent_mutations = parent_mutations.drop(columns=["animalid"])
+
+        parent_mutations = parent_mutations.rename(
+            columns={"eartag_or_id": parent}
+        )
+
+        new_column_names = []
+        for p_mutation_column in parent_mutations.columns:
+            if p_mutation_column != parent:
+                new_column_names.append(f"{parent}: {p_mutation_column}")
+            else:
+                new_column_names.append(p_mutation_column)
+        parent_mutations.columns = new_column_names
+
+        expanded_df = expanded_df.merge(
+            parent_mutations, on=parent, how="left"
+        )
 
     return expanded_df
