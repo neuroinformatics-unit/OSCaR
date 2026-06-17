@@ -20,7 +20,7 @@ autodoc_mock_imports = []
 # use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath("../.."))
 
-project = "OSCaR"
+project = "oscar-colony"
 copyright = "2026, UCL"
 author = "Neuroinformatics Unit"
 try:
