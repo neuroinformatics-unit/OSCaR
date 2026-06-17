@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="_static/documentation_options.js?v=e3a6060d"></script>
+    <script src="_static/documentation_options.js?v=47de8214"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -119,7 +119,7 @@
   
   
   
-    <p class="title logo__title">OSCaR v0.0.2</p>
+    <p class="title logo__title">oscar-colony v0.0.3</p>
   
 </a></div>
     
@@ -418,7 +418,7 @@
 <h2>PyRAT access<a class="headerlink" href="#pyrat-access" title="Link to this heading">#</a></h2>
 <section id="token-creation">
 <h3>Token creation<a class="headerlink" href="#token-creation" title="Link to this heading">#</a></h3>
-<p>To access a <a class="reference external" href="https://www.scionics.com/pyrat.html">PyRAT</a> instance via the code in <code class="docutils literal notranslate"><span class="pre">oscar.colony_management.pyrat</span></code>, you will first need to contact Scionics (the creators of PyRAT) to approve access.</p>
+<p>To access a <a class="reference external" href="https://www.scionics.com/pyrat.html">PyRAT</a> instance via the code in <code class="docutils literal notranslate"><span class="pre">oscar_colony.colony_management.pyrat</span></code>, you will first need to contact Scionics (the creators of PyRAT) to approve access.</p>
 <ul class="simple">
 <li><p>Ask them to setup a new API client called ‘OSCaR’ on your pyRAT server; they should send you a ‘client token’.</p></li>
 <li><p>The new API client will appear under <code class="docutils literal notranslate"><span class="pre">ADMINISTRATION</span> <span class="pre">&gt;</span> <span class="pre">API</span></code> in pyRAT, and an administrator will need to enable it from there.</p></li>
@@ -436,6 +436,11 @@
 </ul>
 <p>Set these variables however you prefer - just make sure they are <em>never</em> checked in to version control (tokens should be kept secret). One convenient method is to create a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file at the top level of the repository, then use <a class="reference external" href="https://github.com/theskumar/python-dotenv"><code class="docutils literal notranslate"><span class="pre">python-dotenv</span></code></a> to read them.</p>
 </section>
+</section>
+<section id="test-data">
+<h2>Test data<a class="headerlink" href="#test-data" title="Link to this heading">#</a></h2>
+<p>All test data is stored in the <a class="reference external" href="https://gin.g-node.org/neuroinformatics/oscar-test-data">oscar-test-data GIN repository</a>, and fetched using <a class="reference external" href="https://www.fatiando.org/pooch/latest/"><code class="docutils literal notranslate"><span class="pre">pooch</span></code></a>.</p>
+<p>If you add / update a test data file, you will need to update the file names and hashes in the pooch registry at <code class="docutils literal notranslate"><span class="pre">tests/pooch_registry.txt</span></code>. Hashes can be generated using <a class="reference external" href="https://www.fatiando.org/pooch/latest/hashes.html#calculating-hashes">the instructions in poochs’ docs</a>.</p>
 </section>
 <section id="building-the-docs-locally">
 <h2>Building the docs locally<a class="headerlink" href="#building-the-docs-locally" title="Link to this heading">#</a></h2>
@@ -466,6 +471,10 @@ folder and re-run the above command:</p>
 </pre></div>
 </div>
 </section>
+</section>
+<section id="deploying-the-docs">
+<h2>Deploying the docs<a class="headerlink" href="#deploying-the-docs" title="Link to this heading">#</a></h2>
+<p>The documentation is deployed automatically from <code class="docutils literal notranslate"><span class="pre">main</span></code> when a new tag is created on GitHub (usually when making a new release).</p>
 </section>
 </section>
 
@@ -527,12 +536,14 @@ folder and re-run the above command:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#providing-tokens-to-oscar">Providing tokens to OSCaR</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-data">Test data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs-locally">Building the docs locally</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docs-install-with-uv">docs install with uv</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docs-install-with-conda">docs install with conda</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docs-build-command">docs build command</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deploying-the-docs">Deploying the docs</a></li>
 </ul>
   </nav></div>
 
@@ -558,8 +569,8 @@ folder and re-run the above command:</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -570,7 +581,7 @@ folder and re-run the above command:</p>
 
   <p class="copyright">
     
-      © Copyright 2026, UCL.
+      © Copyright 2026, University College London.
       <br/>
     
   </p>
@@ -593,7 +604,7 @@ folder and re-run the above command:</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
 </p></div>
       
     </div>

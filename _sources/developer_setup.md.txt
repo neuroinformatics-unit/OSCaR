@@ -37,7 +37,7 @@ pre-commit install
 
 ### Token creation
 
-To access a [PyRAT](https://www.scionics.com/pyrat.html) instance via the code in `oscar.colony_management.pyrat`, you will first need to contact Scionics (the creators of PyRAT) to approve access.
+To access a [PyRAT](https://www.scionics.com/pyrat.html) instance via the code in `oscar_colony.colony_management.pyrat`, you will first need to contact Scionics (the creators of PyRAT) to approve access.
 
 - Ask them to setup a new API client called 'OSCaR' on your pyRAT server; they should send you a 'client token'.
 - The new API client will appear under `ADMINISTRATION > API` in pyRAT, and an administrator will need to enable it from there.
@@ -55,6 +55,12 @@ Once all tokens have been created (as above), they can be provided to OSCaR by s
 - `PYRAT_USER_TOKEN`: the user token created via 'Request access' in PyRAT
 
 Set these variables however you prefer - just make sure they are _never_ checked in to version control (tokens should be kept secret). One convenient method is to create a `.env` file at the top level of the repository, then use [`python-dotenv`](https://github.com/theskumar/python-dotenv) to read them.
+
+## Test data
+
+All test data is stored in the [oscar-test-data GIN repository](https://gin.g-node.org/neuroinformatics/oscar-test-data), and fetched using [`pooch`](https://www.fatiando.org/pooch/latest/).
+
+If you add / update a test data file, you will need to update the file names and hashes in the pooch registry at `tests/pooch_registry.txt`. Hashes can be generated using [the instructions in poochs' docs](https://www.fatiando.org/pooch/latest/hashes.html#calculating-hashes).
 
 ## Building the docs locally
 
@@ -83,3 +89,7 @@ folder and re-run the above command:
 rm -rf docs/build
 sphinx-build docs/source docs/build
 ```
+
+## Deploying the docs
+
+The documentation is deployed automatically from `main` when a new tag is created on GitHub (usually when making a new release).
