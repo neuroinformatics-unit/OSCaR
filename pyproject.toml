@@ -1,6 +1,9 @@
 [project]
 name = "oscar-colony"
-authors = [{name = "UCL ARC", email= "arc.collaborations@ucl.ac.uk"}]
+authors = [
+    {name = "Kimberly Meechan", email= "code@adamltyson.com"},
+    {name = "Neuroinformatics Unit", email= "code@adamltyson.com"}
+]
 description = "A python package for breeding calculations."
 readme = "README.md"
 requires-python = ">=3.11.0"
