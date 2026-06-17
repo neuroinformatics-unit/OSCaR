@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 
-from oscar.breeding_scheme import (
+from oscar_colony.breeding_scheme import (
     BreedingScheme,
     Genotype,
     generate_breeding_schemes,
 )
-from oscar.historical_stats import LineStatistics
+from oscar_colony.historical_stats import LineStatistics
 
 
 @dataclass
