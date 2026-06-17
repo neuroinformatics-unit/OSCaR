@@ -1,8 +1,7 @@
 [project]
 name = "oscar-colony"
 authors = [
-    {name = "Kimberly Meechan", email= "code@adamltyson.com"},
-    {name = "Neuroinformatics Unit", email= "code@adamltyson.com"}
+    {name = "Kimberly Meechan, Neuroinformatics Unit", email= "code@adamltyson.com"},
 ]
 description = "A python package for breeding calculations."
 readme = "README.md"
