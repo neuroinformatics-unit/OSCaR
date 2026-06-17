@@ -21,7 +21,7 @@ autodoc_mock_imports = []
 sys.path.insert(0, os.path.abspath("../.."))
 
 project = "oscar-colony"
-copyright = "2026, UCL"
+copyright = "2026, University College London"
 author = "Neuroinformatics Unit"
 try:
     full_version = get_version(project)
