@@ -2,9 +2,12 @@ import platform
 
 import pytest
 
-from oscar.breeding_scheme import BreedingScheme, Genotype
-from oscar.optimise.estimate_offspring import ExpectedOffspring
-from oscar.optimise.surplus_summary import GenotypeSurplus, SurplusSummary
+from oscar_colony.breeding_scheme import BreedingScheme, Genotype
+from oscar_colony.optimise.estimate_offspring import ExpectedOffspring
+from oscar_colony.optimise.surplus_summary import (
+    GenotypeSurplus,
+    SurplusSummary,
+)
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 import pandas as pd
 
-from oscar.breeding_scheme import (
+from oscar_colony.breeding_scheme import (
     BreedingScheme,
     Genotype,
 )

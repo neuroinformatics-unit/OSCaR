@@ -1,16 +1,16 @@
 import numpy as np
 from scipy.optimize import LinearConstraint, milp
 
-from oscar.breeding_scheme import (
+from oscar_colony.breeding_scheme import (
     BreedingScheme,
     Genotype,
 )
-from oscar.historical_stats import LineStatistics
-from oscar.optimise.estimate_offspring import (
+from oscar_colony.historical_stats import LineStatistics
+from oscar_colony.optimise.estimate_offspring import (
     ExpectedOffspring,
     estimate_n_offspring_per_mating,
 )
-from oscar.optimise.surplus_summary import (
+from oscar_colony.optimise.surplus_summary import (
     SurplusSummary,
     create_surplus_summary,
 )
