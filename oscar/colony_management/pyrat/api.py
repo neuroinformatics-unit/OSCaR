@@ -308,8 +308,8 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     # columns, with empty mutation / grade
     if parents_df.empty:
         animals_df = animals_df.loc[:, ["animalid"]]
-        _add_empty_parent_cols(animals_df, "Mother")
-        _add_empty_parent_cols(animals_df, "Father")
+        _add_empty_parent_cols(animals_df, "Mother 1")
+        _add_empty_parent_cols(animals_df, "Father 1")
         return animals_df
 
     # Re-name rows as father or mother
@@ -328,8 +328,23 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     # Fetch and expand mutations for all parents
+    expanded_df = _fetch_and_merge_parent_mutations(expanded_df)
+
+    # merge into the original animals_df, so animalids are in the same order,
+    # and any animals with no listed parents appear with NaN in the correct
+    # slots
+    merged_df = animals_df.loc[:, ["animalid"]]
+    merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
+
+    return merged_df
+
+
+def _fetch_and_merge_parent_mutations(
+    expanded_df: pd.DataFrame,
+) -> pd.DataFrame:
+    # Fetch mutations for all parent eartags
     mutations_df = _get_mutations_for_eartags(
-        parents_df["parent_eartag"].dropna().unique().tolist()
+        expanded_df["parent_eartag"].dropna().unique().tolist()
     )
     mutations_df = _expand_mutations_data(mutations_df)
     mutations_df = mutations_df.drop(columns=["animalid"])
@@ -347,46 +362,12 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     ).reset_index()
     new_col_names = []
     for old_col_names in expanded_df.columns.to_flat_index():
-        if (old_col_names[0]) == "":
-            new_col_names.append(old_col_names[1])
-        elif old_col_names[1] == "parent_eartag":
+        if old_col_names[1] == "":
             new_col_names.append(old_col_names[0])
+        elif old_col_names[0] == "parent_eartag":
+            new_col_names.append(old_col_names[1])
         else:
             new_col_names.append(f"{old_col_names[1]}: {old_col_names[0]}")
     expanded_df.columns = new_col_names
 
-    # merge into the original animals_df, so animalids are in the same order,
-    # and any animals with no listed parents appear with NaN in the correct
-    # slots
-    merged_df = animals_df.loc[:, ["animalid"]]
-    merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
-
-    return merged_df
-
-
-# def _get_mutations_for_all_parents(parents_df: pd.DataFrame) -> pd.DataFrame:
-#     """Return a dataframe with mutations for all unique parent IDs.
-
-#     Parameters
-#     ----------
-#     parents_df : pd.DataFrame
-#         Dataframe with animalid and 'parent' column
-#     parent : str
-#         Name of column of parent ids
-
-#     Returns
-#     -------
-#     pd.DataFrame
-#         Dataframe with parent IDs and mutation / grade columns
-#     """
-
-#     mutations_df = _get_mutations_for_eartags(
-#         parents_df[parent].dropna().unique().tolist()
-#     )
-#     mutations_df = _expand_mutations_data(
-#         mutations_df, column_prefix=f"{parent}: "
-#     )
-#     mutations_df = mutations_df.drop(["animalid"], axis=1)
-#     mutations_df = mutations_df.rename(columns={"eartag_or_id": parent})
-
-#     return mutations_df
+    return expanded_df
