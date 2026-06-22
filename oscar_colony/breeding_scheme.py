@@ -34,11 +34,6 @@ class Genotype(IntEnum):
         tuple[Self, ...]
             Converted tuple of genotypes
         """
-        if not isinstance(genotype_str, str):
-            raise TypeError(
-                f"expected type - string, actual type - {type(genotype_str)}"
-            )
-
         genotype_strings = genotype_str.split("_")
         genotypes = [
             cls[genotype_string.upper()]

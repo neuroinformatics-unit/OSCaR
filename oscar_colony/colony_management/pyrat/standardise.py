@@ -414,14 +414,14 @@ def _remove_impossible_breeding_schemes(
     genotype_mother = standardised_df_row["genotype_mother"]
     genotype_offspring = standardised_df_row["genotype_offspring"]
 
-    typed_offspring = Genotype.from_string(genotype_offspring)
+    if not pd.isna(genotype_offspring):
+        typed_offspring = Genotype.from_string(genotype_offspring)
+        scheme = BreedingScheme(genotype_father, genotype_mother)
+        ratio = scheme.mendelian_ratio()
 
-    scheme = BreedingScheme(genotype_father, genotype_mother)
-    ratio = scheme.mendelian_ratio()
-
-    if typed_offspring not in ratio:
-        pop = True
-    elif ratio[typed_offspring] == 0:
-        pop = True
+        if typed_offspring not in ratio:
+            pop = True
+        elif ratio[typed_offspring] == 0:
+            pop = True
 
     return pop

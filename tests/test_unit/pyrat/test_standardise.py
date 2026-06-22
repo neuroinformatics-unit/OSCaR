@@ -64,12 +64,11 @@ def test_standardise_genotypes():
         pooch_data_path("standardised-data-forbidden-genotypes.csv")
     )
 
-    with pytest.raises(TypeError):
-        standard_csv = standardise_pyrat_csv(pyrat_csv)
-        pd.testing.assert_frame_equal(
-            standard_csv.reset_index(drop=True),
-            expected_csv.reset_index(drop=True),
-        )
+    standard_csv = standardise_pyrat_csv(pyrat_csv)
+    pd.testing.assert_frame_equal(
+        standard_csv.reset_index(drop=True),
+        expected_csv.reset_index(drop=True),
+    )
 
 
 def test_remove_impossible_breeding_schemes():
