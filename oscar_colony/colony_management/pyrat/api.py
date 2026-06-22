@@ -148,22 +148,22 @@ def _get_species_id(species_name: str) -> int:
     )
 
 
-def _get_mutations_for_eartags(all_eartags: list[str]) -> pd.DataFrame:
+def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
     """Get mutation information for the given animal eartags"""
 
     params = {
         "k": ["animalid", "eartag_or_id", "mutations"],
         "s": ["eartag_or_id:asc"],
         "state": ["live", "sacrificed", "exported"],
-        "eartag": all_eartags,
-        "l": len(all_eartags),
+        "eartag": eartags,
+        "l": len(eartags),
     }
     mutation_data = _make_pyrat_request("animals", params).json()
 
-    if len(mutation_data) != len(all_eartags):
+    if len(mutation_data) != len(eartags):
         raise ValueError(
             f"{len(mutation_data)} animals returned for "
-            f"{len(all_eartags)} eartags: {all_eartags}"
+            f"{len(eartags)} eartags: {eartags}"
         )
 
     return pd.DataFrame(mutation_data)
@@ -308,29 +308,33 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     # columns, with empty mutation / grade
     if parents_df.empty:
         animals_df = animals_df.loc[:, ["animalid"]]
-        _add_empty_parent_cols(animals_df, "Mother")
-        _add_empty_parent_cols(animals_df, "Father")
+        _add_empty_parent_cols(animals_df, "Mother 1")
+        _add_empty_parent_cols(animals_df, "Father 1")
         return animals_df
 
-    # Create new column for M & F
-    # numbered for how many times they appear for a specific animal id
-    parents_df["parent_sex_n"] = parents_df.groupby(
-        ["animalid", "parent_sex"]
-    ).cumcount()
-    parents_df["parent_sex_n"] = parents_df["parent_sex"] + parents_df[
-        "parent_sex_n"
-    ].astype(str)
+    # Rename column names as father or mother
+    expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
+    expanded_df = expanded_df.rename(columns={"parent_sex": "parent"})
+    expanded_df.loc[expanded_df["parent"] == "m", "parent"] = "Father"
+    expanded_df.loc[expanded_df["parent"] == "f", "parent"] = "Mother"
 
-    # Create dataframe with one row per animalid, and one column for
-    # ID of mother and father
-    expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex_n"]]
+    # Number each consecutive parent appearance and append num to column name
+    expanded_df["parent_id"] = (
+        expanded_df.groupby(["animalid", "parent"]).cumcount() + 1
+    )
+    expanded_df["parent_id"] = (
+        expanded_df["parent"] + " " + expanded_df["parent_id"].astype(str)
+    )
+
+    _fetch_and_merge_parent_mutations(expanded_df)
+
     expanded_df = expanded_df.pivot(
         columns="parent_sex_n", values="parent_eartag", index="animalid"
     )
 
     # Returns maximum number of male and female parents for that dataset
-    n_mothers = len(expanded_df.filter(like="f").columns)
-    n_fathers = len(expanded_df.filter(like="m").columns)
+    # n_mothers = len(expanded_df.filter(like="f").columns)
+    # n_fathers = len(expanded_df.filter(like="m").columns)
 
     expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
 
@@ -341,12 +345,12 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     #     "Father", n_fathers, expanded_df
     # )
 
-    expanded_df = _fetch_and_merge_parent_mutations(
-        "Mother", n_mothers, expanded_df
-    )
-    expanded_df = _fetch_and_merge_parent_mutations(
-        "Father", n_fathers, expanded_df
-    )
+    # expanded_df = _fetch_and_merge_parent_mutations(
+    #     "Mother", n_mothers, expanded_df
+    # )
+    # expanded_df = _fetch_and_merge_parent_mutations(
+    #     "Father", n_fathers, expanded_df
+    # )
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no listed parents appear with NaN in the correct
@@ -358,59 +362,20 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _fetch_and_merge_parent_mutations(
-    parent: str, n_parents: int, expanded_df: pd.DataFrame
+    expanded_df: pd.DataFrame,
 ) -> pd.DataFrame:
-    """Groups parents by sex and fetches mutations for them all at once.
-    The results are then re-assigned to each individual parent and merged
-    into a single parent column.
-
-    Parameters
-    ----------
-    parent : str
-        "Mother" or "Father"
-    n_parent : int
-        Number of parents of this sex present in the dataset
-    expanded_df : pd.DataFrame
-        Dataframe with animalid and parent key
-        columns (f0, f1, ... or m0, m1, ...)
-
-    Returns
-    -------
-    pd.DataFrame
-        expanded_df with renamed parent ID columns
-        and their mutation / grade columns
-    """
-
-    if n_parents == 0:
-        _add_empty_parent_cols(expanded_df, parent)
-        return expanded_df
-
-    column_names, nparents_keys = _create_columns_and_keys_for_n_parents(
-        parent, n_parents
+    mutations_df = _get_mutations_for_eartags(
+        expanded_df["parent_eartag"].dropna().unique().tolist()
     )
 
-    # uses nparents_keys as a dict key to be replaced with column names
-    expanded_df = expanded_df.rename(
-        columns=dict(zip(nparents_keys, column_names))
+    mutations_df = mutations_df.drop(columns=["animalid"])
+    expanded_df = expanded_df.merge(
+        mutations_df,
+        left_on="parent_eartag",
+        right_on="eartag_or_id",
+        how="left",
     )
-
-    # for each parent in column names, retrieves all unique eartag ID into list
-    all_eartags = (
-        pd.concat([expanded_df[parent_id] for parent_id in column_names])
-        .dropna()
-        .unique()
-        .tolist()
-    )
-
-    mutations_df = _get_mutations_for_eartags(all_eartags)
-    mutations_df = _expand_mutations_data(mutations_df)
-
-    # Split results by parent column where parent_eartags match,
-    # add parentx as a prefix to the column and merge
-
-    expanded_df = assign_parent_mutations(
-        parent, column_names, mutations_df, expanded_df
-    )
+    expanded_df = expanded_df.drop(columns=["parent", "eartag_or_id"])
 
     return expanded_df
 
