@@ -1,9 +1,9 @@
 import pytest
 
-from oscar.breeding_scheme import BreedingScheme, Genotype
-from oscar.historical_stats import LineStatistics
-from oscar.optimise.estimate_offspring import ExpectedOffspring
-from oscar.optimise.optimal_scheme_calculator import (
+from oscar_colony.breeding_scheme import BreedingScheme, Genotype
+from oscar_colony.historical_stats import LineStatistics
+from oscar_colony.optimise.estimate_offspring import ExpectedOffspring
+from oscar_colony.optimise.optimal_scheme_calculator import (
     _optimise_n_matings,
     calculate_optimal_scheme,
 )

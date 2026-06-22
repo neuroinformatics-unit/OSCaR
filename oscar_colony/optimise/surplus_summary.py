@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 
-from oscar.breeding_scheme import (
+from oscar_colony.breeding_scheme import (
     BreedingScheme,
     Genotype,
 )
-from oscar.optimise.estimate_offspring import ExpectedOffspring
+from oscar_colony.optimise.estimate_offspring import ExpectedOffspring
 
 
 @dataclass

@@ -1,6 +1,6 @@
 import pytest
 
-from oscar.optimise.surplus_summary import create_surplus_summary
+from oscar_colony.optimise.surplus_summary import create_surplus_summary
 
 
 @pytest.mark.parametrize(
