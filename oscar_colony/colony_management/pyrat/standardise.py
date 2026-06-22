@@ -414,6 +414,7 @@ def _remove_impossible_breeding_schemes(
     genotype_mother = standardised_df_row["genotype_mother"]
     genotype_offspring = standardised_df_row["genotype_offspring"]
 
+    # Only processes when offspring is assigned a genotype
     if not pd.isna(genotype_offspring):
         typed_offspring = Genotype.from_string(genotype_offspring)
         scheme = BreedingScheme(genotype_father, genotype_mother)
