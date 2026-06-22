@@ -94,8 +94,10 @@ def standardise_pyrat_csv(
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
 
-    to_ignore = standard_csv.apply(_remove_impossible_breeding_schemes, axis=1)
-    standard_csv = standard_csv[~to_ignore]
+    impossible_breeding_schemes = standard_csv.apply(
+        _is_impossible_breeding_scheme, axis=1
+    )
+    standard_csv = standard_csv[~impossible_breeding_schemes]
 
     return standard_csv
 
@@ -389,18 +391,20 @@ def _make_combined_genotype_column_for_identifier(
     ].agg("_".join, axis=1)
 
 
-def _remove_impossible_breeding_schemes(
+def _is_impossible_breeding_scheme(
     standardised_df_row: pd.Series,
 ) -> bool:
-    """Retrieves parent genotypes and pulls the mendalian ratios from
-    BreedingScheme.
-    Compares offspring to these ratios, removing those which are not possible.
-    e.g. hom x hom parents cannot produce wt x wt offspring.
+    """Checks whether the given row contains an impossible breeding scheme.
+
+    Retrieves parent genotypes and pulls the mendalian ratios from
+    BreedingScheme. Compares offspring to these ratios, returning True for
+    those which are not possible.
+    e.g. hom x hom parents cannot produce wt offspring.
 
     Parameters
     ----------
     standardised_df_row : pd.Series
-        rom from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
 
     Returns
     -------

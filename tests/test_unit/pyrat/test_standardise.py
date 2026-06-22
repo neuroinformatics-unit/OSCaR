@@ -71,7 +71,7 @@ def test_standardise_genotypes():
     )
 
 
-def test_remove_impossible_breeding_schemes():
+def test_is_impossible_breeding_scheme():
     """
     Test that impossible breeding schemes are removed from raw data.
     (e.g. hom x hom parents cannot make wt offspring)
