@@ -37,7 +37,7 @@ pre-commit install
 
 ### Token creation
 
-To access a [PyRAT](https://www.scionics.com/pyrat.html) instance via the code in `oscar.colony_management.pyrat`, you will first need to contact Scionics (the creators of PyRAT) to approve access.
+To access a [PyRAT](https://www.scionics.com/pyrat.html) instance via the code in `oscar_colony.colony_management.pyrat`, you will first need to contact Scionics (the creators of PyRAT) to approve access.
 
 - Ask them to setup a new API client called 'OSCaR' on your pyRAT server; they should send you a 'client token'.
 - The new API client will appear under `ADMINISTRATION > API` in pyRAT, and an administrator will need to enable it from there.

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from oscar.breeding_scheme import BreedingScheme, Genotype
+from oscar_colony.breeding_scheme import BreedingScheme, Genotype
 
 
 class Identifier(Enum):

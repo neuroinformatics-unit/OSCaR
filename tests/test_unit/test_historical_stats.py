@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from oscar.breeding_scheme import BreedingScheme, Genotype
-from oscar.historical_stats import (
+from oscar_colony.breeding_scheme import BreedingScheme, Genotype
+from oscar_colony.historical_stats import (
     BreedingSchemeStatistics,
     LineStatistics,
     calculate_historical_stats_for_line,
