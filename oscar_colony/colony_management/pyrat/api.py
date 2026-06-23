@@ -148,8 +148,8 @@ def _get_species_id(species_name: str) -> int:
     )
 
 
-def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
-    """Get mutation information for the given animal eartags"""
+def _get_parent_mutations_with_eartags(eartags: list[str]) -> pd.DataFrame:
+    """Get parent mutation information for the given animal eartags"""
 
     params = {
         "k": ["animalid", "eartag_or_id", "mutations"],
@@ -159,7 +159,6 @@ def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
         "l": len(eartags),
     }
     mutation_data = _make_pyrat_request("animals", params).json()
-
     if len(mutation_data) != len(eartags):
         raise ValueError(
             f"{len(mutation_data)} animals returned for "
@@ -326,10 +325,11 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         expanded_df["parent"] + " " + expanded_df["parent_id"].astype(str)
     )
 
-    _fetch_and_merge_parent_mutations(expanded_df)
+    expanded_df.drop(columns=["parent"])
+    expanded_df = _merge_parent_mutations(expanded_df)
 
     expanded_df = expanded_df.pivot(
-        columns="parent_sex_n", values="parent_eartag", index="animalid"
+        columns="parent_id", values="parent_eartag", index="animalid"
     )
 
     # Returns maximum number of male and female parents for that dataset
@@ -337,20 +337,6 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     # n_fathers = len(expanded_df.filter(like="m").columns)
 
     expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
-
-    # expanded_df = _rename_and_merge_parent_columns(
-    #     "Mother", n_mothers, expanded_df
-    # )
-    # expanded_df = _rename_and_merge_parent_columns(
-    #     "Father", n_fathers, expanded_df
-    # )
-
-    # expanded_df = _fetch_and_merge_parent_mutations(
-    #     "Mother", n_mothers, expanded_df
-    # )
-    # expanded_df = _fetch_and_merge_parent_mutations(
-    #     "Father", n_fathers, expanded_df
-    # )
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no listed parents appear with NaN in the correct
@@ -361,50 +347,40 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     return merged_df
 
 
-def _fetch_and_merge_parent_mutations(
+def _merge_parent_mutations(
     expanded_df: pd.DataFrame,
 ) -> pd.DataFrame:
-    mutations_df = _get_mutations_for_eartags(
-        expanded_df["parent_eartag"].dropna().unique().tolist()
+    """Separate parents by sex, retrieves and add their mutations to df"""
+
+    father_df = expanded_df[expanded_df["parent"] == "Father"]
+    mother_df = expanded_df[expanded_df["parent"] == "Mother"]
+
+    father_mutations_df = _get_parent_mutations_with_eartags(
+        father_df["parent_eartag"].dropna().unique().tolist()
     )
 
-    mutations_df = mutations_df.drop(columns=["animalid"])
+    mother_mutations_df = _get_parent_mutations_with_eartags(
+        mother_df["parent_eartag"].dropna().unique().tolist()
+    )
+
+    mutations_df = pd.concat(
+        [father_mutations_df, mother_mutations_df], ignore_index=True
+    )
+
     expanded_df = expanded_df.merge(
         mutations_df,
         left_on="parent_eartag",
         right_on="eartag_or_id",
         how="left",
     )
-    expanded_df = expanded_df.drop(columns=["parent", "eartag_or_id"])
+
+    expanded_df = expanded_df.drop(
+        columns=["parent", "eartag_or_id", "animalid_y"]
+    )
+
+    expanded_df = expanded_df.rename(columns={"animalid_x": "animal_id"})
 
     return expanded_df
-
-
-def _create_columns_and_keys_for_n_parents(parent: str, n_parents: int):
-    """Generates and maps the parent keys produced by cumcount
-    to readable column names.
-    """
-
-    parent_sex = parent
-    nparents_keys = []
-    column_names = []
-
-    # Change all 'parent'_keys at once
-    for i in range(n_parents):
-        if parent_sex == "Father":
-            parent_key = f"m{i}"
-        elif parent_sex == "Mother":
-            parent_key = f"f{i}"
-        else:
-            raise Exception(f"Expected:'m' or 'f' - Received: {parent_sex}")
-        nparents_keys.append(parent_key)
-
-        if i == 0:
-            column_names.append(parent)
-        else:
-            column_names.append(f"{parent}{i + 1}")
-
-    return column_names, nparents_keys
 
 
 def assign_parent_mutations(
