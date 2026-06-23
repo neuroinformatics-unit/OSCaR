@@ -210,9 +210,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     return animals_df
 
 
-def _expand_mutations_data(
-    animals_df: pd.DataFrame, column_prefix: str = ""
-) -> pd.DataFrame:
+def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     """Expand a mutations column into a full dataframe.
 
     Each row of a mutations column contains a list of dictionaries
@@ -221,8 +219,9 @@ def _expand_mutations_data(
 
     Parameters
     ----------
-    animals_df : pd.DataFrame
-        DataFrame of animals data, with raw mutations column
+    selected_df : pd.DataFrame
+        DataFrame of animals data or expanded df, with raw mutations column
+
     column_prefix: str
         Prefix to add to expanded column names e.g. a prefix of 'Father: '
         would result in columns Father: Mutation 1, Father: Grade 1 etc.
@@ -233,21 +232,21 @@ def _expand_mutations_data(
         Dataframe with separate Mutation and Grade columns
     """
 
-    exploded_mutations_col = animals_df.mutations.explode()
+    exploded_mutations_col = selected_df.mutations.explode()
     mutations_df = pd.DataFrame(
         exploded_mutations_col[~exploded_mutations_col.isna()].tolist()
     )
 
-    mutation_col_name = f"{column_prefix}Mutation"
-    grade_col_name = f"{column_prefix}Grade"
+    mutation_col_name = "Mutation"
+    grade_col_name = "Grade"
 
     # If no mutations are listed for any animals, return an empty Mutation 1 /
     # Grade 1 column
     if mutations_df.empty:
-        animals_df = animals_df.drop(["mutations"], axis=1)
-        animals_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
-        animals_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
-        return animals_df
+        selected_df = selected_df.drop(["mutations"], axis=1)
+        selected_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
+        selected_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
+        return selected_df
 
     mutations_df = mutations_df[["animalid", "mutationname", "mutationgrade"]]
     mutations_df = mutations_df.rename(
@@ -276,7 +275,7 @@ def _expand_mutations_data(
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no mutations appear with NaN in the correct slots
-    merged_df = animals_df.drop(["mutations"], axis=1)
+    merged_df = selected_df.drop(["mutations"], axis=1)
     merged_df = merged_df.merge(pivoted_mutations, on="animalid", how="left")
 
     return merged_df
@@ -294,8 +293,8 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     """Expand column containing multiple parents' information into separate
     columns.
 
-    This adds columns for Mother / Father ID, as well as their respective
-    mutations.
+    This adds columns for Mother / Father IDs, as well as their respective
+    mutations and grades.
     """
 
     exploded_parents_col = animals_df.parents.explode()
@@ -325,48 +324,33 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         expanded_df["parent"] + " " + expanded_df["parent_id"].astype(str)
     )
 
-    expanded_df.drop(columns=["parent"])
     expanded_df = _merge_parent_mutations(expanded_df)
 
-    # mutations_df = _expand_mutations_data(expanded_df)
-
-    expanded_df = expanded_df.pivot(
-        columns="parent_id", values="parent_eartag", index="animalid"
-    )
-
-    # Returns maximum number of male and female parents for that dataset
-    # n_mothers = len(expanded_df.filter(like="f").columns)
-    # n_fathers = len(expanded_df.filter(like="m").columns)
-
-    expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
-
-    # merge into the original animals_df, so animalids are in the same order,
-    # and any animals with no listed parents appear with NaN in the correct
-    # slots
-    merged_df = animals_df.loc[:, ["animalid"]]
-    merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
+    merged_df = _dynamic_column_renaming(expanded_df)
 
     return merged_df
 
 
-def _merge_parent_mutations(
-    expanded_df: pd.DataFrame,
-) -> pd.DataFrame:
-    """Separate parents by sex, retrieves and add their mutations to df"""
+def _merge_parent_mutations(expanded_df: pd.DataFrame) -> pd.DataFrame:
+    """Separate parents by sex - essenital for the testing format
+    retrieve mutations using parent eartags. Then update the df
+    with their mutations"""
 
-    father_df = expanded_df[expanded_df["parent"] == "Father"]
     mother_df = expanded_df[expanded_df["parent"] == "Mother"]
-
-    father_mutations_df = _get_parent_mutations_with_eartags(
-        father_df["parent_eartag"].dropna().unique().tolist()
-    )
+    father_df = expanded_df[expanded_df["parent"] == "Father"]
 
     mother_mutations_df = _get_parent_mutations_with_eartags(
         mother_df["parent_eartag"].dropna().unique().tolist()
     )
+    mother_mutations_df = _expand_mutations_data(mother_mutations_df)
+
+    father_mutations_df = _get_parent_mutations_with_eartags(
+        father_df["parent_eartag"].dropna().unique().tolist()
+    )
+    father_mutations_df = _expand_mutations_data(father_mutations_df)
 
     mutations_df = pd.concat(
-        [father_mutations_df, mother_mutations_df], ignore_index=True
+        [mother_mutations_df, father_mutations_df], ignore_index=True
     )
 
     expanded_df = expanded_df.merge(
@@ -383,3 +367,37 @@ def _merge_parent_mutations(
     expanded_df = expanded_df.rename(columns={"animalid_x": "animalid"})
 
     return expanded_df
+
+
+def _dynamic_column_renaming(expanded_df):
+    """Pivots on multi-values creating a tuple (value, parent_id)
+    to account for all parents.
+
+    Iterates through, renaming with parent names and formatting mutation and
+    grades accordingly.
+    """
+
+    # pull all columns except those used for the index and columns
+    # accounts for multiple mutations and grades
+    value_columns = [
+        col
+        for col in expanded_df.columns
+        if col not in ["animalid", "parent_id"]
+    ]
+
+    # passing multiple values creates a tuple of (values[x], parent_id)
+    tuple_columns_df = expanded_df.pivot(
+        index="animalid", columns="parent_id", values=value_columns
+    )
+
+    new_columns = []
+    for col in tuple_columns_df.columns:
+        if col[0] == "parent_eartag":
+            new_columns.append(col[1])
+        else:
+            new_columns.append(f"{col[1]}: {col[0]}")
+
+    tuple_columns_df.columns = new_columns
+    merged_df = tuple_columns_df.reset_index()
+
+    return merged_df
