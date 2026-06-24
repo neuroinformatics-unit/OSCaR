@@ -302,7 +302,7 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         exploded_parents_col[~exploded_parents_col.isna()].tolist()
     )
 
-    # If no parents are listed for any animals, return empty mother / father
+    # If no parents are listed for ANY animals, return empty mother / father
     # columns, with empty mutation / grade
     if parents_df.empty:
         animals_df = animals_df.loc[:, ["animalid"]]
@@ -311,40 +311,50 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         return animals_df
 
     # Rename column names as father or mother
-    expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
-    expanded_df = expanded_df.rename(columns={"parent_sex": "parent"})
-    expanded_df.loc[expanded_df["parent"] == "m", "parent"] = "Father"
-    expanded_df.loc[expanded_df["parent"] == "f", "parent"] = "Mother"
+    parents_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
+    parents_df = parents_df.rename(columns={"parent_sex": "parent"})
+    parents_df.loc[parents_df["parent"] == "m", "parent"] = "Father"
+    parents_df.loc[parents_df["parent"] == "f", "parent"] = "Mother"
 
     # Number each consecutive parent appearance and append num to column name
-    expanded_df["parent_id"] = (
-        expanded_df.groupby(["animalid", "parent"]).cumcount() + 1
+    parents_df["parent_id"] = (
+        parents_df.groupby(["animalid", "parent"]).cumcount() + 1
     )
-    expanded_df["parent_id"] = (
-        expanded_df["parent"] + " " + expanded_df["parent_id"].astype(str)
+    parents_df["parent_id"] = (
+        parents_df["parent"] + " " + parents_df["parent_id"].astype(str)
     )
 
-    expanded_df, missing_parent = _merge_parent_mutations(expanded_df)
+    raw_parents_df, missing_parent = _merge_parent_mutations(parents_df)
+    clean_parents_df = _parent_column_renaming(raw_parents_df, missing_parent)
 
-    merged_df = _dynamic_column_renaming(expanded_df, missing_parent)
-
-    return merged_df
+    return clean_parents_df
 
 
 def _merge_parent_mutations(
-    expanded_df: pd.DataFrame,
+    parents_df: pd.DataFrame,
 ) -> tuple[pd.DataFrame, str]:
-    """Separate parents by sex - essenital for the testing format
-    retrieve mutations using parent eartags. Then update the df
-    with their mutations"""
+    """
+    Finds mutations based off of unique eartag, then assigns the mutation
+    and grade to each instance of eartag in parent dataframe
 
-    # creates new dataframe for each sex
-    mother_df = expanded_df[expanded_df["parent"] == "Mother"]
-    father_df = expanded_df[expanded_df["parent"] == "Father"]
+    Parameters
+    ----------
+    parents_df : pd.DataFrame
+        dataframe containing animal_id, parent_eartag, parent and parent_id
+
+    Returns
+    -------
+    tuple[pd.DataFrame, str]
+        parent_df with corresponding mutation and grade appended.
+        string is to flag which parent is missing if any.
+    """
 
     parent_df_to_concat = []
     missing_parent = "None"
-    # Obtain and format mutation data for mother - if present
+
+    mother_df = parents_df[parents_df["parent"] == "Mother"]
+    father_df = parents_df[parents_df["parent"] == "Father"]
+
     if not mother_df.empty:
         mother_mutations_df = _get_parent_mutations_with_eartags(
             mother_df["parent_eartag"].dropna().unique().tolist()
@@ -353,7 +363,6 @@ def _merge_parent_mutations(
     else:
         missing_parent = "Mother 1"
 
-    # Obtain and format mutation data for father - if present
     if not father_df.empty:
         father_mutations_df = _get_parent_mutations_with_eartags(
             father_df["parent_eartag"].dropna().unique().tolist()
@@ -365,32 +374,26 @@ def _merge_parent_mutations(
     if parent_df_to_concat:
         mutations_df = pd.concat(parent_df_to_concat, ignore_index=True)
 
-        expanded_df = expanded_df.merge(
+        parents_df = parents_df.merge(
             mutations_df,
             left_on="parent_eartag",
             right_on="eartag_or_id",
             how="left",
         )
 
-        expanded_df = expanded_df.drop(
+        parents_df = parents_df.drop(
             columns=["parent", "eartag_or_id", "animalid_y"]
         )
 
-        expanded_df = expanded_df.rename(columns={"animalid_x": "animalid"})
+        parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
 
-    return expanded_df, missing_parent
+    return parents_df, missing_parent
 
 
-def _dynamic_column_renaming(expanded_df: pd.DataFrame, missing_parent: str):
-    """Pivots on multiple values creating a tuple (value, parent_id)
-    to account for all parents.
-
-    Iterates through, renaming with parent names and formatting mutation and
-    grades accordingly.
-    """
+def _parent_column_renaming(expanded_df: pd.DataFrame, missing_parent: str):
+    """Renames column names independent of how many parent or mutations"""
 
     # pull all columns except those used for the index and columns
-    # accounts for multiple mutations and grades
     value_columns = [
         col
         for col in expanded_df.columns
@@ -402,6 +405,7 @@ def _dynamic_column_renaming(expanded_df: pd.DataFrame, missing_parent: str):
         index="animalid", columns="parent_id", values=value_columns
     )
 
+    # filters through tuples, replacing or rearranging were necessary
     new_columns = []
     for col in tuple_columns_df.columns:
         if col[0] == "parent_eartag":
