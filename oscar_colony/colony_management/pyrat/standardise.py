@@ -388,11 +388,16 @@ def _make_combined_genotype_column_for_identifier(
             genotyped_rows, :
         ].fillna(wildtype_str)
     else:
-        # All remaining NaN values are assumed to be wildtype
+        # Fill wildtype for rows where a parent is actually recorded.
+        if identifier == Identifier.FATHER:
+            parent_id_col = f"ID_father_{parent_num}"
+        else:
+            parent_id_col = f"ID_mother_{parent_num}"
 
-        # this has to be fixed to not generalise over parents that dont exist.
-
-        pivoted_mutations = pivoted_mutations.fillna(wildtype_str)
+        parent_recorded = line_data[parent_id_col].notna()
+        pivoted_mutations.loc[parent_recorded, :] = pivoted_mutations.loc[
+            parent_recorded, :
+        ].fillna(wildtype_str)
 
     # Combine pivoted mutations into a single summary column
     if identifier == Identifier.OFFSPRING:
