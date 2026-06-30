@@ -140,6 +140,9 @@ def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
 def get_pyrat_line_mutations(line_id: int) -> list[str]:
     """Get mutation names for the given line id.
 
+    This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
+    be set as environment variables.
+
     Parameters
     ----------
     line_id : int
