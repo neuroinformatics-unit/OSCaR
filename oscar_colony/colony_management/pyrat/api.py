@@ -1,9 +1,12 @@
 import datetime
+import logging
 import os
 from typing import Any, Iterator
 
 import pandas as pd
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 def get_pyrat_data(
@@ -87,6 +90,42 @@ def get_pyrat_data(
         params["o"] = start_n
         animals_response = _make_pyrat_request("animals", params)
         yield _convert_animals_to_df(animals_response.json())
+
+
+def get_pyrat_lines(max_n: int = 10000) -> list[str]:
+    """Return a list of line names in alphabetical order.
+
+    Parameters
+    ----------
+    max_n : int, optional
+        The maximum number of line names to return. Will log a warning if
+        there are more lines available than max_n.
+
+    Returns
+    -------
+    list[str]
+        List of line names from pyrat
+    """
+
+    params = {
+        "k": ["name", "active"],
+        "s": ["name:asc"],
+        "status": ["available"],
+        "l": max_n,
+    }
+
+    lines_response = _make_pyrat_request("strains", params)
+    total_n = int(lines_response.headers["x-total-count"])
+
+    lines_list = [line_dict["name"] for line_dict in lines_response.json()]
+
+    if total_n > max_n:
+        logger.warning(
+            f"The total number of lines ({total_n} is larger than your "
+            f"current {max_n})"
+        )
+
+    return lines_list
 
 
 def _make_pyrat_request(
