@@ -92,20 +92,29 @@ def get_pyrat_data(
         yield _convert_animals_to_df(animals_response.json())
 
 
-def get_pyrat_lines(max_n_rows: int = 10000) -> pd.DataFrame:
-    """Get a dataframe summarising available lines.
+def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
+    """Fetch available lines directly from the pyRAT api.
+
+    To handle the potentially large number of lines returned from pyRAT,
+    this function returns a generator of pandas dataframes (each with no
+    more than max_n_rows).
+
+    This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
+    be set as environment variables.
 
     Parameters
     ----------
     max_n_rows : int, optional
-        The maximum number of lines to return. Will log a warning if
-        there are more lines available than max_n_rows.
+        Maximum number of lines in each returned dataframe (and therefore
+        returned per request to the pyRAT api)
 
     Returns
     -------
-    pd.DataFrame
-        DataFrame with columns: name and id. Id is useful for fetching
-        line mutations via get_pyrat_line_mutations.
+    Iterator[pd.DataFrame]
+        Generator of dataframes of returned line data, each with columns:
+        name and id. Id is useful for fetching line mutations via
+        get_pyrat_line_mutations. If no data is available for the query,
+        the dataframe will be empty.
     """
 
     params = {
@@ -115,16 +124,17 @@ def get_pyrat_lines(max_n_rows: int = 10000) -> pd.DataFrame:
         "l": max_n_rows,
     }
 
+    # Make one request to determine how many results there are
     lines_response = _make_pyrat_request("strains", params)
-    total_n = int(lines_response.headers["x-total-count"])
+    yield pd.DataFrame(lines_response.json())
+    headers = lines_response.headers
+    total_n = int(headers["x-total-count"])
 
-    if total_n > max_n_rows:
-        logger.warning(
-            f"The total number of lines ({total_n}) is larger than your "
-            f"current max_n_rows"
-        )
-
-    return pd.DataFrame(lines_response)
+    # If more results than max_n_rows, keep making requests and yielding result
+    for start_n in range(max_n_rows, total_n, max_n_rows):
+        params["o"] = start_n
+        lines_response = _make_pyrat_request("strains", params)
+        yield pd.DataFrame(lines_response.json())
 
 
 def get_pyrat_line_mutations(line_id: int) -> list[str]:
