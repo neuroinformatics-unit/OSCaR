@@ -44,39 +44,42 @@ def standardise_pyrat_csv(
     if isinstance(input_csv, (Path, str)):
         input_csv = pd.read_csv(input_csv)
 
-    father_cols, mother_cols, mutation_cols, genotype_cols = (
-        _create_column_name_dicts(input_csv)
-    )
-
+    mutation_cols, genotype_cols = _create_column_name_dicts(input_csv)
     all_mutation_cols_list = sum(mutation_cols.values(), [])
     all_genotype_cols_list = sum(genotype_cols.values(), [])
 
     required_cols = (
-        ["ID", "Line / Strain (Name)", "DOB"]
-        + list(father_cols.keys())
-        + list(mother_cols.keys())
-        + ["Sacrifice reason"]
+        [
+            "ID",
+            "Line / Strain (Name)",
+            "DOB",
+            "Father",
+            "Mother",
+            "Sacrifice reason",
+        ]
         + all_mutation_cols_list
         + all_genotype_cols_list
     )
 
-    rename_dict = {
-        "ID": "ID_offspring",
-        "Line / Strain (Name)": "line_name",
-        "DOB": "date_of_birth",
-        "Sacrifice reason": "sacrifice_reason",
-        **father_cols,
-        **mother_cols,
-    }
-
-    standard_csv = input_csv[required_cols].rename(columns=rename_dict)
+    # Get rid of any additional columns + rename to standard names
+    standard_csv = input_csv[required_cols]
+    standard_csv = standard_csv.rename(
+        columns={
+            "ID": "ID_offspring",
+            "Line / Strain (Name)": "line_name",
+            "DOB": "date_of_birth",
+            "Father": "ID_father",
+            "Mother": "ID_mother",
+            "Sacrifice reason": "sacrifice_reason",
+        }
+    )
 
     standard_csv = _filter_or_correct_genotypes(
         standard_csv, all_genotype_cols_list
     )
 
     standard_csv = _add_n_mutations_column(
-        standard_csv, genotype_cols[(Identifier.OFFSPRING, 0)]
+        standard_csv, genotype_cols[Identifier.OFFSPRING]
     )
     standard_csv = standard_csv.groupby("line_name").apply(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
@@ -128,12 +131,7 @@ def _add_n_mutations_column(
 
 def _create_column_name_dicts(
     input_csv: pd.DataFrame,
-) -> tuple[
-    dict[str, str],
-    dict[str, str],
-    dict[tuple[Identifier, int], list[str]],
-    dict[tuple[Identifier, int], list[str]],
-]:
+) -> tuple[dict[Identifier, list[str]], dict[Identifier, list[str]]]:
     """Create a dict of mutation / genotype column names for all identifiers
     (offspring, father, mother).
 
@@ -149,28 +147,28 @@ def _create_column_name_dicts(
         have Identifier as the keys, and a list of column names as values.
     """
 
-    n_mothers = len(input_csv.filter(regex=r"^Mother \d+$").columns)
-    n_fathers = len(input_csv.filter(regex=r"^Father \d+$").columns)
-
-    father_cols = {
-        f"Father {i}": f"ID_father_{i}" for i in range(1, n_fathers + 1)
-    }
-    mother_cols = {
-        f"Mother {i}": f"ID_mother_{i}" for i in range(1, n_mothers + 1)
+    prefixes = {
+        Identifier.OFFSPRING: "",
+        Identifier.FATHER: "Father: ",
+        Identifier.MOTHER: "Mother: ",
     }
 
     mutation_dict = {}
     genotype_dict = {}
 
-    def _prefix_unpacking(identifier: tuple, prefix: str):
+    for identifier, prefix in prefixes.items():
         # columns of form 'PREFIXMutation NUMBER'
-        mutation_cols = sorted(
-            input_csv.filter(regex=rf"^{prefix}Mutation \d$").columns.tolist()
+        mutation_cols = list(
+            input_csv.columns[
+                input_csv.columns.str.contains(rf"^{prefix}Mutation \d$")
+            ]
         )
 
         # columns of form 'PREFIXGrade NUMBER'
-        genotype_cols = sorted(
-            input_csv.filter(regex=rf"^{prefix}Grade \d$").columns.tolist()
+        genotype_cols = list(
+            input_csv.columns[
+                input_csv.columns.str.contains(rf"^{prefix}Grade \d$")
+            ]
         )
 
         # Each mutation must have a corresponding genotype
@@ -181,22 +179,10 @@ def _create_column_name_dicts(
             )
 
         # Make sure lists are in numeric order e.g. Grade 1, Grade 2, Grade 3
-        mutation_dict[identifier] = mutation_cols
-        genotype_dict[identifier] = genotype_cols
+        mutation_dict[identifier] = sorted(mutation_cols)
+        genotype_dict[identifier] = sorted(genotype_cols)
 
-    _prefix_unpacking((Identifier.OFFSPRING, 0), "")
-
-    father_cols = {}
-    mother_cols = {}
-    for i in range(1, n_fathers + 1):
-        father_cols[f"Father {i}"] = f"ID_father_{i}"
-        _prefix_unpacking((Identifier.FATHER, i), f"Father {i}: ")
-
-    for i in range(1, n_mothers + 1):
-        mother_cols[f"Mother {i}"] = f"ID_mother_{i}"
-        _prefix_unpacking((Identifier.MOTHER, i), f"Mother {i}: ")
-
-    return father_cols, mother_cols, mutation_dict, genotype_dict
+    return mutation_dict, genotype_dict
 
 
 def _filter_or_correct_genotypes(
@@ -257,8 +243,8 @@ def _filter_or_correct_genotypes(
 
 def _make_combined_genotype_columns_for_line(
     line_data: pd.DataFrame,
-    mutation_cols: dict[tuple[Identifier, int], list[str]],
-    genotype_cols: dict[tuple[Identifier, int], list[str]],
+    mutation_cols: dict[Identifier, list[str]],
+    genotype_cols: dict[Identifier, list[str]],
 ) -> pd.DataFrame:
     """For data from a single line, add columns for 'mutations',
     'genotype_offspring', 'genotype_father' and 'genotype_mother'.
@@ -287,22 +273,22 @@ def _make_combined_genotype_columns_for_line(
 
     # get unique offspring mutations for this line
     unique_mutations = pd.unique(
-        line_data[mutation_cols[(Identifier.OFFSPRING, 0)]].values.ravel("K")
+        line_data[mutation_cols[Identifier.OFFSPRING]].values.ravel("K")
     )
-    unique_mutations = list(pd.Series(unique_mutations).dropna().astype(str))
+    unique_mutations = list(pd.Series(unique_mutations).dropna())
 
     # Copy so we don't edit the original dataframe (this can cause issues
     # with apply)
     line_data_with_combined_cols = line_data.copy()
     line_data_with_combined_cols["mutations"] = "_".join(unique_mutations)
 
-    for identifier_key in mutation_cols:
+    for identifier in Identifier:
         _make_combined_genotype_column_for_identifier(
             line_data_with_combined_cols,
-            identifier_key,
+            identifier,
             unique_mutations,
-            mutation_cols[identifier_key],
-            genotype_cols[identifier_key],
+            mutation_cols[identifier],
+            genotype_cols[identifier],
         )
 
     return line_data_with_combined_cols
@@ -310,7 +296,7 @@ def _make_combined_genotype_columns_for_line(
 
 def _make_combined_genotype_column_for_identifier(
     line_data: pd.DataFrame,
-    identifier_key: tuple[Identifier, int],
+    identifier: Identifier,
     unique_mutations: list[str],
     mutation_cols: list[str],
     genotype_cols: list[str],
@@ -337,8 +323,6 @@ def _make_combined_genotype_column_for_identifier(
     genotype_cols : list[str]
         Genotype columns for the given identifier.
     """
-
-    identifier, parent_num = identifier_key
 
     pivoted_mutations = pd.DataFrame(index=line_data.index)
     wildtype_str = Genotype.WT.name.lower()
@@ -387,25 +371,15 @@ def _make_combined_genotype_column_for_identifier(
         pivoted_mutations.loc[genotyped_rows, :] = pivoted_mutations.loc[
             genotyped_rows, :
         ].fillna(wildtype_str)
-    else:
-        # Fill wildtype for rows where a parent is actually recorded.
-        if identifier == Identifier.FATHER:
-            parent_id_col = f"ID_father_{parent_num}"
-        else:
-            parent_id_col = f"ID_mother_{parent_num}"
 
-        parent_recorded = line_data[parent_id_col].notna()
-        pivoted_mutations.loc[parent_recorded, :] = pivoted_mutations.loc[
-            parent_recorded, :
-        ].fillna(wildtype_str)
+    else:
+        # All remaining NaN values are assumed to be wildtype
+        pivoted_mutations = pivoted_mutations.fillna(wildtype_str)
 
     # Combine pivoted mutations into a single summary column
-    if identifier == Identifier.OFFSPRING:
-        new_col_name = "genotype_offspring"
-    else:
-        new_col_name = f"genotype_{identifier.name.lower()}_{parent_num}"
-
+    new_col_name = f"genotype_{identifier.name.lower()}"
     line_data[new_col_name] = pd.Series(dtype=str)
+
     genotyped_rows = ~pivoted_mutations.isna().all(axis=1)
     line_data.loc[genotyped_rows, new_col_name] = pivoted_mutations.loc[
         genotyped_rows, unique_mutations

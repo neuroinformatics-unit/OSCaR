@@ -393,19 +393,8 @@ def _merge_parent_mutations(
 def _parent_column_renaming(expanded_df: pd.DataFrame, missing_parent: str):
     """Renames column names independent of how many parent or mutations"""
 
-    # pull all columns except those used for the index and columns
-    value_columns = [
-        col
-        for col in expanded_df.columns
-        if col not in ["animalid", "parent_id"]
-    ]
+    tuple_columns_df = expanded_df.pivot(index="animalid", columns="parent_id")
 
-    # passing multiple values creates a tuple of (values[x], parent_id)
-    tuple_columns_df = expanded_df.pivot(
-        index="animalid", columns="parent_id", values=value_columns
-    )
-
-    # filters through tuples, replacing or rearranging were necessary
     new_columns = []
     for col in tuple_columns_df.columns:
         if col[0] == "parent_eartag":
