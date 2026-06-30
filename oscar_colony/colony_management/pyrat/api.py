@@ -92,44 +92,67 @@ def get_pyrat_data(
         yield _convert_animals_to_df(animals_response.json())
 
 
-def get_pyrat_lines(max_n: int = 10000) -> list[str]:
-    """Return a list of line names in alphabetical order.
+def get_pyrat_lines(max_n_rows: int = 10000) -> pd.DataFrame:
+    """Get a dataframe summarising available lines.
 
     Parameters
     ----------
-    max_n : int, optional
-        The maximum number of line names to return. Will log a warning if
-        there are more lines available than max_n.
+    max_n_rows : int, optional
+        The maximum number of lines to return. Will log a warning if
+        there are more lines available than max_n_rows.
 
     Returns
     -------
-    list[str]
-        List of line names from pyrat
+    pd.DataFrame
+        DataFrame with columns: name and id. Id is useful for fetching
+        line mutations via get_pyrat_line_mutations.
     """
 
     params = {
-        "k": ["name", "active"],
+        "k": ["name", "id"],
         "s": ["name:asc"],
         "status": ["available"],
-        "l": max_n,
+        "l": max_n_rows,
     }
 
     lines_response = _make_pyrat_request("strains", params)
     total_n = int(lines_response.headers["x-total-count"])
 
-    lines_list = [line_dict["name"] for line_dict in lines_response.json()]
-
-    if total_n > max_n:
+    if total_n > max_n_rows:
         logger.warning(
-            f"The total number of lines ({total_n} is larger than your "
-            f"current {max_n})"
+            f"The total number of lines ({total_n}) is larger than your "
+            f"current max_n_rows"
         )
 
-    return lines_list
+    return pd.DataFrame(lines_response)
+
+
+def get_pyrat_line_mutations(line_id: int) -> list[str]:
+    """Get mutation names for the given line id.
+
+    Parameters
+    ----------
+    line_id : int
+        Id of the line (e.g. as returned from get_pyrat_lines)
+
+    Returns
+    -------
+    list[str]
+        List of mutation names in alphabetical order.
+    """
+
+    # We use the line id here (rather than the line name) as / characters in
+    # line names were causing 404 responses - even when escaped.
+    mutations_response = _make_pyrat_request(f"strains/{line_id}/mutations")
+    mutations_list = [
+        mutations["name"] for mutations in mutations_response.json()
+    ]
+
+    return sorted(mutations_list)
 
 
 def _make_pyrat_request(
-    endpoint_name: str, params: dict[str, Any]
+    endpoint_name: str, params: dict[str, Any] = {}
 ) -> requests.Response:
     """Make request to the pyRAT api.
 
