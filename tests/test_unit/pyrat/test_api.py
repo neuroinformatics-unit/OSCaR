@@ -130,7 +130,7 @@ def create_animal_response(
         ),
         pytest.param(
             create_animal_response(
-                json_filename="pyrat-api-single-parent.json",
+                json_filename="pyrat-api-single-parent-mother.json",
                 query_params={"eartag": "ID-101"},
             ),
             create_animal_response(
