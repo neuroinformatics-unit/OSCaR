@@ -74,7 +74,7 @@ def create_animal_response(
     [
         pytest.param(
             create_animal_response(
-                json_filename="pyrat-api-single-response-parent.json",
+                json_filename="pyrat-api-single-response-parents.json",
                 query_params={"eartag": ["ID-100", "ID-101"]},
             ),
             create_animal_response(
@@ -85,9 +85,7 @@ def create_animal_response(
         ),
         pytest.param(
             create_animal_response(
-                json_filename=(
-                    "pyrat-api-multiple-responses-parents-both-parents.json"
-                ),
+                json_filename="pyrat-api-multiple-responses-parents.json",
                 query_params={
                     "eartag": [
                         "ID-100",
@@ -131,7 +129,6 @@ def create_animal_response(
             id="Multiple items with multiple parents returned",
         ),
         pytest.param(
-            None,
             create_animal_response(
                 json_filename="pyrat-api-single-parent.json",
                 query_params={"eartag": "ID-101"},
@@ -143,7 +140,6 @@ def create_animal_response(
             id="All missing one parent",
         ),
         pytest.param(
-            None,
             None,
             create_animal_response(
                 json_filename="pyrat-api-no-parents-mutations-offspring.json",
@@ -165,9 +161,8 @@ def test_get_pyrat_data(
 
     # add mock responses
     responses.add(species_response)
-    for response in parent_response:
-        if response is not None:
-            responses.add(response)
+    if parent_response is not None:
+        responses.add(parent_response)
     responses.add(offspring_response)
 
     pyrat_dfs = get_pyrat_data(

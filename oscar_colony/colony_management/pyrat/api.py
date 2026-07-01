@@ -324,15 +324,13 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         parents_df["parent"] + " " + parents_df["parent_id"].astype(str)
     )
 
-    raw_parents_df, missing_parent = _merge_parent_mutations(parents_df)
-    clean_parents_df = _parent_column_renaming(raw_parents_df, missing_parent)
+    raw_parents_df = _merge_parent_mutations(parents_df)
+    clean_parents_df = _parent_column_renaming(raw_parents_df)
 
     return clean_parents_df
 
 
-def _merge_parent_mutations(
-    parents_df: pd.DataFrame,
-) -> tuple[pd.DataFrame, str]:
+def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     """
     Finds mutations based off of unique eartag, then assigns the mutation
     and grade to each instance of eartag in parent dataframe
@@ -349,63 +347,49 @@ def _merge_parent_mutations(
         string is to flag which parent is missing if any.
     """
 
-    parent_df_to_concat = []
-    missing_parent = "None"
+    mutations_df = _get_parent_mutations_with_eartags(
+        parents_df["parent_eartag"].dropna().unique().tolist()
+    )
 
-    mother_df = parents_df[parents_df["parent"] == "Mother"]
-    father_df = parents_df[parents_df["parent"] == "Father"]
+    mutations_df = _expand_mutations_data(mutations_df)
 
-    if not mother_df.empty:
-        mother_mutations_df = _get_parent_mutations_with_eartags(
-            mother_df["parent_eartag"].dropna().unique().tolist()
-        )
-        parent_df_to_concat.append(_expand_mutations_data(mother_mutations_df))
-    else:
-        missing_parent = "Mother 1"
+    parents_df = parents_df.merge(
+        mutations_df,
+        left_on="parent_eartag",
+        right_on="eartag_or_id",
+        how="left",
+    )
 
-    if not father_df.empty:
-        father_mutations_df = _get_parent_mutations_with_eartags(
-            father_df["parent_eartag"].dropna().unique().tolist()
-        )
-        parent_df_to_concat.append(_expand_mutations_data(father_mutations_df))
-    else:
-        missing_parent = "Father 1"
+    parents_df = parents_df.drop(
+        columns=["parent", "eartag_or_id", "animalid_y"]
+    )
 
-    if parent_df_to_concat:
-        mutations_df = pd.concat(parent_df_to_concat, ignore_index=True)
+    parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
 
-        parents_df = parents_df.merge(
-            mutations_df,
-            left_on="parent_eartag",
-            right_on="eartag_or_id",
-            how="left",
-        )
-
-        parents_df = parents_df.drop(
-            columns=["parent", "eartag_or_id", "animalid_y"]
-        )
-
-        parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
-
-    return parents_df, missing_parent
+    return parents_df
 
 
-def _parent_column_renaming(expanded_df: pd.DataFrame, missing_parent: str):
-    """Renames column names independent of how many parent or mutations"""
+def _parent_column_renaming(expanded_df: pd.DataFrame):
+    """Pivot and rename df columns. Using the animal_id, the eartags,
+    mutations and grades are assigned to their respective parent column.
+    """
 
+    # pivoting multiple values creates column names which are a tuple of
+    # (old_column_name, parent_id)
     tuple_columns_df = expanded_df.pivot(index="animalid", columns="parent_id")
 
-    new_columns = []
-    for col in tuple_columns_df.columns:
-        if col[0] == "parent_eartag":
-            new_columns.append(col[1])
+    new_col_names = []
+    for col_name, parent_id in tuple_columns_df.columns:
+        if col_name == "parent_eartag":
+            new_col_names.append(parent_id)
         else:
-            new_columns.append(f"{col[1]}: {col[0]}")
+            new_col_names.append(f"{parent_id}: {col_name}")
 
-    tuple_columns_df.columns = new_columns
+    tuple_columns_df.columns = new_col_names
     merged_df = tuple_columns_df.reset_index()
 
-    if missing_parent != "None":
-        _add_empty_parent_cols(merged_df, missing_parent)
+    for parent in ["Mother 1", "Father 1"]:
+        if f"{parent}: Mutation 1" not in merged_df.columns:
+            _add_empty_parent_cols(merged_df, parent)
 
     return merged_df
