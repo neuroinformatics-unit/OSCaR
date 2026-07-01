@@ -4,7 +4,7 @@ import pooch
 
 GIN_REPO = pooch.create(
     path=Path(__file__).parents[1] / "test_data",
-    base_url="https://gin.g-node.org/neuroinformatics/oscar-test-data/raw/hc/more-than-two-parents",
+    base_url="https://gin.g-node.org/neuroinformatics/oscar-test-data/raw/hc/api-more-than-two-parents",
     registry=None,
     retry_if_failed=5,
 )
