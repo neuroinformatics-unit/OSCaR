@@ -163,7 +163,7 @@ def get_pyrat_line_mutations(line_id: int) -> list[str]:
 
 
 def _make_pyrat_request(
-    endpoint_name: str, params: dict[str, Any] = {}
+    endpoint_name: str, params: dict[str, Any] | None = None
 ) -> requests.Response:
     """Make request to the pyRAT api.
 
@@ -174,7 +174,7 @@ def _make_pyrat_request(
     ----------
     endpoint_name : str
         Name of endpoint e.g. 'species'
-    params : dict[str, Any]
+    params : dict[str, Any] | None, optional
         Extra parameters to pass to the endpoint
 
     Returns
