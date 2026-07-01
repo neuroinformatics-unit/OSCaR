@@ -122,6 +122,7 @@ def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
         "s": ["name:asc"],
         "status": ["available"],
         "l": max_n_rows,
+        "o": 0,
     }
 
     # Make one request to determine how many results there are
