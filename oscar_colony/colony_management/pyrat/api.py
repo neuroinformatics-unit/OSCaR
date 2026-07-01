@@ -112,9 +112,9 @@ def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
     -------
     Iterator[pd.DataFrame]
         Generator of dataframes of returned line data, each with columns:
-        name and id. Id is useful for fetching line mutations via
-        get_pyrat_line_mutations. If no data is available for the query,
-        the dataframe will be empty.
+        name and id. Names are in alphabetical order. Id is useful for
+        fetching line mutations via get_pyrat_line_mutations.
+        If no data is available for the query, the dataframe will be empty.
     """
 
     params = {
