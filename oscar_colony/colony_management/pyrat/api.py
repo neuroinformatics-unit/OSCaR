@@ -1,12 +1,9 @@
 import datetime
-import logging
 import os
 from typing import Any, Iterator
 
 import pandas as pd
 import requests
-
-logger = logging.getLogger(__name__)
 
 
 def get_pyrat_data(
