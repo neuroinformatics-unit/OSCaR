@@ -11,6 +11,7 @@ from responses import matchers
 
 from oscar_colony.colony_management.pyrat.api import (
     get_pyrat_data,
+    get_pyrat_line_mutations,
     get_pyrat_lines,
 )
 from tests.pooch_test_data import GIN_REPO, pooch_data_path
@@ -280,3 +281,25 @@ def test_get_pyrat_lines():
     pd.testing.assert_frame_equal(
         pd.concat(pyrat_dfs).reset_index(drop=True), expected_csv
     )
+
+
+@responses.activate
+def test_get_pyrat_line_mutations():
+    """
+    Test fetching of an alphabetical list of line mutations from the
+    pyRAT api.
+    """
+
+    # stop responses library interfering with pooch requests
+    responses.add_passthru(GIN_REPO.base_url)
+
+    # create mock line mutations response
+    line_id = 111
+    line_mutations_response = create_pyrat_response(
+        f"strains/{line_id}/mutations",
+        json_filename="pyrat-api-line-mutations-response.json",
+    )
+    responses.add(line_mutations_response)
+
+    line_mutations = get_pyrat_line_mutations(line_id)
+    assert line_mutations == ["Mut-A", "Mut-B", "Mut-C"]
