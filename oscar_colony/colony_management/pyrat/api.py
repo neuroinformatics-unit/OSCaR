@@ -347,38 +347,24 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
         string is to flag which parent is missing if any.
     """
 
-    parent_df_to_concat = []
+    mutations_df = _get_parent_mutations_with_eartags(
+        parents_df["parent_eartag"].dropna().unique().tolist()
+    )
 
-    mother_df = parents_df[parents_df["parent"] == "Mother"]
-    father_df = parents_df[parents_df["parent"] == "Father"]
+    mutations_df = _expand_mutations_data(mutations_df)
 
-    if not mother_df.empty:
-        mother_mutations_df = _get_parent_mutations_with_eartags(
-            mother_df["parent_eartag"].dropna().unique().tolist()
-        )
-        parent_df_to_concat.append(_expand_mutations_data(mother_mutations_df))
+    parents_df = parents_df.merge(
+        mutations_df,
+        left_on="parent_eartag",
+        right_on="eartag_or_id",
+        how="left",
+    )
 
-    if not father_df.empty:
-        father_mutations_df = _get_parent_mutations_with_eartags(
-            father_df["parent_eartag"].dropna().unique().tolist()
-        )
-        parent_df_to_concat.append(_expand_mutations_data(father_mutations_df))
+    parents_df = parents_df.drop(
+        columns=["parent", "eartag_or_id", "animalid_y"]
+    )
 
-    if parent_df_to_concat:
-        mutations_df = pd.concat(parent_df_to_concat, ignore_index=True)
-
-        parents_df = parents_df.merge(
-            mutations_df,
-            left_on="parent_eartag",
-            right_on="eartag_or_id",
-            how="left",
-        )
-
-        parents_df = parents_df.drop(
-            columns=["parent", "eartag_or_id", "animalid_y"]
-        )
-
-        parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
+    parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
 
     return parents_df
 
