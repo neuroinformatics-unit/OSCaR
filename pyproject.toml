@@ -44,7 +44,8 @@ dev = [
   "setuptools-scm",
   "pooch",
   "python-dotenv",
-  "responses"
+  "responses",
+  "fancylog>=0.8.0",
 ]
 docs = [
     "linkify-it-py",
