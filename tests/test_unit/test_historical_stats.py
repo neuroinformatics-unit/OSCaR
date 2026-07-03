@@ -396,29 +396,35 @@ def expected_stats_ungenotyped():
             BreedingScheme("wt_hom", "hom_het"): BreedingSchemeStatistics(
                 n_breeding_pairs=1,
                 n_successful_matings=1,
-                average_litter_size=6.0,
+                average_litter_size=5.0,
                 average_n_litters_per_pair=1.0,
-                total_n_offspring=6,
-                total_n_genotyped_offspring=4,
+                total_n_offspring=5,
+                total_n_genotyped_offspring=3,
                 n_offspring_per_genotype={
-                    (Genotype.HET, Genotype.WT): 1,
                     (Genotype.HET, Genotype.HOM): 3,
                 },
                 proportion_offspring_per_genotype={
-                    (Genotype.HET, Genotype.WT): 0.25,
-                    (Genotype.HET, Genotype.HOM): 0.75,
+                    (Genotype.HET, Genotype.HOM): 1,
                 },
             ),
             BreedingScheme("het_het", "het_het"): BreedingSchemeStatistics(
                 n_breeding_pairs=1,
                 n_successful_matings=1,
-                average_litter_size=2.0,
+                average_litter_size=3.0,
                 average_n_litters_per_pair=1.0,
-                total_n_offspring=2,
-                total_n_genotyped_offspring=2,
-                n_offspring_per_genotype={(Genotype.HET, Genotype.HET): 2},
+                total_n_offspring=3,
+                total_n_genotyped_offspring=3,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT): 1,
+                    (Genotype.HET, Genotype.HET): 2,
+                },
                 proportion_offspring_per_genotype={
-                    (Genotype.HET, Genotype.HET): 1.0
+                    (Genotype.HET, Genotype.WT): pytest.approx(
+                        0.333, abs=1e-3
+                    ),
+                    (Genotype.HET, Genotype.HET): pytest.approx(
+                        0.666, abs=1e-3
+                    ),
                 },
             ),
             BreedingScheme("wt_wt", "wt_wt"): BreedingSchemeStatistics(
