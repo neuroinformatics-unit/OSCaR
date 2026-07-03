@@ -222,10 +222,6 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     selected_df : pd.DataFrame
         DataFrame of animals data or expanded df, with raw mutations column
 
-    column_prefix: str
-        Prefix to add to expanded column names e.g. a prefix of 'Father: '
-        would result in columns Father: Mutation 1, Father: Grade 1 etc.
-
     Returns
     -------
     pd.DataFrame
@@ -332,8 +328,9 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
 
 def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Finds mutations based off of unique eartag, then assigns the mutation
-    and grade to each instance of eartag in parent dataframe
+    Fetch parent mutations from the pyRAT api using their eartag, and creates
+    numbered 'Mutation' and 'Grade' columns for each parent.
+
 
     Parameters
     ----------
@@ -342,9 +339,8 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
 
     Returns
     -------
-    tuple[pd.DataFrame, str]
+    pd.DataFrame
         parent_df with corresponding mutation and grade appended.
-        string is to flag which parent is missing if any.
     """
 
     mutations_df = _get_parent_mutations_with_eartags(
@@ -352,6 +348,7 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     mutations_df = _expand_mutations_data(mutations_df)
+    mutations_df = mutations_df.drop(columns=["animalid"])
 
     parents_df = parents_df.merge(
         mutations_df,
@@ -360,22 +357,23 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
         how="left",
     )
 
-    parents_df = parents_df.drop(
-        columns=["parent", "eartag_or_id", "animalid_y"]
-    )
-
-    parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
+    parents_df = parents_df.drop(columns=["eartag_or_id"])
 
     return parents_df
 
 
 def _parent_column_renaming(expanded_df: pd.DataFrame):
-    """Pivot and rename df columns. Using the animal_id, the eartags,
-    mutations and grades are assigned to their respective parent column.
     """
+    Create columns for each unique parent_id.
+
+    This function removes the parent column in favour of parent_id, then it
+    collapses all rows with the same animalid into one row. Each unique
+    parent_id is given its own column, and Mutation / Grade columns are
+    re-named to include the relevant parent_id as a prefix."""
 
     # pivoting multiple values creates column names which are a tuple of
     # (old_column_name, parent_id)
+    expanded_df = expanded_df.drop(columns=["parent"])
     tuple_columns_df = expanded_df.pivot(index="animalid", columns="parent_id")
 
     new_col_names = []
