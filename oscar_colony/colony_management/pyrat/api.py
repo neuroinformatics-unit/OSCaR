@@ -220,7 +220,7 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     Parameters
     ----------
     selected_df : pd.DataFrame
-        DataFrame of animals data or expanded df, with raw mutations column
+        DataFrame of pyRAT data with raw mutations column
 
     Returns
     -------
@@ -320,7 +320,7 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         parents_df["parent"] + " " + parents_df["parent_id"].astype(str)
     )
 
-    raw_parents_df = _merge_parent_mutations(parents_df)
+    parents_df_with_mutations = _merge_parent_mutations(parents_df)
     clean_parents_df = _parent_column_renaming(raw_parents_df)
 
     return clean_parents_df
@@ -335,7 +335,7 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     Parameters
     ----------
     parents_df : pd.DataFrame
-        dataframe containing animal_id, parent_eartag, parent and parent_id
+        dataframe containing animalid, parent_eartag, parent and parent_id
 
     Returns
     -------
