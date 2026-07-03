@@ -321,7 +321,7 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     parents_df_with_mutations = _merge_parent_mutations(parents_df)
-    clean_parents_df = _parent_column_renaming(raw_parents_df)
+    clean_parents_df = _parent_column_renaming(parents_df_with_mutations)
 
     return clean_parents_df
 
