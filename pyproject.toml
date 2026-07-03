@@ -12,7 +12,7 @@ dependencies = [
     "numpy",
     "pandas",
     "requests",
-    "scipy"
+    "scipy",
 ]
 
 license = "BSD-3-Clause"
@@ -46,6 +46,7 @@ dev = [
   "python-dotenv",
   "responses",
   "fancylog>=0.8.0",
+  "gitpython>=3.1.50",
 ]
 docs = [
     "linkify-it-py",
