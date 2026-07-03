@@ -396,7 +396,7 @@ def _is_impossible_breeding_scheme(
 ) -> bool:
     """Checks whether the given row contains an impossible breeding scheme.
 
-    Retrieves parent genotypes and pulls the mendalian ratios from
+    Retrieves parent genotypes and pulls the mendelian ratios from
     BreedingScheme. Compares offspring to these ratios, returning True for
     those which are not possible.
     e.g. hom x hom parents cannot produce wt offspring.
