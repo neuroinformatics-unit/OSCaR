@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 from typing import Any, Iterator
 
@@ -81,6 +82,7 @@ def get_pyrat_data(
     yield _convert_animals_to_df(animals_response.json())
     headers = animals_response.headers
     total_n = int(headers["x-total-count"])
+    logging.info(f"{total_n} animals found in PyRAT database")
 
     # If more results than max_n_rows, keep making requests and yielding result
     for start_n in range(max_n_rows, total_n, max_n_rows):
@@ -121,7 +123,7 @@ def _make_pyrat_request(
 
     # If the request didn't succeed, raise an error containing the status
     # code
-    response.raise_for_status()
+    response.raise_for_status
 
     return response
 
@@ -243,6 +245,10 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     # If no mutations are listed for any animals, return an empty Mutation 1 /
     # Grade 1 column
     if mutations_df.empty:
+        logging.info(
+            f"no mutation(s) found for these animal_ids : "
+            f"{selected_df['animalid'].explode().unique().tolist()}"
+        )
         selected_df = selected_df.drop(["mutations"], axis=1)
         selected_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
         selected_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
@@ -305,6 +311,10 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     # If no parents are listed for ANY animals, return empty mother / father
     # columns, with empty mutation / grade
     if parents_df.empty:
+        logging.info(
+            f"no parent(s) found for these animal_ids : "
+            f"{animals_df['animalid'].explode().unique().tolist()}"
+        )
         animals_df = animals_df.loc[:, ["animalid"]]
         _add_empty_parent_cols(animals_df, "Mother 1")
         _add_empty_parent_cols(animals_df, "Father 1")
@@ -390,6 +400,10 @@ def _parent_column_renaming(expanded_df: pd.DataFrame):
 
     for parent in ["Mother 1", "Father 1"]:
         if f"{parent}: Mutation 1" not in merged_df.columns:
+            logging.info(
+                f"{parent} not recorded for animalid(s) : "
+                f"{merged_df['animalid'].unique().tolist()}"
+            )
             _add_empty_parent_cols(merged_df, parent)
 
     return merged_df
