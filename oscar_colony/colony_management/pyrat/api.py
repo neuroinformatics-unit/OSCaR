@@ -148,24 +148,32 @@ def _get_species_id(species_name: str) -> int:
     )
 
 
-def _get_parent_mutations_with_eartags(eartags: list[str]) -> pd.DataFrame:
+def _get_parent_mutations_with_eartags(
+    eartags: list[str], batch_size: int
+) -> pd.DataFrame:
     """Get parent mutation information for the given animal eartags"""
 
-    params = {
-        "k": ["animalid", "eartag_or_id", "mutations"],
-        "s": ["eartag_or_id:asc"],
-        "state": ["live", "sacrificed", "exported"],
-        "eartag": eartags,
-        "l": len(eartags),
-    }
-    mutation_data = _make_pyrat_request("animals", params).json()
-    if len(mutation_data) != len(eartags):
+    all_mutation_data = []
+
+    for start in range(0, len(eartags), batch_size):
+        eartag_batch = eartags[start : start + batch_size]
+        params = {
+            "k": ["animalid", "eartag_or_id", "mutations"],
+            "s": ["eartag_or_id:asc"],
+            "state": ["live", "sacrificed", "exported"],
+            "eartag": eartag_batch,
+            "l": len(eartag_batch),
+        }
+        batch_data = _make_pyrat_request("animals", params).json()
+        all_mutation_data.extend(batch_data)
+
+    if len(all_mutation_data) != len(eartags):
         raise ValueError(
-            f"{len(mutation_data)} animals returned for "
+            f"{len(all_mutation_data)} animals returned for "
             f"{len(eartags)} eartags: {eartags}"
         )
 
-    return pd.DataFrame(mutation_data)
+    return pd.DataFrame(all_mutation_data)
 
 
 def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
@@ -344,7 +352,7 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     """
 
     mutations_df = _get_parent_mutations_with_eartags(
-        parents_df["parent_eartag"].dropna().unique().tolist()
+        parents_df["parent_eartag"].dropna().unique().tolist(), 400
     )
 
     mutations_df = _expand_mutations_data(mutations_df)
