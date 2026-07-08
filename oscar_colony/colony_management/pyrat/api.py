@@ -224,10 +224,10 @@ def _get_species_id(species_name: str) -> int:
 def _get_parent_mutations_with_eartags(
     eartags: list[str], batch_size: int = 400
 ) -> pd.DataFrame:
-    """Get parent mutation information for the given animal eartags
+    """Get parent mutation information for the given animal eartags.
 
     Since eartags are appended to the URL, it can exceed the maximum request.
-    So it processes in batches, so as to remain below the threshold.
+    It is processed in batches, to remain below the threshold.
 
     Parameters
     ----------
