@@ -221,25 +221,49 @@ def _get_species_id(species_name: str) -> int:
     )
 
 
-def _get_mutations_for_eartags(eartags: list[str]) -> pd.DataFrame:
-    """Get mutation information for the given animal eartags"""
+def _get_parent_mutations_with_eartags(
+    eartags: list[str], batch_size: int = 400
+) -> pd.DataFrame:
+    """Get parent mutation information for the given animal eartags.
 
-    params = {
-        "k": ["animalid", "eartag_or_id", "mutations"],
-        "s": ["eartag_or_id:asc"],
-        "state": ["live", "sacrificed", "exported"],
-        "eartag": eartags,
-        "l": len(eartags),
-    }
-    mutation_data = _make_pyrat_request("animals", params).json()
+    Since eartags are appended to the URL, it can exceed the maximum request
+    size. It is processed in batches, to remain below the threshold.
 
-    if len(mutation_data) != len(eartags):
+    Parameters
+    ----------
+    eartags : list[str]
+        all the unique parent eartags
+    batch_size : int, optional
+        The number of eartags to process per request to the pyRAT api, by
+        default 400. To prevent exceeding maximum characters.
+
+    Returns
+    -------
+    pd.DataFrame
+        df containing the parent eartag along with their assigned mutations.
+    """
+
+    all_mutation_data = []
+
+    for start in range(0, len(eartags), batch_size):
+        eartag_batch = eartags[start : start + batch_size]
+        params = {
+            "k": ["animalid", "eartag_or_id", "mutations"],
+            "s": ["eartag_or_id:asc"],
+            "state": ["live", "sacrificed", "exported"],
+            "eartag": eartag_batch,
+            "l": len(eartag_batch),
+        }
+        batch_data = _make_pyrat_request("animals", params).json()
+        all_mutation_data.extend(batch_data)
+
+    if len(all_mutation_data) != len(eartags):
         raise ValueError(
-            f"{len(mutation_data)} animals returned for "
+            f"{len(all_mutation_data)} animals returned for "
             f"{len(eartags)} eartags: {eartags}"
         )
 
-    return pd.DataFrame(mutation_data)
+    return pd.DataFrame(all_mutation_data)
 
 
 def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
@@ -284,9 +308,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
     return animals_df
 
 
-def _expand_mutations_data(
-    animals_df: pd.DataFrame, column_prefix: str = ""
-) -> pd.DataFrame:
+def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     """Expand a mutations column into a full dataframe.
 
     Each row of a mutations column contains a list of dictionaries
@@ -295,11 +317,8 @@ def _expand_mutations_data(
 
     Parameters
     ----------
-    animals_df : pd.DataFrame
-        DataFrame of animals data, with raw mutations column
-    column_prefix: str
-        Prefix to add to expanded column names e.g. a prefix of 'Father: '
-        would result in columns Father: Mutation 1, Father: Grade 1 etc.
+    selected_df : pd.DataFrame
+        DataFrame of pyRAT data with raw mutations column
 
     Returns
     -------
@@ -307,21 +326,21 @@ def _expand_mutations_data(
         Dataframe with separate Mutation and Grade columns
     """
 
-    exploded_mutations_col = animals_df.mutations.explode()
+    exploded_mutations_col = selected_df.mutations.explode()
     mutations_df = pd.DataFrame(
         exploded_mutations_col[~exploded_mutations_col.isna()].tolist()
     )
 
-    mutation_col_name = f"{column_prefix}Mutation"
-    grade_col_name = f"{column_prefix}Grade"
+    mutation_col_name = "Mutation"
+    grade_col_name = "Grade"
 
     # If no mutations are listed for any animals, return an empty Mutation 1 /
     # Grade 1 column
     if mutations_df.empty:
-        animals_df = animals_df.drop(["mutations"], axis=1)
-        animals_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
-        animals_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
-        return animals_df
+        selected_df = selected_df.drop(["mutations"], axis=1)
+        selected_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
+        selected_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
+        return selected_df
 
     mutations_df = mutations_df[["animalid", "mutationname", "mutationgrade"]]
     mutations_df = mutations_df.rename(
@@ -350,7 +369,7 @@ def _expand_mutations_data(
 
     # merge into the original animals_df, so animalids are in the same order,
     # and any animals with no mutations appear with NaN in the correct slots
-    merged_df = animals_df.drop(["mutations"], axis=1)
+    merged_df = selected_df.drop(["mutations"], axis=1)
     merged_df = merged_df.merge(pivoted_mutations, on="animalid", how="left")
 
     return merged_df
@@ -368,8 +387,8 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     """Expand column containing multiple parents' information into separate
     columns.
 
-    This adds columns for Mother / Father ID, as well as their respective
-    mutations.
+    This adds columns for Mother / Father IDs, as well as their respective
+    mutations and grades.
     """
 
     exploded_parents_col = animals_df.parents.explode()
@@ -377,65 +396,97 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         exploded_parents_col[~exploded_parents_col.isna()].tolist()
     )
 
-    # If no parents are listed for any animals, return empty mother / father
+    # If no parents are listed for ANY animals, return empty mother / father
     # columns, with empty mutation / grade
     if parents_df.empty:
         animals_df = animals_df.loc[:, ["animalid"]]
-        _add_empty_parent_cols(animals_df, "Mother")
-        _add_empty_parent_cols(animals_df, "Father")
+        _add_empty_parent_cols(animals_df, "Mother 1")
+        _add_empty_parent_cols(animals_df, "Father 1")
         return animals_df
 
-    # Create dataframe with one row per animalid, and one column each for
-    # ID of mother and father
-    expanded_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
-    expanded_df = expanded_df.pivot(
-        columns="parent_sex", values="parent_eartag", index="animalid"
+    # Rename column names as father or mother
+    parents_df = parents_df[["animalid", "parent_eartag", "parent_sex"]]
+    parents_df = parents_df.rename(columns={"parent_sex": "parent"})
+    parents_df.loc[parents_df["parent"] == "m", "parent"] = "Father"
+    parents_df.loc[parents_df["parent"] == "f", "parent"] = "Mother"
+
+    # Number each consecutive parent appearance and append num to column name
+    parents_df["parent_id"] = (
+        parents_df.groupby(["animalid", "parent"]).cumcount() + 1
     )
-    expanded_df = expanded_df.reset_index().rename_axis(None, axis=1)
-    expanded_df = expanded_df.rename(columns={"f": "Mother", "m": "Father"})
+    parents_df["parent_id"] = (
+        parents_df["parent"] + " " + parents_df["parent_id"].astype(str)
+    )
 
-    # Fetch mutation info for all parents and merge
-    for parent in ["Mother", "Father"]:
-        if parent in expanded_df:
-            parent_df = _get_mutations_for_parent(expanded_df, parent)
-            expanded_df = expanded_df.merge(parent_df, on=parent, how="left")
-        else:
-            _add_empty_parent_cols(expanded_df, parent)
+    parents_df_with_mutations = _merge_parent_mutations(parents_df)
+    clean_parents_df = _parent_column_renaming(parents_df_with_mutations)
 
-    # merge into the original animals_df, so animalids are in the same order,
-    # and any animals with no listed parents appear with NaN in the correct
-    # slots
-    merged_df = animals_df.loc[:, ["animalid"]]
-    merged_df = merged_df.merge(expanded_df, on="animalid", how="left")
-
-    return expanded_df
+    return clean_parents_df
 
 
-def _get_mutations_for_parent(
-    parents_df: pd.DataFrame, parent: str
-) -> pd.DataFrame:
-    """Return a dataframe with mutations for all unique parent IDs.
+def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Fetch parent mutations from the pyRAT api using their eartag, and creates
+    numbered 'Mutation' and 'Grade' columns for each parent.
+
 
     Parameters
     ----------
     parents_df : pd.DataFrame
-        Dataframe with animalid and 'parent' column
-    parent : str
-        Name of column of parent ids
+        dataframe containing animalid, parent_eartag, parent and parent_id
 
     Returns
     -------
     pd.DataFrame
-        Dataframe with parent IDs and mutation / grade columns
+        parent_df with corresponding mutation and grade appended.
     """
 
-    mutations_df = _get_mutations_for_eartags(
-        parents_df[parent].dropna().unique().tolist()
+    mutations_df = _get_parent_mutations_with_eartags(
+        parents_df["parent_eartag"].dropna().unique().tolist()
     )
-    mutations_df = _expand_mutations_data(
-        mutations_df, column_prefix=f"{parent}: "
-    )
-    mutations_df = mutations_df.drop(["animalid"], axis=1)
-    mutations_df = mutations_df.rename(columns={"eartag_or_id": parent})
 
-    return mutations_df
+    mutations_df = _expand_mutations_data(mutations_df)
+    mutations_df = mutations_df.drop(columns=["animalid"])
+
+    parents_df = parents_df.merge(
+        mutations_df,
+        left_on="parent_eartag",
+        right_on="eartag_or_id",
+        how="left",
+    )
+
+    parents_df = parents_df.drop(columns=["eartag_or_id"])
+
+    return parents_df
+
+
+def _parent_column_renaming(expanded_df: pd.DataFrame):
+    """
+    Create columns for each unique parent_id.
+
+    This function removes the parent column in favour of parent_id, then it
+    collapses all rows with the same animalid into one row. Each unique
+    parent_id is given its own column, and Mutation / Grade columns are
+    re-named to include the relevant parent_id as a prefix.
+    """
+
+    # pivoting multiple values creates column names which are a tuple of
+    # (old_column_name, parent_id)
+    expanded_df = expanded_df.drop(columns=["parent"])
+    tuple_columns_df = expanded_df.pivot(index="animalid", columns="parent_id")
+
+    new_col_names = []
+    for col_name, parent_id in tuple_columns_df.columns:
+        if col_name == "parent_eartag":
+            new_col_names.append(parent_id)
+        else:
+            new_col_names.append(f"{parent_id}: {col_name}")
+
+    tuple_columns_df.columns = new_col_names
+    merged_df = tuple_columns_df.reset_index()
+
+    for parent in ["Mother 1", "Father 1"]:
+        if f"{parent}: Mutation 1" not in merged_df.columns:
+            _add_empty_parent_cols(merged_df, parent)
+
+    return merged_df
