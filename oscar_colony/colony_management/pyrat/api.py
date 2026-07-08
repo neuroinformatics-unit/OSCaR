@@ -224,7 +224,24 @@ def _get_species_id(species_name: str) -> int:
 def _get_parent_mutations_with_eartags(
     eartags: list[str], batch_size: int = 400
 ) -> pd.DataFrame:
-    """Get parent mutation information for the given animal eartags"""
+    """Get parent mutation information for the given animal eartags
+
+    Since eartags are appended to the URL, it can exceed the maximum request.
+    So it processes in batches, so as to remain below the threshold.
+
+    Parameters
+    ----------
+    eartags : list[str]
+        all the unique parent eartags
+    batch_size : int, optional
+        limits the length of the eartag list, by default 400. To prevent
+        exceeding maximum characters.
+
+    Returns
+    -------
+    pd.DataFrame
+        df containing the parent eartag along with their assigned mutations.
+    """
 
     all_mutation_data = []
 
