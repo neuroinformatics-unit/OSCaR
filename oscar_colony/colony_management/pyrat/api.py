@@ -226,7 +226,7 @@ def _get_parent_mutations_with_eartags(
 ) -> pd.DataFrame:
     """Get parent mutation information for the given animal eartags.
 
-    Since eartags are appended to the URL, it can exceed the maximum request.
+    Since eartags are appended to the URL, it can exceed the maximum request size.
     It is processed in batches, to remain below the threshold.
 
     Parameters
@@ -234,7 +234,7 @@ def _get_parent_mutations_with_eartags(
     eartags : list[str]
         all the unique parent eartags
     batch_size : int, optional
-        limits the length of the eartag list, by default 400. To prevent
+        The number of eartags to process per request to the pyRAT api, by default 400. To prevent
         exceeding maximum characters.
 
     Returns
