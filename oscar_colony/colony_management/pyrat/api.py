@@ -222,7 +222,7 @@ def _get_species_id(species_name: str) -> int:
 
 
 def _get_parent_mutations_with_eartags(
-    eartags: list[str], batch_size: int
+    eartags: list[str], batch_size: int = 400
 ) -> pd.DataFrame:
     """Get parent mutation information for the given animal eartags"""
 
@@ -425,7 +425,7 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     """
 
     mutations_df = _get_parent_mutations_with_eartags(
-        parents_df["parent_eartag"].dropna().unique().tolist(), 400
+        parents_df["parent_eartag"].dropna().unique().tolist()
     )
 
     mutations_df = _expand_mutations_data(mutations_df)
@@ -450,7 +450,8 @@ def _parent_column_renaming(expanded_df: pd.DataFrame):
     This function removes the parent column in favour of parent_id, then it
     collapses all rows with the same animalid into one row. Each unique
     parent_id is given its own column, and Mutation / Grade columns are
-    re-named to include the relevant parent_id as a prefix."""
+    re-named to include the relevant parent_id as a prefix.
+    """
 
     # pivoting multiple values creates column names which are a tuple of
     # (old_column_name, parent_id)
