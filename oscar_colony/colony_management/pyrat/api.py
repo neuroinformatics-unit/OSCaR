@@ -64,20 +64,25 @@ def get_pyrat_data(
         "state": ["live", "sacrificed", "exported"],
         "l": max_n_rows,
     }
-
+    log_params = {}
     if line_name is not None:
         params["strain_name_with_id_like"] = line_name
+        log_params["strain name with id like"] = line_name
 
     if species_name is not None:
         params["species"] = _get_species_id(species_name)
+        log_params["species"] = species_name
 
     if birth_date_from is not None:
         params["birth_date_from"] = birth_date_from.isoformat()
+        log_params["birth date from"] = birth_date_from.isoformat()
 
     if birth_date_to is not None:
         params["birth_date_to"] = birth_date_to.isoformat()
+        log_params["birth date to"] = birth_date_to.isoformat()
 
     # Make one request to determine how many results there are
+    logging.info(f"searching PyRAT using custom parameters: {log_params}")
     animals_response = _make_pyrat_request("animals", params)
     yield _convert_animals_to_df(animals_response.json())
     headers = animals_response.headers
@@ -111,6 +116,7 @@ def _make_pyrat_request(
     requests.Response
         The requests response object, containing data from pyRAT
     """
+    logging.info(f"endpoint_name : {endpoint_name}")
     response = requests.get(
         url=f"{os.environ['PYRAT_URL']}/api/v3/{endpoint_name}",
         auth=(
@@ -124,6 +130,7 @@ def _make_pyrat_request(
     # If the request didn't succeed, raise an error containing the status
     # code
     response.raise_for_status
+    logging.debug(response)
 
     return response
 
@@ -179,6 +186,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
 
     animals_df = pd.DataFrame(animals_data)
     if animals_df.empty:
+        logging.info("no animals collected for this search populated")
         return animals_df
 
     # Convert dateborn to Year-Month-Day format (removing time info)
@@ -208,7 +216,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
             "species_name": "Species",
         }
     )
-
+    logging.debug(animals_df)
     return animals_df
 
 
@@ -283,6 +291,7 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     # and any animals with no mutations appear with NaN in the correct slots
     merged_df = selected_df.drop(["mutations"], axis=1)
     merged_df = merged_df.merge(pivoted_mutations, on="animalid", how="left")
+    logging.debug(merged_df)
 
     return merged_df
 

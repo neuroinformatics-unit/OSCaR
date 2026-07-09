@@ -1,5 +1,6 @@
 import datetime
 import json
+import logging
 import os
 import re
 from typing import Any
@@ -155,27 +156,31 @@ def test_get_pyrat_data(
     offspring_response,
     expected_csv_name,
     species_response,
+    caplog,
 ):
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
+    with caplog.at_level(logging.INFO):
+        # stop responses library interfering with pooch requests
+        responses.add_passthru(GIN_REPO.base_url)
 
-    # add mock responses
-    responses.add(species_response)
-    if parent_response is not None:
-        responses.add(parent_response)
-    responses.add(offspring_response)
+        # add mock responses
+        responses.add(species_response)
+        if parent_response is not None:
+            responses.add(parent_response)
+        responses.add(offspring_response)
 
-    pyrat_dfs = get_pyrat_data(
-        species_name="Mouse",
-        birth_date_from=datetime.date(2026, 2, 1),
-        birth_date_to=datetime.date(2026, 3, 1),
-    )
-    pyrat_dfs = list(pyrat_dfs)
+        pyrat_dfs = get_pyrat_data(
+            species_name="Mouse",
+            birth_date_from=datetime.date(2026, 2, 1),
+            birth_date_to=datetime.date(2026, 3, 1),
+        )
+
+        pyrat_dfs = list(pyrat_dfs)
 
     expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
     assert len(pyrat_dfs) == 1
     # use check_like=True to ignore column order
     pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
+    assert len(caplog.records) == 6
 
 
 @responses.activate
