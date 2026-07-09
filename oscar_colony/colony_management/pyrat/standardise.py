@@ -92,7 +92,7 @@ def standardise_pyrat_csv(
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
 
     impossible_breeding_schemes = standard_csv.apply(
-        _is_impossible_breeding_scheme, axis=1
+        _check_data_input_reliability, axis=1
     )
     standard_csv = standard_csv[~impossible_breeding_schemes]
 
@@ -164,42 +164,34 @@ def _create_column_name_dicts(
         f"Mother {i}": f"ID_mother_{i}" for i in range(1, n_mothers + 1)
     }
 
-    mutation_dict = {}
-    genotype_dict = {}
+    mutation_dict: dict = {}
+    genotype_dict: dict = {}
 
-    def _prefix_unpacking(identifier: tuple, prefix: str):
-        # columns of form 'PREFIXMutation NUMBER'
-        mutation_cols = sorted(
-            input_csv.filter(regex=rf"^{prefix}Mutation \d$").columns.tolist()
-        )
-
-        # columns of form 'PREFIXGrade NUMBER'
-        genotype_cols = sorted(
-            input_csv.filter(regex=rf"^{prefix}Grade \d$").columns.tolist()
-        )
-
-        # Each mutation must have a corresponding genotype
-        if len(mutation_cols) != len(genotype_cols):
-            raise ValueError(
-                f"Not all {identifier} mutation columns have a corresponding "
-                f"genotype column."
-            )
-
-        # Make sure lists are in numeric order e.g. Grade 1, Grade 2, Grade 3
-        mutation_dict[identifier] = mutation_cols
-        genotype_dict[identifier] = genotype_cols
-
-    _prefix_unpacking((Identifier.OFFSPRING, 0), "")
+    _prefix_unpacking(
+        mutation_dict, genotype_dict, input_csv, (Identifier.OFFSPRING, 0), ""
+    )
 
     father_cols = {}
     mother_cols = {}
     for i in range(1, n_fathers + 1):
         father_cols[f"Father {i}"] = f"ID_father_{i}"
-        _prefix_unpacking((Identifier.FATHER, i), f"Father {i}: ")
+        _prefix_unpacking(
+            mutation_dict,
+            genotype_dict,
+            input_csv,
+            (Identifier.FATHER, i),
+            f"Father {i}: ",
+        )
 
     for i in range(1, n_mothers + 1):
         mother_cols[f"Mother {i}"] = f"ID_mother_{i}"
-        _prefix_unpacking((Identifier.MOTHER, i), f"Mother {i}: ")
+        _prefix_unpacking(
+            mutation_dict,
+            genotype_dict,
+            input_csv,
+            (Identifier.MOTHER, i),
+            f"Mother {i}: ",
+        )
 
     return father_cols, mother_cols, mutation_dict, genotype_dict
 
@@ -417,6 +409,20 @@ def _make_combined_genotype_column_for_identifier(
     ].agg("_".join, axis=1)
 
 
+def _check_data_input_reliability(
+    standardised_df_row: pd.Series,
+) -> bool:
+
+    ambigious_parentage = _is_ambigious_parentage(standardised_df_row)
+    impossible_breeding_schemes = _is_impossible_breeding_scheme(
+        standardised_df_row
+    )
+
+    if impossible_breeding_schemes or ambigious_parentage:
+        return True
+    return False
+
+
 def _is_impossible_breeding_scheme(
     standardised_df_row: pd.Series,
 ) -> bool:
@@ -438,8 +444,6 @@ def _is_impossible_breeding_scheme(
         bool of whether or not that row contains an impossible breeding scheme
     """
 
-    pop = False
-
     genotype_father = standardised_df_row["genotype_father_1"]
     genotype_mother = standardised_df_row["genotype_mother_1"]
     genotype_offspring = standardised_df_row["genotype_offspring"]
@@ -451,8 +455,78 @@ def _is_impossible_breeding_scheme(
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
-            pop = True
+            return True
         elif ratio[typed_offspring] == 0:
-            pop = True
+            return True
 
-    return pop
+    return False
+
+
+def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
+    """_summary_
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        _description_
+
+    Returns
+    -------
+    bool
+        _description_
+    """
+
+    mother = r"genotype_mother_\d+$"
+    father = r"genotype_father_\d+$"
+
+    for parent in [mother, father]:
+        n_parent = len(standardised_df_row.filter(regex=parent).index)
+
+        if n_parent == 1:
+            continue
+
+        parent_genotypes: list = (
+            standardised_df_row.filter(regex=parent).dropna().values.tolist()
+        )
+
+        standard_genotype = sorted(parent_genotypes[0].split("_"))
+
+        for i, parent_genotype in enumerate(parent_genotypes):
+            if i == 0:
+                standard_genotype = sorted(parent_genotypes[0].split("_"))
+                continue
+
+            parent_genotype = sorted(parent_genotype.split("_"))
+            if parent_genotype != standard_genotype:
+                return True
+
+    return False
+
+
+def _prefix_unpacking(
+    mutation_dict: dict,
+    genotype_dict: dict,
+    input_csv: pd.DataFrame,
+    identifier: tuple,
+    prefix: str,
+):
+    # columns of form 'PREFIXMutation NUMBER'
+    mutation_cols = sorted(
+        input_csv.filter(regex=rf"^{prefix}Mutation \d$").columns.tolist()
+    )
+
+    # columns of form 'PREFIXGrade NUMBER'
+    genotype_cols = sorted(
+        input_csv.filter(regex=rf"^{prefix}Grade \d$").columns.tolist()
+    )
+
+    # Each mutation must have a corresponding genotype
+    if len(mutation_cols) != len(genotype_cols):
+        raise ValueError(
+            f"Not all {identifier} mutation columns have a corresponding "
+            f"genotype column."
+        )
+
+    # Make sure lists are in numeric order e.g. Grade 1, Grade 2, Grade 3
+    mutation_dict[identifier] = mutation_cols
+    genotype_dict[identifier] = genotype_cols
