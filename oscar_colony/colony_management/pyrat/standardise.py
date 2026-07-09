@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from oscar_colony.breeding_scheme import Genotype
+from oscar_colony.breeding_scheme import BreedingScheme, Genotype
 
 
 class Identifier(Enum):
@@ -25,8 +25,8 @@ def standardise_pyrat_csv(
     - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
-    - adding summary columns for 'genotype_offspring', 'genotype_father' and
-    'genotype_mother' that match the order of 'mutations'.
+    - adding summary columns for 'genotype_offspring', 'genotype_father_n' and
+    'genotype_mother_n' that match the order of 'mutations'.
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
     - filling any missing genotypes with wildtype
     - removing columns that aren't needed for further processing steps
@@ -90,6 +90,11 @@ def standardise_pyrat_csv(
     # for readability, make sure ID_offspring is first
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
+
+    impossible_breeding_schemes = standard_csv.apply(
+        _is_impossible_breeding_scheme, axis=1
+    )
+    standard_csv = standard_csv[~impossible_breeding_schemes]
 
     return standard_csv
 
@@ -410,3 +415,44 @@ def _make_combined_genotype_column_for_identifier(
     line_data.loc[genotyped_rows, new_col_name] = pivoted_mutations.loc[
         genotyped_rows, unique_mutations
     ].agg("_".join, axis=1)
+
+
+def _is_impossible_breeding_scheme(
+    standardised_df_row: pd.Series,
+) -> bool:
+    """Checks whether the given row contains an impossible breeding scheme.
+
+    Retrieves parent genotypes and pulls the mendelian ratios from
+    BreedingScheme. Compares offspring to these ratios, returning True for
+    those which are not possible.
+    e.g. hom x hom parents cannot produce wt offspring.
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+
+    Returns
+    -------
+    bool
+        bool of whether or not that row contains an impossible breeding scheme
+    """
+
+    pop = False
+
+    genotype_father = standardised_df_row["genotype_father_1"]
+    genotype_mother = standardised_df_row["genotype_mother_1"]
+    genotype_offspring = standardised_df_row["genotype_offspring"]
+
+    # Only processes when offspring is assigned a genotype
+    if not pd.isna(genotype_offspring):
+        typed_offspring = Genotype.from_string(genotype_offspring)
+        scheme = BreedingScheme(genotype_father, genotype_mother)
+        ratio = scheme.mendelian_ratio()
+
+        if typed_offspring not in ratio:
+            pop = True
+        elif ratio[typed_offspring] == 0:
+            pop = True
+
+    return pop
