@@ -30,6 +30,7 @@ def standardise_pyrat_csv(
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
     - filling any missing genotypes with wildtype
     - removing columns that aren't needed for further processing steps
+    - checking data input validity and removing impossible input data
 
     Parameters
     ----------
@@ -91,10 +92,10 @@ def standardise_pyrat_csv(
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
 
-    impossible_breeding_schemes = standard_csv.apply(
+    impossible_input_data = standard_csv.apply(
         _check_data_input_reliability, axis=1
     )
-    standard_csv = standard_csv[~impossible_breeding_schemes]
+    standard_csv = standard_csv[~impossible_input_data]
 
     return standard_csv
 
@@ -139,13 +140,17 @@ def _create_column_name_dicts(
     dict[tuple[Identifier, int], list[str]],
     dict[tuple[Identifier, int], list[str]],
 ]:
-    """Create a dict of mutation / genotype column names for all identifiers
-    (offspring, father, mother).
+    """Create a dict of mutation / genotype column names for all identifiers.
+
+    Determines the total number of mothers and fathers. Then creates column
+    names for each, accounting for multiples of each parents.
+    Uses _sort_and_name_columns_by_prefix function to assign each identifier
+    (offspring, father_n, mother_n) to their respective column name.
 
     Parameters
     ----------
     input_csv : pd.DataFrame
-        Dataframe to extract column names from
+        Dataframe to extract column names from.
 
     Returns
     -------
@@ -167,7 +172,7 @@ def _create_column_name_dicts(
     mutation_dict: dict = {}
     genotype_dict: dict = {}
 
-    _prefix_unpacking(
+    _sort_and_name_columns_by_prefix(
         mutation_dict, genotype_dict, input_csv, (Identifier.OFFSPRING, 0), ""
     )
 
@@ -175,7 +180,7 @@ def _create_column_name_dicts(
     mother_cols = {}
     for i in range(1, n_fathers + 1):
         father_cols[f"Father {i}"] = f"ID_father_{i}"
-        _prefix_unpacking(
+        _sort_and_name_columns_by_prefix(
             mutation_dict,
             genotype_dict,
             input_csv,
@@ -185,7 +190,7 @@ def _create_column_name_dicts(
 
     for i in range(1, n_mothers + 1):
         mother_cols[f"Mother {i}"] = f"ID_mother_{i}"
-        _prefix_unpacking(
+        _sort_and_name_columns_by_prefix(
             mutation_dict,
             genotype_dict,
             input_csv,
@@ -324,8 +329,8 @@ def _make_combined_genotype_column_for_identifier(
     ----------
     line_data : pd.DataFrame
         Data for a single line.
-    identifier : Identifier
-        The identifier to summarise.
+    identifier_key : tuple[Identifier, int]
+        The identifier to summarise along with a count for multiple.
     unique_mutations : list[str]
         The unique mutations for this line. Genotypes in genotype_IDENTIFIER
         will have length equal to this, and be returned in this order.
@@ -412,6 +417,24 @@ def _make_combined_genotype_column_for_identifier(
 def _check_data_input_reliability(
     standardised_df_row: pd.Series,
 ) -> bool:
+    """Checks Dataframe for common data input errors.
+
+    Takes a row from the standardised df, and runs two functions that test the
+    validity of recorded data. Whether each sex of parent have the same
+    genotype, or whether the breeding scheme is possible. If either of these
+    detect an issue, then this function will flag for removal.
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+
+    Returns
+    -------
+    bool
+        A bool affected by the presence of either an impossible breeding scheme
+        or ambiguous parentage.
+    """
 
     ambigious_parentage = _is_ambigious_parentage(standardised_df_row)
     impossible_breeding_schemes = _is_impossible_breeding_scheme(
@@ -463,17 +486,17 @@ def _is_impossible_breeding_scheme(
 
 
 def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
-    """_summary_
+    """Checks all parents of a single sex have the same genotype.
 
     Parameters
     ----------
     standardised_df_row : pd.Series
-        _description_
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
 
     Returns
     -------
     bool
-        _description_
+        True if parent ambiguity detected, False if not.
     """
 
     mother = r"genotype_mother_\d+$"
@@ -503,13 +526,32 @@ def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
     return False
 
 
-def _prefix_unpacking(
+def _sort_and_name_columns_by_prefix(
     mutation_dict: dict,
     genotype_dict: dict,
     input_csv: pd.DataFrame,
-    identifier: tuple,
+    identifier: tuple[Identifier, int],
     prefix: str,
 ):
+    """Assigns a given identifier to the corresponding mutation and grade.
+
+    Called for offspring, mothers and fathers. Uses the chosen prefix to sort
+    through DataFrame columns and retrieve a sorted list. Then populated two
+    dictionaries for both mutation and genotype, with identifier as the key.
+
+    Parameters
+    ----------
+    mutation_dict : dict
+        dictionary to append [identifier] = mutation column names
+    genotype_dict : dict
+        dictionary to append [identifier] = genotype column names
+    input_csv : pd.DataFrame
+        Dataframe to filter through the columns of
+    tuple[Identifier, int]
+        animal identifier along with its current count.
+    prefix : str
+        chosen string to aid with DataFrame sorting
+    """
     # columns of form 'PREFIXMutation NUMBER'
     mutation_cols = sorted(
         input_csv.filter(regex=rf"^{prefix}Mutation \d$").columns.tolist()
@@ -527,6 +569,5 @@ def _prefix_unpacking(
             f"genotype column."
         )
 
-    # Make sure lists are in numeric order e.g. Grade 1, Grade 2, Grade 3
     mutation_dict[identifier] = mutation_cols
     genotype_dict[identifier] = genotype_cols
