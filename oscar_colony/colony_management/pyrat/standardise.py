@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from oscar_colony.breeding_scheme import Genotype
+from oscar_colony.breeding_scheme import BreedingScheme, Genotype
 
 
 class Identifier(Enum):
@@ -25,11 +25,12 @@ def standardise_pyrat_csv(
     - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
-    - adding summary columns for 'genotype_offspring', 'genotype_father' and
-    'genotype_mother' that match the order of 'mutations'.
+    - adding summary columns for 'genotype_offspring', 'genotype_father_n' and
+    'genotype_mother_n' that match the order of 'mutations'.
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
     - filling any missing genotypes with wildtype
     - removing columns that aren't needed for further processing steps
+    - checking data input validity and removing impossible input data
 
     Parameters
     ----------
@@ -91,6 +92,11 @@ def standardise_pyrat_csv(
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
 
+    impossible_input_data = standard_csv.apply(
+        _check_data_input_reliability, axis=1
+    )
+    standard_csv = standard_csv[~impossible_input_data]
+
     return standard_csv
 
 
@@ -134,13 +140,17 @@ def _create_column_name_dicts(
     dict[tuple[Identifier, int], list[str]],
     dict[tuple[Identifier, int], list[str]],
 ]:
-    """Create a dict of mutation / genotype column names for all identifiers
-    (offspring, father, mother).
+    """Create a dict of mutation / genotype column names for all identifiers.
+
+    Determines the total number of mothers and fathers. Then creates column
+    names for each, accounting for multiples of each parents.
+    Uses _sort_and_name_columns_by_prefix function to assign each identifier
+    (offspring, father_n, mother_n) to their respective column name.
 
     Parameters
     ----------
     input_csv : pd.DataFrame
-        Dataframe to extract column names from
+        Dataframe to extract column names from.
 
     Returns
     -------
@@ -159,42 +169,34 @@ def _create_column_name_dicts(
         f"Mother {i}": f"ID_mother_{i}" for i in range(1, n_mothers + 1)
     }
 
-    mutation_dict = {}
-    genotype_dict = {}
+    mutation_dict: dict = {}
+    genotype_dict: dict = {}
 
-    def _prefix_unpacking(identifier: tuple, prefix: str):
-        # columns of form 'PREFIXMutation NUMBER'
-        mutation_cols = sorted(
-            input_csv.filter(regex=rf"^{prefix}Mutation \d$").columns.tolist()
-        )
-
-        # columns of form 'PREFIXGrade NUMBER'
-        genotype_cols = sorted(
-            input_csv.filter(regex=rf"^{prefix}Grade \d$").columns.tolist()
-        )
-
-        # Each mutation must have a corresponding genotype
-        if len(mutation_cols) != len(genotype_cols):
-            raise ValueError(
-                f"Not all {identifier} mutation columns have a corresponding "
-                f"genotype column."
-            )
-
-        # Make sure lists are in numeric order e.g. Grade 1, Grade 2, Grade 3
-        mutation_dict[identifier] = mutation_cols
-        genotype_dict[identifier] = genotype_cols
-
-    _prefix_unpacking((Identifier.OFFSPRING, 0), "")
+    _sort_and_name_columns_by_prefix(
+        mutation_dict, genotype_dict, input_csv, (Identifier.OFFSPRING, 0), ""
+    )
 
     father_cols = {}
     mother_cols = {}
     for i in range(1, n_fathers + 1):
         father_cols[f"Father {i}"] = f"ID_father_{i}"
-        _prefix_unpacking((Identifier.FATHER, i), f"Father {i}: ")
+        _sort_and_name_columns_by_prefix(
+            mutation_dict,
+            genotype_dict,
+            input_csv,
+            (Identifier.FATHER, i),
+            f"Father {i}: ",
+        )
 
     for i in range(1, n_mothers + 1):
         mother_cols[f"Mother {i}"] = f"ID_mother_{i}"
-        _prefix_unpacking((Identifier.MOTHER, i), f"Mother {i}: ")
+        _sort_and_name_columns_by_prefix(
+            mutation_dict,
+            genotype_dict,
+            input_csv,
+            (Identifier.MOTHER, i),
+            f"Mother {i}: ",
+        )
 
     return father_cols, mother_cols, mutation_dict, genotype_dict
 
@@ -327,8 +329,8 @@ def _make_combined_genotype_column_for_identifier(
     ----------
     line_data : pd.DataFrame
         Data for a single line.
-    identifier : Identifier
-        The identifier to summarise.
+    identifier_key : tuple[Identifier, int]
+        The identifier to summarise along with a count for multiple.
     unique_mutations : list[str]
         The unique mutations for this line. Genotypes in genotype_IDENTIFIER
         will have length equal to this, and be returned in this order.
@@ -410,3 +412,162 @@ def _make_combined_genotype_column_for_identifier(
     line_data.loc[genotyped_rows, new_col_name] = pivoted_mutations.loc[
         genotyped_rows, unique_mutations
     ].agg("_".join, axis=1)
+
+
+def _check_data_input_reliability(
+    standardised_df_row: pd.Series,
+) -> bool:
+    """Checks Dataframe for common data input errors.
+
+    Takes a row from the standardised df, and runs two functions that test the
+    validity of recorded data. Whether each sex of parent have the same
+    genotype, or whether the breeding scheme is possible. If either of these
+    detect an issue, then this function will flag for removal.
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+
+    Returns
+    -------
+    bool
+        A bool affected by the presence of either an impossible breeding scheme
+        or ambiguous parentage.
+    """
+
+    ambigious_parentage = _is_ambigious_parentage(standardised_df_row)
+    impossible_breeding_schemes = _is_impossible_breeding_scheme(
+        standardised_df_row
+    )
+
+    if impossible_breeding_schemes or ambigious_parentage:
+        return True
+    return False
+
+
+def _is_impossible_breeding_scheme(
+    standardised_df_row: pd.Series,
+) -> bool:
+    """Checks whether the given row contains an impossible breeding scheme.
+
+    Retrieves parent genotypes and pulls the mendelian ratios from
+    BreedingScheme. Compares offspring to these ratios, returning True for
+    those which are not possible.
+    e.g. hom x hom parents cannot produce wt offspring.
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+
+    Returns
+    -------
+    bool
+        bool of whether or not that row contains an impossible breeding scheme
+    """
+
+    genotype_father = standardised_df_row["genotype_father_1"]
+    genotype_mother = standardised_df_row["genotype_mother_1"]
+    genotype_offspring = standardised_df_row["genotype_offspring"]
+
+    # Only processes when offspring is assigned a genotype
+    if not pd.isna(genotype_offspring):
+        typed_offspring = Genotype.from_string(genotype_offspring)
+        scheme = BreedingScheme(genotype_father, genotype_mother)
+        ratio = scheme.mendelian_ratio()
+
+        if typed_offspring not in ratio:
+            return True
+        elif ratio[typed_offspring] == 0:
+            return True
+
+    return False
+
+
+def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
+    """Checks all parents of a single sex have the same genotype.
+
+    Parameters
+    ----------
+    standardised_df_row : pd.Series
+        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+
+    Returns
+    -------
+    bool
+        True if parent ambiguity detected, False if not.
+    """
+
+    mother = r"genotype_mother_\d+$"
+    father = r"genotype_father_\d+$"
+
+    for parent in [mother, father]:
+        n_parent = len(standardised_df_row.filter(regex=parent).index)
+
+        if n_parent == 1:
+            continue
+
+        parent_genotypes: list = (
+            standardised_df_row.filter(regex=parent).dropna().values.tolist()
+        )
+
+        standard_genotype = sorted(parent_genotypes[0].split("_"))
+
+        for i, parent_genotype in enumerate(parent_genotypes):
+            if i == 0:
+                standard_genotype = sorted(parent_genotypes[0].split("_"))
+                continue
+
+            parent_genotype = sorted(parent_genotype.split("_"))
+            if parent_genotype != standard_genotype:
+                return True
+
+    return False
+
+
+def _sort_and_name_columns_by_prefix(
+    mutation_dict: dict,
+    genotype_dict: dict,
+    input_csv: pd.DataFrame,
+    identifier: tuple[Identifier, int],
+    prefix: str,
+):
+    """Assigns a given identifier to the corresponding mutation and grade.
+
+    Called for offspring, mothers and fathers. Uses the chosen prefix to sort
+    through DataFrame columns and retrieve a sorted list. Then populated two
+    dictionaries for both mutation and genotype, with identifier as the key.
+
+    Parameters
+    ----------
+    mutation_dict : dict
+        dictionary to append [identifier] = mutation column names
+    genotype_dict : dict
+        dictionary to append [identifier] = genotype column names
+    input_csv : pd.DataFrame
+        Dataframe to filter through the columns of
+    tuple[Identifier, int]
+        animal identifier along with its current count.
+    prefix : str
+        chosen string to aid with DataFrame sorting
+    """
+    # columns of form 'PREFIXMutation NUMBER'
+    mutation_cols = sorted(
+        input_csv.filter(regex=rf"^{prefix}Mutation \d$").columns.tolist()
+    )
+
+    # columns of form 'PREFIXGrade NUMBER'
+    genotype_cols = sorted(
+        input_csv.filter(regex=rf"^{prefix}Grade \d$").columns.tolist()
+    )
+
+    # Each mutation must have a corresponding genotype
+    if len(mutation_cols) != len(genotype_cols):
+        raise ValueError(
+            f"Not all {identifier} mutation columns have a corresponding "
+            f"genotype column."
+        )
+
+    mutation_dict[identifier] = mutation_cols
+    genotype_dict[identifier] = genotype_cols

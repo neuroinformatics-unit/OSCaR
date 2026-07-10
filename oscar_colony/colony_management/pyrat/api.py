@@ -96,8 +96,81 @@ def get_pyrat_data(
         yield _convert_animals_to_df(animals_response.json())
 
 
+def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
+    """Fetch available lines directly from the pyRAT api.
+
+    To handle the potentially large number of lines returned from pyRAT,
+    this function returns a generator of pandas dataframes (each with no
+    more than max_n_rows).
+
+    This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
+    be set as environment variables.
+
+    Parameters
+    ----------
+    max_n_rows : int, optional
+        Maximum number of lines in each returned dataframe (and therefore
+        returned per request to the pyRAT api)
+
+    Returns
+    -------
+    Iterator[pd.DataFrame]
+        Generator of dataframes of returned line data, each with columns:
+        name and id. Names are in alphabetical order. Id is useful for
+        fetching line mutations via get_pyrat_line_mutations.
+        If no data is available for the query, the dataframe will be empty.
+    """
+
+    params = {
+        "k": ["name", "id"],
+        "s": ["name:asc"],
+        "status": ["available"],
+        "l": max_n_rows,
+        "o": 0,
+    }
+
+    # Make one request to determine how many results there are
+    lines_response = _make_pyrat_request("strains", params)
+    yield pd.DataFrame(lines_response.json())
+    headers = lines_response.headers
+    total_n = int(headers["x-total-count"])
+
+    # If more results than max_n_rows, keep making requests and yielding result
+    for start_n in range(max_n_rows, total_n, max_n_rows):
+        params["o"] = start_n
+        lines_response = _make_pyrat_request("strains", params)
+        yield pd.DataFrame(lines_response.json())
+
+
+def get_pyrat_line_mutations(line_id: int) -> list[str]:
+    """Get mutation names for the given line id.
+
+    This expects PYRAT_URL, PYRAT_CLIENT_TOKEN and PYRAT_USER_TOKEN to
+    be set as environment variables.
+
+    Parameters
+    ----------
+    line_id : int
+        Id of the line (e.g. as returned from get_pyrat_lines)
+
+    Returns
+    -------
+    list[str]
+        List of mutation names in alphabetical order.
+    """
+
+    # We use the line id here (rather than the line name) as / characters in
+    # line names were causing 404 responses - even when escaped.
+    mutations_response = _make_pyrat_request(f"strains/{line_id}/mutations")
+    mutations_list = [
+        mutations["name"] for mutations in mutations_response.json()
+    ]
+
+    return sorted(mutations_list)
+
+
 def _make_pyrat_request(
-    endpoint_name: str, params: dict[str, Any]
+    endpoint_name: str, params: dict[str, Any] | None = None
 ) -> requests.Response:
     """Make request to the pyRAT api.
 
@@ -108,7 +181,7 @@ def _make_pyrat_request(
     ----------
     endpoint_name : str
         Name of endpoint e.g. 'species'
-    params : dict[str, Any]
+    params : dict[str, Any] | None, optional
         Extra parameters to pass to the endpoint
 
     Returns
@@ -157,24 +230,49 @@ def _get_species_id(species_name: str) -> int:
     )
 
 
-def _get_parent_mutations_with_eartags(eartags: list[str]) -> pd.DataFrame:
-    """Get parent mutation information for the given animal eartags"""
+def _get_parent_mutations_with_eartags(
+    eartags: list[str], batch_size: int = 400
+) -> pd.DataFrame:
+    """Get parent mutation information for the given animal eartags.
 
-    params = {
-        "k": ["animalid", "eartag_or_id", "mutations"],
-        "s": ["eartag_or_id:asc"],
-        "state": ["live", "sacrificed", "exported"],
-        "eartag": eartags,
-        "l": len(eartags),
-    }
-    mutation_data = _make_pyrat_request("animals", params).json()
-    if len(mutation_data) != len(eartags):
+    Since eartags are appended to the URL, it can exceed the maximum request
+    size. It is processed in batches, to remain below the threshold.
+
+    Parameters
+    ----------
+    eartags : list[str]
+        all the unique parent eartags
+    batch_size : int, optional
+        The number of eartags to process per request to the pyRAT api, by
+        default 400. To prevent exceeding maximum characters.
+
+    Returns
+    -------
+    pd.DataFrame
+        df containing the parent eartag along with their assigned mutations.
+    """
+
+    all_mutation_data = []
+
+    for start in range(0, len(eartags), batch_size):
+        eartag_batch = eartags[start : start + batch_size]
+        params = {
+            "k": ["animalid", "eartag_or_id", "mutations"],
+            "s": ["eartag_or_id:asc"],
+            "state": ["live", "sacrificed", "exported"],
+            "eartag": eartag_batch,
+            "l": len(eartag_batch),
+        }
+        batch_data = _make_pyrat_request("animals", params).json()
+        all_mutation_data.extend(batch_data)
+
+    if len(all_mutation_data) != len(eartags):
         raise ValueError(
-            f"{len(mutation_data)} animals returned for "
+            f"{len(all_mutation_data)} animals returned for "
             f"{len(eartags)} eartags: {eartags}"
         )
 
-    return pd.DataFrame(mutation_data)
+    return pd.DataFrame(all_mutation_data)
 
 
 def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
@@ -230,11 +328,7 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     Parameters
     ----------
     selected_df : pd.DataFrame
-        DataFrame of animals data or expanded df, with raw mutations column
-
-    column_prefix: str
-        Prefix to add to expanded column names e.g. a prefix of 'Father: '
-        would result in columns Father: Mutation 1, Father: Grade 1 etc.
+        DataFrame of pyRAT data with raw mutations column
 
     Returns
     -------
@@ -343,27 +437,27 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
         parents_df["parent"] + " " + parents_df["parent_id"].astype(str)
     )
 
-    raw_parents_df = _merge_parent_mutations(parents_df)
-    clean_parents_df = _parent_column_renaming(raw_parents_df)
+    parents_df_with_mutations = _merge_parent_mutations(parents_df)
+    clean_parents_df = _parent_column_renaming(parents_df_with_mutations)
 
     return clean_parents_df
 
 
 def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Finds mutations based off of unique eartag, then assigns the mutation
-    and grade to each instance of eartag in parent dataframe
+    Fetch parent mutations from the pyRAT api using their eartag, and creates
+    numbered 'Mutation' and 'Grade' columns for each parent.
+
 
     Parameters
     ----------
     parents_df : pd.DataFrame
-        dataframe containing animal_id, parent_eartag, parent and parent_id
+        dataframe containing animalid, parent_eartag, parent and parent_id
 
     Returns
     -------
-    tuple[pd.DataFrame, str]
+    pd.DataFrame
         parent_df with corresponding mutation and grade appended.
-        string is to flag which parent is missing if any.
     """
 
     mutations_df = _get_parent_mutations_with_eartags(
@@ -371,6 +465,7 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     mutations_df = _expand_mutations_data(mutations_df)
+    mutations_df = mutations_df.drop(columns=["animalid"])
 
     parents_df = parents_df.merge(
         mutations_df,
@@ -379,22 +474,24 @@ def _merge_parent_mutations(parents_df: pd.DataFrame) -> pd.DataFrame:
         how="left",
     )
 
-    parents_df = parents_df.drop(
-        columns=["parent", "eartag_or_id", "animalid_y"]
-    )
-
-    parents_df = parents_df.rename(columns={"animalid_x": "animalid"})
+    parents_df = parents_df.drop(columns=["eartag_or_id"])
 
     return parents_df
 
 
 def _parent_column_renaming(expanded_df: pd.DataFrame):
-    """Pivot and rename df columns. Using the animal_id, the eartags,
-    mutations and grades are assigned to their respective parent column.
+    """
+    Create columns for each unique parent_id.
+
+    This function removes the parent column in favour of parent_id, then it
+    collapses all rows with the same animalid into one row. Each unique
+    parent_id is given its own column, and Mutation / Grade columns are
+    re-named to include the relevant parent_id as a prefix.
     """
 
     # pivoting multiple values creates column names which are a tuple of
     # (old_column_name, parent_id)
+    expanded_df = expanded_df.drop(columns=["parent"])
     tuple_columns_df = expanded_df.pivot(index="animalid", columns="parent_id")
 
     new_col_names = []
