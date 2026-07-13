@@ -138,11 +138,9 @@ def _historical_stats_for_breeding_scheme(
     stats = BreedingSchemeStatistics()
     logging.debug(
         f"Calculating stats for breeding scheme "
-        "{scheme_data['breeding_scheme'].iloc[0]} "
+        f"{scheme_data['breeding_scheme'].iloc[0]} "
         f"with {len(scheme_data)} offspring rows"
     )
-
-    # below is hardcoded
 
     # breeding pairs is unique combos of father ID x mother ID
     stats.n_breeding_pairs = scheme_data.groupby(
@@ -184,5 +182,5 @@ def _historical_stats_for_breeding_scheme(
         # Proportions use total_n_genotyped_offspring (excluding un-genotyped)
         proportion = n_offspring / stats.total_n_genotyped_offspring
         stats.proportion_offspring_per_genotype[genotype] = proportion
-
+        logging.debug(f"{genotype}: {proportion}")
     return stats
