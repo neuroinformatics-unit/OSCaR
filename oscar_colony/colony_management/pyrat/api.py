@@ -202,8 +202,11 @@ def _make_pyrat_request(
 
     # If the request didn't succeed, raise an error containing the status
     # code
-    response.raise_for_status
-    logging.debug(response)
+    response.raise_for_status()
+    logging.debug(
+        f"PyRAT response complete: endpoint={endpoint_name} "
+        f"status_code={response.status_code}"
+    )
 
     return response
 
@@ -314,7 +317,9 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
             "species_name": "Species",
         }
     )
-    logging.debug(animals_df)
+    logging.info(
+        f"Converted animal response to dataframe with {len(animals_df)} rows"
+    )
     return animals_df
 
 

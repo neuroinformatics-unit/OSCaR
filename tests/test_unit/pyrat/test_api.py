@@ -196,7 +196,20 @@ def test_get_pyrat_data(
     assert len(pyrat_dfs) == 1
     # use check_like=True to ignore column order
     pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
-    assert len(caplog.records) == 6
+
+    log_messages = [record.getMessage() for record in caplog.records]
+    assert any(
+        "searching PyRAT using custom parameters" in message
+        for message in log_messages
+    )
+    assert any(
+        "Converted animal response to dataframe" in message
+        for message in log_messages
+    )
+    assert any(
+        "animals found in PyRAT database" in message
+        for message in log_messages
+    )
 
 
 @responses.activate

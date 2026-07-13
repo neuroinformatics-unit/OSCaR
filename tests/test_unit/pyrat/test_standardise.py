@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 import pytest
 
@@ -48,6 +50,19 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
     pd.testing.assert_frame_equal(
         standard_csv.reset_index(drop=True),
         expected_csv.reset_index(drop=True),
+    )
+
+
+def test_standardise_pyrat_csv_logs(caplog):
+    with caplog.at_level(logging.INFO):
+        standardise_pyrat_csv(
+            pooch_data_path("pyrat-data-single-mutation.csv")
+        )
+
+    log_messages = [record.getMessage() for record in caplog.records]
+    assert "Starting standardisation of pyRAT data" in log_messages
+    assert any(
+        "Standardisation complete:" in message for message in log_messages
     )
 
 

@@ -1,4 +1,5 @@
 import itertools
+import logging
 from enum import IntEnum
 from typing import Self
 
@@ -75,6 +76,11 @@ class BreedingScheme:
 
         if isinstance(parent_2_genotype, str):
             parent_2_genotype = Genotype.from_string(parent_2_genotype)
+
+        logging.debug(
+            f"Initializing BreedingScheme: {parent_1_genotype} x "
+            f"{parent_2_genotype}"
+        )
 
         if len(parent_1_genotype) != len(parent_2_genotype):
             raise ValueError(
@@ -161,6 +167,7 @@ class BreedingScheme:
         for genotype, n_with_genotype in genotype_sums.items():
             mendelian_ratios[genotype] = n_with_genotype / total_sum
 
+        logging.debug(f"{self} mendelian ratio: {mendelian_ratios}")
         return mendelian_ratios
 
     def _parent_allele_combos(
@@ -272,6 +279,7 @@ def generate_breeding_schemes(
         two specific parent genotypes)
     """
 
+    logging.info(f"Generating breeding schemes for {n_mutations} mutations")
     breeding_schemes = []
 
     # First, generate all possible genotypes of a single parent.
@@ -295,6 +303,7 @@ def generate_breeding_schemes(
         if not _breeding_scheme_contains_wt_pairs(parent_1, parent_2):
             breeding_schemes.append(BreedingScheme(parent_1, parent_2))
 
+    logging.info(f"Generated {len(breeding_schemes)} breeding schemes")
     return breeding_schemes
 
 

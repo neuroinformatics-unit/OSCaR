@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from pathlib import Path
 
@@ -45,6 +46,7 @@ def standardise_pyrat_csv(
     if isinstance(input_csv, (Path, str)):
         input_csv = pd.read_csv(input_csv)
 
+    logging.info("Starting standardisation of pyRAT data")
     father_cols, mother_cols, mutation_cols, genotype_cols = (
         _create_column_name_dicts(input_csv)
     )
@@ -95,8 +97,19 @@ def standardise_pyrat_csv(
     impossible_input_data = standard_csv.apply(
         _check_data_input_reliability, axis=1
     )
+
+    removed_rows = impossible_input_data.sum()
+    if removed_rows:
+        logging.info(
+            f"Removed {removed_rows} rows during standardisation due to "
+            "impossible breeding or ambiguous parentage"
+        )
     standard_csv = standard_csv[~impossible_input_data]
 
+    logging.info(
+        f"Standardisation complete: {len(standard_csv)} rows, "
+        f"{standard_csv['line_name'].nunique()} lines"
+    )
     return standard_csv
 
 
@@ -161,6 +174,9 @@ def _create_column_name_dicts(
 
     n_mothers = len(input_csv.filter(regex=r"^Mother \d+$").columns)
     n_fathers = len(input_csv.filter(regex=r"^Father \d+$").columns)
+    logging.debug(
+        f"Found {n_fathers} father(s) and {n_mothers} mother(s) in input CSV"
+    )
 
     father_cols = {
         f"Father {i}": f"ID_father_{i}" for i in range(1, n_fathers + 1)
@@ -253,6 +269,13 @@ def _filter_or_correct_genotypes(
         | genotype_data.isna()
     ).all(axis=1)
     filtered_data = filtered_data.loc[allowed_genotypes, :]
+    filtered_count = len(filtered_data)
+    removed_count = len(standard_csv) - filtered_count
+    if removed_count:
+        logging.info(
+            f"Filtered out {removed_count} invalid genotype row(s); "
+            f"{filtered_count} remaining"
+        )
 
     return filtered_data
 
@@ -442,6 +465,12 @@ def _check_data_input_reliability(
     )
 
     if impossible_breeding_schemes or ambigious_parentage:
+        logging.debug(
+            f"Row {standardised_df_row.get('ID_offspring', '<unknown>')} "
+            "flagged invalid: "
+            f"impossible_breeding={impossible_breeding_schemes}, "
+            f"ambiguous_parentage={ambigious_parentage}"
+        )
         return True
     return False
 
@@ -478,8 +507,16 @@ def _is_impossible_breeding_scheme(
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
+            logging.debug(
+                f"Impossible offspring genotype {typed_offspring} "
+                f"for parents {genotype_father} x {genotype_mother}"
+            )
             return True
         elif ratio[typed_offspring] == 0:
+            logging.debug(
+                f"Impossible offspring genotype {typed_offspring} "
+                f"for parents {genotype_father} x {genotype_mother}"
+            )
             return True
 
     return False
@@ -521,6 +558,10 @@ def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
 
             parent_genotype = sorted(parent_genotype.split("_"))
             if parent_genotype != standard_genotype:
+                logging.debug(
+                    f"Ambiguous parentage detected for {parent}: "
+                    f"{parent_genotypes[0]} vs {parent_genotype}"
+                )
                 return True
 
     return False

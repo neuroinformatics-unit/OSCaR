@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 import pandas as pd
@@ -65,6 +66,10 @@ def calculate_historical_stats_for_line(
     if len(line_data) == 0:
         raise ValueError(f"No data for {line_name} found")
 
+    logging.info(
+        f"Calculating historical stats for line '{line_name}' with "
+        f"{len(line_data)} offspring records"
+    )
     breeding_schemes = line_data.apply(_create_breeding_scheme, axis=1)
     data_with_schemes = line_data.copy()
     data_with_schemes["breeding_scheme"] = breeding_schemes
@@ -131,6 +136,11 @@ def _historical_stats_for_breeding_scheme(
         Summary statistics for the breeding scheme
     """
     stats = BreedingSchemeStatistics()
+    logging.debug(
+        f"Calculating stats for breeding scheme "
+        "{scheme_data['breeding_scheme'].iloc[0]} "
+        f"with {len(scheme_data)} offspring rows"
+    )
 
     # below is hardcoded
 
