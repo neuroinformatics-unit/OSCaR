@@ -98,12 +98,6 @@ def standardise_pyrat_csv(
         _check_data_input_reliability, axis=1
     )
 
-    removed_rows = impossible_input_data.sum()
-    if removed_rows:
-        logging.info(
-            f"Removed {removed_rows} rows during standardisation due to "
-            "impossible breeding or ambiguous parentage"
-        )
     standard_csv = standard_csv[~impossible_input_data]
 
     logging.info(
@@ -271,10 +265,12 @@ def _filter_or_correct_genotypes(
     filtered_data = filtered_data.loc[allowed_genotypes, :]
     filtered_count = len(filtered_data)
     removed_count = len(standard_csv) - filtered_count
-    if removed_count:
+    dropped_rows = pd.concat([filtered_data, standard_csv]).drop_duplicates()
+    if removed_count > filtered_count:
         logging.info(
-            f"Filtered out {removed_count} invalid genotype row(s); "
-            f"{filtered_count} remaining"
+            f"Filtered out {removed_count} invalid genotype row(s)"
+            f"\nremoved : {dropped_rows}"
+            f"\n{filtered_count} remaining"
         )
 
     return filtered_data
@@ -508,13 +504,14 @@ def _is_impossible_breeding_scheme(
 
         if typed_offspring not in ratio:
             logging.debug(
-                f"Impossible offspring genotype {typed_offspring} "
+                f"Genotype {typed_offspring} is not possible"
                 f"for parents {genotype_father} x {genotype_mother}"
+                f"using the Mendalian ratio"
             )
             return True
         elif ratio[typed_offspring] == 0:
             logging.debug(
-                f"Impossible offspring genotype {typed_offspring} "
+                f"Possibility of genotype {typed_offspring} is 0%"
                 f"for parents {genotype_father} x {genotype_mother}"
             )
             return True
@@ -559,8 +556,8 @@ def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
             parent_genotype = sorted(parent_genotype.split("_"))
             if parent_genotype != standard_genotype:
                 logging.debug(
-                    f"Ambiguous parentage detected for {parent}: "
-                    f"{parent_genotypes[0]} vs {parent_genotype}"
+                    f"Ambiguous parentage detected for {parent.split('_')[1]}:"
+                    f" {parent_genotypes} - are non-homogeneous"
                 )
                 return True
 
