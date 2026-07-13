@@ -78,7 +78,7 @@ class BreedingScheme:
             parent_2_genotype = Genotype.from_string(parent_2_genotype)
 
         logging.debug(
-            f"Initializing BreedingScheme: {parent_1_genotype} x "
+            f"Initialising BreedingScheme: {parent_1_genotype} x "
             f"{parent_2_genotype}"
         )
 
