@@ -101,8 +101,9 @@ def standardise_pyrat_csv(
     standard_csv = standard_csv[~impossible_input_data]
 
     logging.info(
-        f"Standardisation complete: {len(standard_csv)} rows, "
-        f"{standard_csv['line_name'].nunique()} lines"
+        f"Standardisation complete: "
+        f"Before: {len(input_csv)} rows. After: {len(standard_csv)} rows. "
+        f"Total rows filtered: {len(input_csv) - len(standard_csv)}."
     )
     return standard_csv
 
@@ -168,9 +169,6 @@ def _create_column_name_dicts(
 
     n_mothers = len(input_csv.filter(regex=r"^Mother \d+$").columns)
     n_fathers = len(input_csv.filter(regex=r"^Father \d+$").columns)
-    logging.debug(
-        f"Found {n_fathers} father(s) and {n_mothers} mother(s) in input CSV"
-    )
 
     father_cols = {
         f"Father {i}": f"ID_father_{i}" for i in range(1, n_fathers + 1)
@@ -265,12 +263,19 @@ def _filter_or_correct_genotypes(
     filtered_data = filtered_data.loc[allowed_genotypes, :]
     filtered_count = len(filtered_data)
     removed_count = len(standard_csv) - filtered_count
-    dropped_rows = pd.concat([filtered_data, standard_csv]).drop_duplicates()
-    if removed_count > filtered_count:
+
+    if removed_count:
+        merged_df = pd.merge(
+            standard_csv["ID_offspring"],
+            filtered_data["ID_offspring"],
+            how="outer",
+            indicator=True,
+        )
+        dropped_rows = merged_df[merged_df["_merge"] == "left_only"]
         logging.info(
-            f"Filtered out {removed_count} invalid genotype row(s)"
-            f"\nremoved : {dropped_rows}"
-            f"\n{filtered_count} remaining"
+            f"Filtered out {removed_count} invalid genotype row(s) for these "
+            f"offspring IDs : {dropped_rows['ID_offspring'].tolist()} - "
+            f"{filtered_count} remaining"
         )
 
     return filtered_data
@@ -461,12 +466,6 @@ def _check_data_input_reliability(
     )
 
     if impossible_breeding_schemes or ambigious_parentage:
-        logging.debug(
-            f"Row {standardised_df_row.get('ID_offspring', '<unknown>')} "
-            "flagged invalid: "
-            f"impossible_breeding={impossible_breeding_schemes}, "
-            f"ambiguous_parentage={ambigious_parentage}"
-        )
         return True
     return False
 
@@ -503,15 +502,17 @@ def _is_impossible_breeding_scheme(
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
-            logging.debug(
-                f"Genotype {typed_offspring} is not possible"
-                f"for parents {genotype_father} x {genotype_mother}"
+            logging.info(
+                f"Offspring ID - {standardised_df_row['ID_offspring']} "
+                f"\n Genotype {typed_offspring} is not possible "
+                f"for parents {genotype_father} x {genotype_mother} "
                 f"using the Mendalian ratio"
             )
             return True
         elif ratio[typed_offspring] == 0:
-            logging.debug(
-                f"Possibility of genotype {typed_offspring} is 0%"
+            logging.info(
+                f"Offspring ID - {standardised_df_row['ID_offspring']} "
+                f"\n Possibility of genotype {typed_offspring} is 0%"
                 f"for parents {genotype_father} x {genotype_mother}"
             )
             return True
@@ -555,9 +556,10 @@ def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
 
             parent_genotype = sorted(parent_genotype.split("_"))
             if parent_genotype != standard_genotype:
-                logging.debug(
-                    f"Ambiguous parentage detected for {parent.split('_')[1]}:"
-                    f" {parent_genotypes} - are non-homogeneous"
+                logging.info(
+                    f"Offspring ID - {standardised_df_row['ID_offspring']} "
+                    f"\n non-homogenous genotype found "
+                    f"for {parent.split('_')[1]}: {parent_genotypes}"
                 )
                 return True
 

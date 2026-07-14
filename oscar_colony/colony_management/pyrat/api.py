@@ -189,7 +189,6 @@ def _make_pyrat_request(
     requests.Response
         The requests response object, containing data from pyRAT
     """
-    logging.info(f"endpoint_name : {endpoint_name}")
     response = requests.get(
         url=f"{os.environ['PYRAT_URL']}/api/v3/{endpoint_name}",
         auth=(
@@ -287,7 +286,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
 
     animals_df = pd.DataFrame(animals_data)
     if animals_df.empty:
-        logging.info("no animals collected for this search populated")
+        logging.info("no animals collected for this search")
         return animals_df
 
     # Convert dateborn to Year-Month-Day format (removing time info)
@@ -390,7 +389,6 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     # and any animals with no mutations appear with NaN in the correct slots
     merged_df = selected_df.drop(["mutations"], axis=1)
     merged_df = merged_df.merge(pivoted_mutations, on="animalid", how="left")
-    logging.debug(merged_df)
 
     return merged_df
 

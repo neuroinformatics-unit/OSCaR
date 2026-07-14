@@ -198,6 +198,7 @@ def test_get_pyrat_data(
     pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
 
     log_messages = [record.getMessage() for record in caplog.records]
+
     assert any(
         "searching PyRAT using custom parameters" in message
         for message in log_messages

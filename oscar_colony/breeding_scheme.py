@@ -77,11 +77,6 @@ class BreedingScheme:
         if isinstance(parent_2_genotype, str):
             parent_2_genotype = Genotype.from_string(parent_2_genotype)
 
-        logging.debug(
-            f"Initialising BreedingScheme: {parent_1_genotype} x "
-            f"{parent_2_genotype}"
-        )
-
         if len(parent_1_genotype) != len(parent_2_genotype):
             raise ValueError(
                 "Both parents must have a genotype of the same length"
