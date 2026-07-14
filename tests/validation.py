@@ -18,8 +18,8 @@ from oscar_colony.optimise.surplus_summary import (
 load_dotenv()
 
 line_name = "BF/Vgat-cre"
-birth_date_from = date(2023, 7, 1)
-birth_date_to = date(2023, 7, 28)
+birth_date_from = date(2023, 1, 1)
+birth_date_to = date(2023, 12, 31)
 
 data = get_pyrat_data(
     species_name="Mouse",
@@ -40,7 +40,7 @@ for df in data:
     }
 
     offspring_per_scheme = estimate_n_offspring_per_mating(
-        stats, int(round(stats.average_litter_size))
+        stats, round(stats.average_litter_size)
     )
 
     required_n_per_genotype: dict = {}
@@ -57,8 +57,8 @@ for df in data:
 
     print(
         "\nPredicted total animals (all genotypes):",
-        int(round(surplus_summary.total_n)),
+        round(surplus_summary.total_n, 2),
     )
     print("Predicted totals per genotype:")
     for genotype, surplus in surplus_summary.surplus_per_genotype.items():
-        print(f"{genotype}: {int(round(surplus.total_n))}")
+        print(f"{genotype}: {round(surplus.total_n, 2)}")
