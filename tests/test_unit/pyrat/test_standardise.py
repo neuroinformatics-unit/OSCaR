@@ -54,10 +54,13 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
 
 
 def test_standardise_pyrat_csv_logs(caplog):
+
+    pyrat_csv_path = pooch_data_path(
+        "pyrat-data-multiple-parents-3-mutations.csv"
+    )
+
     with caplog.at_level(logging.INFO):
-        standardise_pyrat_csv(
-            pooch_data_path("pyrat-data-single-mutation.csv")
-        )
+        standardise_pyrat_csv(pyrat_csv_path)
 
     log_messages = [record.getMessage() for record in caplog.records]
     assert "Starting standardisation of pyRAT data" in log_messages
@@ -66,7 +69,7 @@ def test_standardise_pyrat_csv_logs(caplog):
     )
 
 
-def test_standardise_genotypes():
+def test_standardise_genotypes(caplog):
     """
     Test standardisation of a dataframe containing forbidden genotypes (e.g.
     +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
@@ -79,10 +82,18 @@ def test_standardise_genotypes():
         pooch_data_path("standardised-data-forbidden-genotypes.csv")
     )
 
-    standard_csv = standardise_pyrat_csv(pyrat_csv)
+    with caplog.at_level(logging.INFO):
+        standard_csv = standardise_pyrat_csv(pyrat_csv)
+
     pd.testing.assert_frame_equal(
         standard_csv.reset_index(drop=True),
         expected_csv.reset_index(drop=True),
+    )
+
+    log_messages = [record.getMessage() for record in caplog.records]
+    assert any(
+        "Filtered out 5 invalid genotype row(s)" in message
+        for message in log_messages
     )
 
 
