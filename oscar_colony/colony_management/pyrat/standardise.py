@@ -83,6 +83,11 @@ def standardise_pyrat_csv(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
     )
 
+    impossible_input_data = standard_csv.apply(
+        _check_data_input_reliability, axis=1
+    )
+    standard_csv = standard_csv[~impossible_input_data]
+
     standard_csv = standard_csv.reset_index().drop(
         ["level_1"] + all_genotype_cols_list + all_mutation_cols_list,
         axis=1,
@@ -91,11 +96,6 @@ def standardise_pyrat_csv(
     # for readability, make sure ID_offspring is first
     id_offspring_col = standard_csv.pop("ID_offspring")
     standard_csv.insert(0, "ID_offspring", id_offspring_col)
-
-    impossible_input_data = standard_csv.apply(
-        _check_data_input_reliability, axis=1
-    )
-    standard_csv = standard_csv[~impossible_input_data]
 
     return standard_csv
 
@@ -437,13 +437,14 @@ def _check_data_input_reliability(
     """
 
     ambigious_parentage = _is_ambigious_parentage(standardised_df_row)
-    impossible_breeding_schemes = _is_impossible_breeding_scheme(
-        standardised_df_row
-    )
+    if not ambigious_parentage:
+        impossible_breeding_schemes = _is_impossible_breeding_scheme(
+            standardised_df_row
+        )
+        if not impossible_breeding_schemes:
+            return False
 
-    if impossible_breeding_schemes or ambigious_parentage:
-        return True
-    return False
+    return True
 
 
 def _is_impossible_breeding_scheme(
@@ -512,14 +513,15 @@ def _is_ambigious_parentage(standardised_df_row: pd.Series) -> bool:
             standardised_df_row.filter(regex=parent).dropna().values.tolist()
         )
 
-        standard_genotype = sorted(parent_genotypes[0].split("_"))
+        # checks if parent exists - if not removes
+        if not parent_genotypes:
+            return True
 
+        standard_genotype = parent_genotypes[0]
         for i, parent_genotype in enumerate(parent_genotypes):
             if i == 0:
-                standard_genotype = sorted(parent_genotypes[0].split("_"))
                 continue
 
-            parent_genotype = sorted(parent_genotype.split("_"))
             if parent_genotype != standard_genotype:
                 return True
 
