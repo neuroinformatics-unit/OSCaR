@@ -26,6 +26,8 @@ class BreedingSchemeStatistics:
 
 @dataclass
 class LineStatistics:
+    # line_name: str
+    # mutations: list[str] = field(default_factory=list)
     n_mutations: int = 0
     total_n_offspring: int = 0
     total_n_genotyped_offspring: int = 0
@@ -70,6 +72,7 @@ def calculate_historical_stats_for_line(
     data_with_schemes["breeding_scheme"] = breeding_schemes
 
     line_stats = LineStatistics(
+        # line_name=line_name,
         n_mutations=line_data.n_mutations.iloc[0],
         total_n_offspring=len(line_data),
         total_n_genotyped_offspring=sum(~line_data.genotype_offspring.isna()),
