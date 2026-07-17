@@ -17,7 +17,7 @@ class Identifier(Enum):
 
 
 def standardise_pyrat_csv(
-    input_csv: pd.DataFrame | Path | str,
+    input_df: pd.DataFrame | Path | str,
 ) -> pd.DataFrame:
     """Standardise a csv file exported from pyRAT.
 
@@ -42,11 +42,11 @@ def standardise_pyrat_csv(
     pd.DataFrame
         Standardised dataframe, ready for further processing
     """
-    if isinstance(input_csv, (Path, str)):
-        input_csv = pd.read_csv(input_csv)
+    if isinstance(input_df, (Path, str)):
+        input_df = pd.read_csv(input_df)
 
     father_cols, mother_cols, mutation_cols, genotype_cols = (
-        _create_column_name_dicts(input_csv)
+        _create_column_name_dicts(input_df)
     )
 
     all_mutation_cols_list = sum(mutation_cols.values(), [])
@@ -70,34 +70,36 @@ def standardise_pyrat_csv(
         **mother_cols,
     }
 
-    standard_csv = input_csv[required_cols].rename(columns=rename_dict)
+    standard_df = input_df[required_cols].rename(columns=rename_dict)
 
-    standard_csv = _filter_or_correct_genotypes(
-        standard_csv, all_genotype_cols_list
+    standard_df = _filter_or_correct_genotypes(
+        standard_df, all_genotype_cols_list
     )
 
-    standard_csv = _add_n_mutations_column(
-        standard_csv, genotype_cols[(Identifier.OFFSPRING, 0)]
+    standard_df = _add_n_mutations_column(
+        standard_df, genotype_cols[(Identifier.OFFSPRING, 0)]
     )
-    standard_csv = standard_csv.groupby("line_name").apply(
+    standard_df = standard_df.groupby("line_name").apply(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
     )
 
-    impossible_input_data = standard_csv.apply(
+    impossible_input_data = standard_df.apply(
         _check_data_input_reliability, axis=1
     )
-    standard_csv = standard_csv[~impossible_input_data]
+    standard_df = standard_df[~impossible_input_data]
 
-    standard_csv = standard_csv.reset_index().drop(
+    standard_df = collapse_parent_genotype(standard_df)
+
+    standard_df = standard_df.reset_index().drop(
         ["level_1"] + all_genotype_cols_list + all_mutation_cols_list,
         axis=1,
     )
 
     # for readability, make sure ID_offspring is first
-    id_offspring_col = standard_csv.pop("ID_offspring")
-    standard_csv.insert(0, "ID_offspring", id_offspring_col)
+    id_offspring_col = standard_df.pop("ID_offspring")
+    standard_df.insert(0, "ID_offspring", id_offspring_col)
 
-    return standard_csv
+    return standard_df
 
 
 def _add_n_mutations_column(
@@ -573,3 +575,23 @@ def _sort_and_name_columns_by_prefix(
 
     mutation_dict[identifier] = mutation_cols
     genotype_dict[identifier] = genotype_cols
+
+
+def collapse_parent_genotype(standardised_df: pd.DataFrame) -> pd.DataFrame:
+
+    for parent in ["mother", "father"]:
+        genotype_col_name = f"genotype_{parent}_1"
+
+        genotype_columns = standardised_df.filter(
+            regex=rf"^genotype_{parent}_\d+$"
+        ).columns.tolist()
+
+        for column in genotype_columns:
+            if column != genotype_col_name:
+                standardised_df = standardised_df.drop(columns=column)
+
+        standardised_df = standardised_df.rename(
+            columns={genotype_col_name: f"genotype_{parent}"}
+        )
+
+    return standardised_df
