@@ -11,8 +11,8 @@ from tests.pooch_test_data import pooch_data_path
     "pyrat_csv_name, expected_csv_name",
     [
         pytest.param(
-            "pyrat-data-single-mutation.csv",
-            "standardised-data-single-mutation.csv",
+            "pyrat-data-1-mutation.csv",
+            "standardised-data-1-mutation.csv",
             id="1 mutation",
         ),
         pytest.param(
