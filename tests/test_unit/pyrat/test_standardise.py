@@ -73,15 +73,17 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
 )
 @pytest.mark.parametrize("input_type", ["path", "dataframe"])
 def test_forbidden_data(pyrat_csv_name, expected_csv_name, input_type):
-    # TODO: fix docstrings
     """
-    Test standardisation of a dataframe containing forbidden genotypes (e.g.
+    Test forbidden data combinations, to make sure they are correctly filtered.
+
+    1. Test standardisation of a dataframe containing forbidden genotypes (e.g.
     +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
 
-    Test that impossible breeding schemes are removed from raw data.
+    2. Test that impossible breeding schemes are removed from raw data.
     (e.g. hom x hom parents cannot make wt offspring)
 
-    Test that impossible parent schemes are removed.
+    3. Test that impossible parent schemes are removed. Cases where there are
+    one parent or no parents.
     """
 
     pyrat_csv_path = pooch_data_path(pyrat_csv_name)
@@ -126,8 +128,8 @@ def test_standardise_multiple_parents_pyrat_csv(
     pyrat_csv_name, expected_csv_name, input_type
 ):
     """
-    Test standardisation of dataframes containing lines with 1, 2 or
-    3 mutations.
+    Test standardisation of dataframes containing multiple parents
+    with 1, 2 or 3 mutations.
     """
 
     pyrat_csv_path = pooch_data_path(pyrat_csv_name)
