@@ -120,6 +120,10 @@ def _historical_stats_for_breeding_scheme(
     """Calculate summary statistics for an individual breeding scheme
     (within a specific line).
 
+    Accounting for multiple parents by finding every combination of parent
+    then removing the duplicates for total breeding pairs. For Successful
+    matings unique mothers with unique dates are quantified.
+
     Parameters
     ----------
     scheme_data : pd.DataFrame
@@ -132,16 +136,45 @@ def _historical_stats_for_breeding_scheme(
     """
     stats = BreedingSchemeStatistics()
 
-    # breeding pairs is unique combos of father ID x mother ID
-    stats.n_breeding_pairs = scheme_data.groupby(
-        ["ID_father_1", "ID_mother_1"]
-    ).ngroups
+    father_cols = [
+        c for c in scheme_data.columns if c.startswith("ID_father_")
+    ]
+    mother_cols = [
+        c for c in scheme_data.columns if c.startswith("ID_mother_")
+    ]
 
-    # Successful matings is unique combos of father ID x mother ID x date
-    # (assuming only one per day)
-    stats.n_successful_matings = scheme_data.groupby(
-        ["ID_father_1", "ID_mother_1", "date_of_birth"]
-    ).ngroups
+    # breeding pairs: all unique (father_id, mother_id) combinations, taking
+    # the cartesian product of fathers x mothers per row - de-duplicated
+    father_combos = (
+        scheme_data[father_cols]
+        .melt(ignore_index=False, value_name="father_id")
+        .dropna()
+    )
+    mother_combos = (
+        scheme_data[mother_cols]
+        .melt(ignore_index=False, value_name="mother_id")
+        .dropna()
+    )
+    breeding_pairs = father_combos[["father_id"]].merge(
+        mother_combos[["mother_id"]], left_index=True, right_index=True
+    )
+    stats.n_breeding_pairs = breeding_pairs.drop_duplicates().shape[0]
+
+    # unique (mother_id, date_of_birth) pairs — mothers
+    mothers_with_date = (
+        scheme_data[mother_cols + ["date_of_birth"]]
+        .melt(
+            id_vars=["date_of_birth"],
+            value_vars=mother_cols,
+            value_name="mother_id",
+        )
+        .dropna(subset=["mother_id"])
+    )
+    stats.n_successful_matings = (
+        mothers_with_date[["mother_id", "date_of_birth"]]
+        .drop_duplicates()
+        .shape[0]
+    )
 
     stats.total_n_offspring = len(scheme_data)
 
