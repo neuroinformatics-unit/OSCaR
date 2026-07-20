@@ -2,6 +2,7 @@ import re
 from enum import Enum
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from oscar_colony.breeding_scheme import BreedingScheme, Genotype
@@ -495,8 +496,12 @@ def _check_data_input_validity(
     """
 
     offspring_genotypes = standardised_df_row["genotype_offspring"]
-    mother_genotypes = standardised_df_row[mother_col_names].dropna().values
-    father_genotypes = standardised_df_row[father_col_names].dropna().values
+    mother_genotypes = (
+        standardised_df_row[mother_col_names].dropna().to_numpy(dtype=object)
+    )
+    father_genotypes = (
+        standardised_df_row[father_col_names].dropna().to_numpy(dtype=object)
+    )
 
     ambiguous_parentage = _is_ambiguous_parentage(
         mother_genotypes, father_genotypes
@@ -515,8 +520,8 @@ def _check_data_input_validity(
 
 def _is_impossible_breeding_scheme(
     offspring_genotypes: str,
-    mother_genotypes: list[str],
-    father_genotypes: list[str],
+    mother_genotypes: np.ndarray,
+    father_genotypes: np.ndarray,
 ) -> bool:
     """Checks whether the given row contains an impossible breeding scheme.
 
@@ -560,18 +565,18 @@ def _is_impossible_breeding_scheme(
 
 
 def _is_ambiguous_parentage(
-    mother_genotypes: list[str],
-    father_genotypes: list[str],
+    mother_genotypes: np.ndarray,
+    father_genotypes: np.ndarray,
 ) -> bool:
     """checks if parent exists and that all same sex genotypes are equal
 
     Parameters
     ----------
-    mother_genotypes: list[str]
-        a list of genotypes for any number of mothers in the standardised_df
+    mother_genotypes: np.ndarray
+        an array of genotypes for any number of mothers in the standardised_df
 
-    father_genotypes: list[str]
-        a list of genotypes for any number of fathers in the standardised_df
+    father_genotypes: np.ndarray
+        an array of genotypes for any number of fathers in the standardised_df
 
     Returns
     -------
