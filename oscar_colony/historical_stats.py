@@ -132,8 +132,6 @@ def _historical_stats_for_breeding_scheme(
     """
     stats = BreedingSchemeStatistics()
 
-    # below is hardcoded
-
     # breeding pairs is unique combos of father ID x mother ID
     stats.n_breeding_pairs = scheme_data.groupby(
         ["ID_father_1", "ID_mother_1"]
