@@ -383,7 +383,7 @@ def test_calculate_historical_stats_for_line(
 
 def test_calculate_historical_stats_for_line_logs(caplog):
     standardised_csv = pd.read_csv(
-        pooch_data_path("standardised-data-single-mutation.csv")
+        pooch_data_path("standardised-data-1-mutation.csv")
     )
 
     with caplog.at_level(logging.DEBUG):
