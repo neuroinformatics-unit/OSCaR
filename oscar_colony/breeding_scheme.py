@@ -41,6 +41,26 @@ class Genotype(IntEnum):
         ]
         return tuple(genotypes)
 
+    @classmethod
+    def to_string(cls, genotype_tuple: tuple[Self, ...]) -> str:
+        """Create a string representation from a tuple of genotype.
+
+        E.g. (Genotype.WT, Genotype.HET, Genotype.HOM) -> wt_het_hom
+
+        Parameters
+        ----------
+        genotype_tuple : tuple[Self, ...]
+            Tuple of Genotype
+
+        Returns
+        -------
+        str
+            String corresponding to the input tuple. This will be one or more
+            wt, het or hom separated by an underscore.
+        """
+        genotype_strings = [genotype.name for genotype in genotype_tuple]
+        return "_".join(genotype_strings)
+
 
 class BreedingScheme:
     """
