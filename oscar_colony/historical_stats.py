@@ -142,13 +142,13 @@ def _historical_stats_for_breeding_scheme(
 
     # breeding pairs is unique combos of father ID x mother ID
     stats.n_breeding_pairs = scheme_data.groupby(
-        ["ID_father", "ID_mother"]
+        ["ID_father_1", "ID_mother_1"]
     ).ngroups
 
     # Successful matings is unique combos of father ID x mother ID x date
     # (assuming only one per day)
     stats.n_successful_matings = scheme_data.groupby(
-        ["ID_father", "ID_mother", "date_of_birth"]
+        ["ID_father_1", "ID_mother_1", "date_of_birth"]
     ).ngroups
 
     stats.total_n_offspring = len(scheme_data)
