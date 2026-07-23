@@ -17,6 +17,9 @@ class Genotype(IntEnum):
     HET = 1
     HOM = 2
 
+    def __str__(self):
+        return self.name
+
     @classmethod
     def from_string(cls, genotype_str: str) -> tuple[Self, ...]:
         """Create a tuple of Genotype from a string representation.
