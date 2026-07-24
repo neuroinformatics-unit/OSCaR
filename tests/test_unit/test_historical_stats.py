@@ -11,7 +11,7 @@ from tests.pooch_test_data import pooch_data_path
 
 
 @pytest.fixture
-def expected_stats_single_mutation():
+def expected_stats_1_mutation():
     return LineStatistics(
         n_mutations=1,
         total_n_offspring=18,
@@ -343,9 +343,9 @@ def expected_stats_3_mutations():
     "standardised_csv_name, line_name, expected_stats",
     [
         pytest.param(
-            "standardised-data-single-mutation.csv",
+            "standardised-data-1-mutation.csv",
             "Line-A",
-            "expected_stats_single_mutation",
+            "expected_stats_1_mutation",
             id="1 mutation",
         ),
         pytest.param(
