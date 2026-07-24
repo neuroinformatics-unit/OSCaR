@@ -130,12 +130,8 @@ class BreedingScheme:
         parent_genotypes = sorted(
             [self.parent_1_genotype, self.parent_2_genotype]
         )
-        parent_1_str = "_".join(
-            [genotype.name.lower() for genotype in parent_genotypes[0]]
-        )
-        parent_2_str = "_".join(
-            [genotype.name.lower() for genotype in parent_genotypes[1]]
-        )
+        parent_1_str = Genotype.to_string(parent_genotypes[0])
+        parent_2_str = Genotype.to_string(parent_genotypes[1])
 
         return f"{parent_1_str} x {parent_2_str}"
 
