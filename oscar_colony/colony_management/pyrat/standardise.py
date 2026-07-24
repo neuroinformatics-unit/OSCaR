@@ -1,21 +1,10 @@
 import re
-from enum import Enum
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from oscar_colony.breeding_scheme import BreedingScheme, Genotype
-
-
-class Identifier(Enum):
-    """
-    Identifier for who a mutation / genotype refers to.
-    """
-
-    OFFSPRING = 0
-    FATHER = 1
-    MOTHER = 2
 
 
 def standardise_pyrat_csv(
@@ -69,7 +58,7 @@ def standardise_pyrat_csv(
     )
 
     standard_df = _add_n_mutations_column(
-        standard_df, genotype_cols[(Identifier.OFFSPRING, 0)]
+        standard_df, genotype_cols["offspring"]
     )
     standard_df = standard_df.groupby("line_name").apply(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
@@ -77,11 +66,12 @@ def standardise_pyrat_csv(
 
     standard_df = _filter_data_input_validity(standard_df)
 
-    standard_df = collapse_parent_genotype(standard_df)
+    standard_df = _collapse_parent_genotype(standard_df)
 
     standard_df = standard_df.reset_index().drop(
         ["level_1"] + all_genotype_cols_list + all_mutation_cols_list,
         axis=1,
+        errors="ignore",
     )
 
     # for readability, make sure ID_offspring is first
@@ -127,7 +117,7 @@ def _create_rename_dict(input_csv: pd.DataFrame) -> dict[str, str]:
     """Create renaming dict for generic columns and parent_x ID columns.
 
     parents_x being any number of mother and father columns, labelled as
-    mother_x or father_x and assigning them to the standardised form of
+    Mother x or Father x and assigning them to the standardised form of
     ID_mother_x or ID_father_x
 
     Parameters
@@ -148,16 +138,18 @@ def _create_rename_dict(input_csv: pd.DataFrame) -> dict[str, str]:
         "Line / Strain (Name)": "line_name",
         "DOB": "date_of_birth",
     }
-    matches = []
+
+    # re-name any number of parent columns
+    parent_cols = []
     for col_name in input_csv.columns:
         m = re.match(r"^(Mother|Father) (\d+)$", col_name)
         if m:
             new_name = f"ID_{m.group(1).lower()}_{m.group(2)}"
-            matches.append((col_name, new_name))
+            parent_cols.append((col_name, new_name))
 
     # sorts columns before concatenating so they are in the correct order
-    matches.sort()
-    rename_dict = rename_dict | dict(matches)
+    parent_cols.sort()
+    rename_dict = rename_dict | dict(parent_cols)
     rename_dict["Sacrifice reason"] = "sacrifice_reason"
 
     return rename_dict
@@ -165,10 +157,7 @@ def _create_rename_dict(input_csv: pd.DataFrame) -> dict[str, str]:
 
 def _create_mutation_genotype_dicts(
     input_df: pd.DataFrame,
-) -> tuple[
-    dict[tuple[Identifier, int], list[str]],
-    dict[tuple[Identifier, int], list[str]],
-]:
+) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     """Create dicts of mutation / genotype column names for all identifiers.
 
     Uses _sort_and_name_columns_by_prefix to assign each identifier
@@ -181,11 +170,10 @@ def _create_mutation_genotype_dicts(
 
     Returns
     -------
-    tuple[dict[tuple[Identifier, int], list[str]], dict[tuple[Identifier, int],
-    list[str]]]
-        mutation/genotype dictionaries, keyed by identifier (offspring,
-        father_n, mother_n) and how many instances of that identifier.
-        Value is the list of genotype/mutation column names
+    tuple[dict[str, list[str]], dict[str, list[str]]]
+        mutation/genotype dictionaries, keyed by identifier string
+        (offspring, father_n, mother_n). Value is the list of
+        genotype/mutation column names
     """
 
     n_fathers = len(input_df.filter(regex=r"^Father \d+$").columns)
@@ -195,7 +183,7 @@ def _create_mutation_genotype_dicts(
     genotype_dict: dict = {}
 
     _sort_and_name_columns_by_prefix(
-        mutation_dict, genotype_dict, input_df, (Identifier.OFFSPRING, 0), ""
+        mutation_dict, genotype_dict, input_df, "offspring", ""
     )
 
     for i in range(1, n_fathers + 1):
@@ -203,7 +191,7 @@ def _create_mutation_genotype_dicts(
             mutation_dict,
             genotype_dict,
             input_df,
-            (Identifier.FATHER, i),
+            f"father_{i}",
             f"Father {i}: ",
         )
 
@@ -212,7 +200,7 @@ def _create_mutation_genotype_dicts(
             mutation_dict,
             genotype_dict,
             input_df,
-            (Identifier.MOTHER, i),
+            f"mother_{i}",
             f"Mother {i}: ",
         )
 
@@ -277,8 +265,8 @@ def _filter_or_correct_genotypes(
 
 def _make_combined_genotype_columns_for_line(
     line_data: pd.DataFrame,
-    mutation_cols: dict[tuple[Identifier, int], list[str]],
-    genotype_cols: dict[tuple[Identifier, int], list[str]],
+    mutation_cols: dict[str, list[str]],
+    genotype_cols: dict[str, list[str]],
 ) -> pd.DataFrame:
     """For data from a single line, add columns for 'mutations',
     'genotype_offspring', 'genotype_father' and 'genotype_mother'.
@@ -307,7 +295,7 @@ def _make_combined_genotype_columns_for_line(
 
     # get unique offspring mutations for this line
     unique_mutations = pd.unique(
-        line_data[mutation_cols[(Identifier.OFFSPRING, 0)]].values.ravel("K")
+        line_data[mutation_cols["offspring"]].values.ravel("K")
     )
     unique_mutations = list(pd.Series(unique_mutations).dropna().astype(str))
 
@@ -330,7 +318,7 @@ def _make_combined_genotype_columns_for_line(
 
 def _make_combined_genotype_column_for_identifier(
     line_data: pd.DataFrame,
-    identifier_key: tuple[Identifier, int],
+    identifier_key: str,
     unique_mutations: list[str],
     mutation_cols: list[str],
     genotype_cols: list[str],
@@ -340,25 +328,22 @@ def _make_combined_genotype_column_for_identifier(
     E.g. combining Grade 1 / 2 / 3 into a single genotype_offspring column.
 
     All individual missing genotypes are assumed to be wildtype, except in
-    the case of un-genotyped offspring (identifier == OFFSPRING and all
-    genotype columns empty) - these are left empty.
+    the case of un-genotyped offspring, these are left empty.
 
     Parameters
     ----------
     line_data : pd.DataFrame
         Data for a single line.
-    identifier_key : tuple[Identifier, int]
-        The identifier to summarise along with a count for multiple.
+    identifier_key : str
+        The identifier to summarise: "offspring", "father_n" or "mother_n".
     unique_mutations : list[str]
-        The unique mutations for this line. Genotypes in genotype_IDENTIFIER
-        will have length equal to this, and be returned in this order.
+        The unique mutations for this line. Genotypes will have length equal
+        to this, and be returned in this order.
     mutation_cols : list[str]
-        Mutation columns for the given identifier.
+        Mutation columns for the given identifier_key.
     genotype_cols : list[str]
-        Genotype columns for the given identifier.
+        Genotype columns for the given identifier_key.
     """
-
-    identifier, parent_num = identifier_key
 
     pivoted_mutations = pd.DataFrame(index=line_data.index)
     wildtype_str = Genotype.WT.name.lower()
@@ -399,7 +384,7 @@ def _make_combined_genotype_column_for_identifier(
         if mutation not in pivoted_mutations:
             pivoted_mutations[mutation] = pd.Series(dtype=str)
 
-    if identifier == Identifier.OFFSPRING:
+    if identifier_key == "offspring":
         # If all offspring mutations in a row are NaN, leave as-is -> these are
         # un-genotyped individuals.
         # If only some are NaN, then fill with wt
@@ -409,21 +394,14 @@ def _make_combined_genotype_column_for_identifier(
         ].fillna(wildtype_str)
     else:
         # Fill wildtype for rows where a parent is actually recorded.
-        if identifier == Identifier.FATHER:
-            parent_id_col = f"ID_father_{parent_num}"
-        else:
-            parent_id_col = f"ID_mother_{parent_num}"
-
+        parent_id_col = f"ID_{identifier_key}"
         parent_recorded = line_data[parent_id_col].notna()
         pivoted_mutations.loc[parent_recorded, :] = pivoted_mutations.loc[
             parent_recorded, :
         ].fillna(wildtype_str)
 
     # Combine pivoted mutations into a single summary column
-    if identifier == Identifier.OFFSPRING:
-        new_col_name = "genotype_offspring"
-    else:
-        new_col_name = f"genotype_{identifier.name.lower()}_{parent_num}"
+    new_col_name = f"genotype_{identifier_key}"
 
     line_data[new_col_name] = pd.Series(dtype=str)
     genotyped_rows = ~pivoted_mutations.isna().all(axis=1)
@@ -433,7 +411,7 @@ def _make_combined_genotype_column_for_identifier(
 
 
 def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
-    """Removes the row in which the data input validity is unreliable.
+    """Removes rows containing invalid data.
 
     Runs _check_data_input_validity on each row, if that returns an issue for
     a particular row, then that row is removed from the final DataFrame.
@@ -470,7 +448,7 @@ def _check_data_input_validity(
     mother_col_names: list[str],
     father_col_names: list[str],
 ) -> bool:
-    """Checks Dataframe for common data input errors.
+    """Checks a Dataframe row for common data input errors.
 
     Takes a row from the standardised df, and runs two functions that test the
     validity of recorded data. Whether each sex of parent have the same
@@ -483,10 +461,12 @@ def _check_data_input_validity(
         row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
 
     mother_col_names: list[str]
-        a list of column names for any number of mothers in the standardised_df
+        a list of genotype column names for any number of mothers in the
+        standardised_df
 
     father_col_names: list[str]
-        a list of column names for any number of fathers in the standardised_df
+        a list of genotype column names for any number of fathers in the
+        standardised_df
 
     Returns
     -------
@@ -495,7 +475,7 @@ def _check_data_input_validity(
         detected.
     """
 
-    offspring_genotypes = standardised_df_row["genotype_offspring"]
+    offspring_genotype = standardised_df_row["genotype_offspring"]
     mother_genotypes = (
         standardised_df_row[mother_col_names].dropna().to_numpy(dtype=object)
     )
@@ -503,25 +483,23 @@ def _check_data_input_validity(
         standardised_df_row[father_col_names].dropna().to_numpy(dtype=object)
     )
 
-    ambiguous_parentage = _is_ambiguous_parentage(
-        mother_genotypes, father_genotypes
-    )
+    if _is_ambiguous_parentage(mother_genotypes, father_genotypes):
+        return True
 
-    if not ambiguous_parentage:
-        impossible_breeding_schemes = _is_impossible_breeding_scheme(
-            offspring_genotypes, mother_genotypes, father_genotypes
-        )
+    mother_genotype = mother_genotypes[0]
+    father_genotype = father_genotypes[0]
 
-        if not impossible_breeding_schemes:
-            return False
-
-    return True
+    if _is_impossible_breeding_scheme(
+        offspring_genotype, mother_genotype, father_genotype
+    ):
+        return True
+    return False
 
 
 def _is_impossible_breeding_scheme(
     offspring_genotypes: str,
-    mother_genotypes: np.ndarray,
-    father_genotypes: np.ndarray,
+    mother_genotype: str,
+    father_genotype: str,
 ) -> bool:
     """Checks whether the given row contains an impossible breeding scheme.
 
@@ -532,23 +510,20 @@ def _is_impossible_breeding_scheme(
 
     Parameters
     ----------
-    offspring_genotypes: str
-        row from standardised_dataframe (pd.DataFrame): standardised PyRAT df
+    offspring_genotype: str
+        string of the offspring genotype from standardised dataframe row
 
-    mother_genotypes: list[str]
-        a list of genotypes for any number of mothers in the standardised_df
+    mother_genotype: str
+        the first mother genotype in the standardised dataframe row
 
-    father_genotypes: list[str]
-        a list of genotypes for any number of fathers in the standardised_df
+    father_genotype: str
+        the first father genotype in the standardised dataframe row
 
     Returns
     -------
     bool
         bool of whether or not that row contains an impossible breeding scheme
     """
-
-    mother_genotype = mother_genotypes[0]
-    father_genotype = father_genotypes[0]
 
     # Only processes when offspring is assigned a genotype
     if not pd.isna(offspring_genotypes):
@@ -595,7 +570,7 @@ def _sort_and_name_columns_by_prefix(
     mutation_dict: dict,
     genotype_dict: dict,
     input_csv: pd.DataFrame,
-    identifier: tuple[Identifier, int],
+    identifier: str,
     prefix: str,
 ):
     """Assigns a given identifier to the corresponding mutation and grade.
@@ -612,10 +587,10 @@ def _sort_and_name_columns_by_prefix(
         dictionary to append [identifier] = genotype column names
     input_csv : pd.DataFrame
         Dataframe to filter through the columns of
-    tuple[Identifier, int]
-        animal identifier along with its current count.
+    identifier : str
+        animal identifier: "offspring", "father_n" or "mother_n".
     prefix : str
-        chosen string to aid with DataFrame sorting
+        prefix of column names to select from input_csv
     """
     # columns of form 'PREFIXMutation NUMBER'
     mutation_cols = sorted(
@@ -638,7 +613,7 @@ def _sort_and_name_columns_by_prefix(
     genotype_dict[identifier] = genotype_cols
 
 
-def collapse_parent_genotype(standardised_df: pd.DataFrame) -> pd.DataFrame:
+def _collapse_parent_genotype(standardised_df: pd.DataFrame) -> pd.DataFrame:
     """Collapses multiple same sex parent genotypes into just one"""
 
     for parent in ["mother", "father"]:
