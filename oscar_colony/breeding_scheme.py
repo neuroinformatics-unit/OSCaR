@@ -61,7 +61,9 @@ class Genotype(IntEnum):
             String corresponding to the input tuple. This will be one or more
             wt, het or hom separated by an underscore.
         """
-        genotype_strings = [genotype.name for genotype in genotype_tuple]
+        genotype_strings = [
+            genotype.name.lower() for genotype in genotype_tuple
+        ]
         return "_".join(genotype_strings)
 
 
