@@ -497,7 +497,7 @@ def _check_data_input_validity(
 
 
 def _is_impossible_breeding_scheme(
-    offspring_genotypes: str,
+    offspring_genotype: str,
     mother_genotype: str,
     father_genotype: str,
 ) -> bool:
