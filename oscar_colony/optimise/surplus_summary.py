@@ -1,7 +1,5 @@
 from dataclasses import dataclass, field
 
-import pandas as pd
-
 from oscar_colony.breeding_scheme import (
     BreedingScheme,
     Genotype,
@@ -28,32 +26,6 @@ class SurplusSummary:
     surplus_per_genotype: dict[tuple[Genotype, ...], GenotypeSurplus] = field(
         default_factory=dict
     )
-
-    def create_genotype_df(self, decimal_places: int = 2):
-        """
-        Create a pandas dataframe from surplus_per_genotype, with all values
-        rounded to a given number of decimal places.
-        """
-        rows = []
-        for genotype, surplus in self.surplus_per_genotype.items():
-            rows.append(
-                (
-                    Genotype.to_string(genotype),
-                    round(surplus.total_n, decimal_places),
-                    round(surplus.total_n_surplus, decimal_places),
-                    round(surplus.percent_surplus, decimal_places),
-                )
-            )
-
-        return pd.DataFrame(
-            rows,
-            columns=[
-                "Genotype",
-                "Total N",
-                "Total N Surplus",
-                "Percent Surplus",
-            ],
-        )
 
 
 def create_surplus_summary(
