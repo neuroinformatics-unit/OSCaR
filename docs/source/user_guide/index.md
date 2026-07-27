@@ -6,5 +6,7 @@ Getting started with oscar-colony.
 :maxdepth: 2
 :hidden:
 
-getting_started
+installation
+typical_workflow
+standard_csv
 ```
