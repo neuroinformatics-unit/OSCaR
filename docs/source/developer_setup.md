@@ -1,4 +1,4 @@
-# Development setup
+# Developer guide
 
 ## Installation
 
