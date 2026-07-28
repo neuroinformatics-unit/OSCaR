@@ -4,7 +4,7 @@ Here, we'll walk through a typical workflow for using OSCaR.
 
 ## Fetch and standardise data from a colony management system
 
-First, we fetch animal data via the colony management system's api, and convert it to OSCaR's [standard table format](./standard_table.md). At the moment, only [PyRAT](https://www.scionics.com/pyrat.html) is supported - but we hope to expand to more systems in future.
+First, we fetch animal data via a colony management system's api, and convert it to OSCaR's [standard table format](./standard_table.md). At the moment, only [PyRAT](https://www.scionics.com/pyrat.html) is supported - but we hope to expand to more systems in future.
 
 - See the [PyRAT docs](./pyrat.md) for details of how to setup and use pyRAT for this step
 - Alternatively, you can load your animal data via any other means (e.g. a custom script / from an exported csv file), and convert it to OSCaR's [standard table format](./standard_table.md) manually.

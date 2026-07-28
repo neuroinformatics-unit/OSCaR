@@ -29,6 +29,9 @@ Set these variables however you prefer - just make sure they are _never_ checked
 
 ## Pulling data from the PyRAT api
 
+See the docs for the {mod}`~oscar_colony.colony_management.pyrat.api` module, for full details of how OSCaR can pull data from the pyRAT api.
+Below, we'll walk through an example of retrieving data for a named line.
+
 First, let's set our environment variables. We'll use `python-dotenv` for this, but feel free to use whatever method you like.
 
 We can create a `.env` file containing:
@@ -62,8 +65,11 @@ As this could be a very large amount of data, it is returned as a generator of
 
 Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table.md).
 
-We do this with:
+We can do this with:
 ```python
+from oscar_colony.colony_management.pyrat.standardise import standardise_pyrat_csv
+import pandas as pd
+
 standardised_dfs = []
 
 # Loop through the returned animal data, and standardise each
@@ -74,3 +80,5 @@ for animal_df in animal_data:
 # Join all the standardised dataframes into one
 standard_df = pd.concat(standardised_dfs)
 ```
+
+See the docs for the {mod}`~oscar_colony.colony_management.pyrat.standardise` module, for full details of how data is standardised.
