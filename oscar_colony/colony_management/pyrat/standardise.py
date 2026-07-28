@@ -547,7 +547,7 @@ def _check_data_input_validity(
 
 
 def _is_impossible_breeding_scheme(
-    offspring_genotypes: str,
+    offspring_genotype: str,
     mother_genotype: str,
     father_genotype: str,
 ) -> bool:
@@ -576,8 +576,8 @@ def _is_impossible_breeding_scheme(
     """
 
     # Only processes when offspring is assigned a genotype
-    if not pd.isna(offspring_genotypes):
-        typed_offspring = Genotype.from_string(offspring_genotypes)
+    if not pd.isna(offspring_genotype):
+        typed_offspring = Genotype.from_string(offspring_genotype)
         scheme = BreedingScheme(father_genotype, mother_genotype)
         ratio = scheme.mendelian_ratio()
 
