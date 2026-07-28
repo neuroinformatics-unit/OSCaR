@@ -40,3 +40,9 @@ In the example above, all animals had one father and one mother - but OSCaR does
 Here we have added one extra column for `ID_mother_2`.
 
 Note: there should still only be one `genotype_mother` and one `genotype_father` column, as the genotypes of all parents of the same sex should be identical. If they are not, then there's no unambiguous way of determining the breeding scheme that animal came from.
+
+All animals must have at least one male parent and one female parent listed.
+
+## Un-genotyped animals
+
+Un-genotyped animals can also be included by leaving the `genotype_offspring` value empty for a particular row. These animals will still be included in appropriate parts of the :class:`LineStatistics`.
