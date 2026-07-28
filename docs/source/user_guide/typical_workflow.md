@@ -6,7 +6,7 @@ Here, we'll walk through a typical workflow for using OSCaR.
 
 First, we fetch animal data via the colony management system's api, and convert it to OSCaR's [standard table format](./standard_table.md). At the moment, only [PyRAT](https://www.scionics.com/pyrat.html) is supported - but we hope to expand to more systems in future.
 
-- See the [PyRAT docs]() for details of how to setup and use pyRAT for this step
+- See the [PyRAT docs](./pyrat.md) for details of how to setup and use pyRAT for this step
 - Alternatively, you can load your animal data via any other means (e.g. a custom script / from an exported csv file), and convert it to OSCaR's [standard table format](./standard_table.md) manually.
 
 ## Calculate historical stats
@@ -21,7 +21,7 @@ line_stats = calculate_historical_stats_for_line(
     line_name="MY-LINE"  # The name of the line we want to process
 )
 ```
-The :func:`calculate_historical_stats_for_line` function produces a :class:`LineStatistics` object, with summary statistics for the specified line.
+The {func}`~oscar_colony.historical_stats.calculate_historical_stats_for_line` function produces a {class}`~oscar_colony.historical_stats.LineStatistics` object, with summary statistics for the specified line.
 
 For example:
 ```python

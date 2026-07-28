@@ -29,6 +29,8 @@ Setup guide for developers who want to contribute to oscar-colony.
 Reference documentation for the package's API.
 :::
 
+::::
+
 ```{toctree}
 :maxdepth: 2
 :hidden:

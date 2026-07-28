@@ -45,4 +45,4 @@ All animals must have at least one male parent and one female parent listed.
 
 ## Un-genotyped animals
 
-Un-genotyped animals can also be included by leaving the `genotype_offspring` value empty for a particular row. These animals will still be included in appropriate parts of the :class:`LineStatistics`.
+Un-genotyped animals can also be included by leaving the `genotype_offspring` value empty for a particular row. These animals will still be included in appropriate parts of the {class}`~oscar_colony.historical_stats.LineStatistics`.
