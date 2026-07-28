@@ -67,11 +67,8 @@ def standardise_pyrat_csv(
     standard_df = _filter_data_input_validity(standard_df)
 
     standard_df = _collapse_parent_genotype(standard_df)
-
     standard_df = standard_df.reset_index().drop(
-        ["level_1"] + all_genotype_cols_list + all_mutation_cols_list,
-        axis=1,
-        errors="ignore",
+        "level_1", axis=1, errors="ignore"
     )
 
     # for readability, make sure ID_offspring is first
@@ -268,11 +265,17 @@ def _make_combined_genotype_columns_for_line(
     mutation_cols: dict[str, list[str]],
     genotype_cols: dict[str, list[str]],
 ) -> pd.DataFrame:
-    """For data from a single line, add columns for 'mutations',
-    'genotype_offspring', 'genotype_father' and 'genotype_mother'.
+    """For data from a single line, standardise the mutation order and
+    create summary columns for 'genotype_offspring', 'genotype_father' and
+    'genotype_mother'.
 
-    All genotype columns list genotypes in the same order as given in
-    'mutations'. If all the offspring genotype columns are empty, they
+    All existing mutation / genotype columns will be removed. New mutation
+    columns (with mutations in a consistent order across the line) will be
+    added, numbered like mutation_1, mutation_2... All summary columns
+    list genotypes in the same order e.g. wt_het is wt for mutation_1 and
+    het for mutation_2.
+
+    If all the offspring genotype columns are empty, they
     are assumed to be un-genotyped (i.e. their genotype was never checked,
     and is unknown) - in these cases, the 'genotype_offspring' value will
     be left empty. In all other cases, individual missing genotypes are
@@ -290,19 +293,18 @@ def _make_combined_genotype_columns_for_line(
     Returns
     -------
     pd.DataFrame
-        Line data with added columns summarising mutations and genotypes
+        Line data with standard mutation and summary genotype columns
     """
 
     # get unique offspring mutations for this line
     unique_mutations = pd.unique(
         line_data[mutation_cols["offspring"]].values.ravel("K")
     )
-    unique_mutations = list(pd.Series(unique_mutations).dropna().astype(str))
+    unique_mutations = sorted(pd.Series(unique_mutations).dropna().astype(str))
 
     # Copy so we don't edit the original dataframe (this can cause issues
     # with apply)
     line_data_with_combined_cols = line_data.copy()
-    line_data_with_combined_cols["mutations"] = "_".join(unique_mutations)
 
     for identifier_key in mutation_cols:
         _make_combined_genotype_column_for_identifier(
@@ -311,6 +313,16 @@ def _make_combined_genotype_columns_for_line(
             unique_mutations,
             mutation_cols[identifier_key],
             genotype_cols[identifier_key],
+        )
+
+    # Add column for each mutation IN ORDER (for the sake of readability,
+    # add next to the n_mutations column)
+    n_mutations_index = line_data_with_combined_cols.columns.get_loc(
+        "n_mutations"
+    )
+    for i, mutation in enumerate(unique_mutations):
+        line_data_with_combined_cols.insert(
+            n_mutations_index + (i + 1), f"mutation_{i + 1}", mutation
         )
 
     return line_data_with_combined_cols
@@ -323,9 +335,11 @@ def _make_combined_genotype_column_for_identifier(
     mutation_cols: list[str],
     genotype_cols: list[str],
 ) -> None:
-    """Add a genotype_IDENTIFIER column summarising all genotype columns.
+    """Combine all mutation / genotype columns for an identifier, into a single
+    summary genotype_IDENTIFIER column.
 
-    E.g. combining Grade 1 / 2 / 3 into a single genotype_offspring column.
+    E.g. removing Mutation 1 / 2 / 3 and Grade 1 / 2 / 3 columns, and
+    adding a single combined genotype_offspring column.
 
     All individual missing genotypes are assumed to be wildtype, except in
     the case of un-genotyped offspring, these are left empty.
@@ -408,6 +422,9 @@ def _make_combined_genotype_column_for_identifier(
     line_data.loc[genotyped_rows, new_col_name] = pivoted_mutations.loc[
         genotyped_rows, unique_mutations
     ].agg("_".join, axis=1)
+
+    # Drop old mutation / grade columns
+    line_data.drop(columns=mutation_cols + genotype_cols, inplace=True)
 
 
 def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:

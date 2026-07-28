@@ -13,6 +13,8 @@ from tests.pooch_test_data import pooch_data_path
 @pytest.fixture
 def expected_stats_1_mutation():
     return LineStatistics(
+        line_name="Line-A",
+        mutations=["Mut-A"],
         n_mutations=1,
         total_n_offspring=18,
         total_n_genotyped_offspring=18,
@@ -93,6 +95,8 @@ def expected_stats_1_mutation():
 @pytest.fixture
 def expected_stats_2_mutations():
     return LineStatistics(
+        line_name="Line-AB",
+        mutations=["Mut-A", "Mut-B"],
         n_mutations=2,
         total_n_offspring=20,
         total_n_genotyped_offspring=20,
@@ -213,6 +217,8 @@ def expected_stats_2_mutations():
 @pytest.fixture
 def expected_stats_3_mutations():
     return LineStatistics(
+        line_name="Line-ABC",
+        mutations=["Mut-A", "Mut-B", "Mut-C"],
         n_mutations=3,
         total_n_offspring=20,
         total_n_genotyped_offspring=20,
@@ -382,6 +388,8 @@ def test_calculate_historical_stats_for_line(
 @pytest.fixture
 def expected_stats_ungenotyped():
     return LineStatistics(
+        line_name="Line-AB",
+        mutations=["Mut-A", "Mut-B"],
         n_mutations=2,
         total_n_offspring=9,
         total_n_genotyped_offspring=6,
