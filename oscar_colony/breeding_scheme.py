@@ -1,4 +1,3 @@
-import functools
 import itertools
 import logging
 from enum import IntEnum
@@ -116,12 +115,8 @@ class BreedingScheme:
 
         return f"BreedingScheme({parent_1_str}x{parent_2_str})"
 
-    @functools.cache
     def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.
-
-        Results are cached per parent genotype pair,since the same breeding
-        scheme is often recomputed across many rows.
 
         Returns
         -------
