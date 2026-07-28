@@ -1,12 +1,12 @@
 # User guide
 
-Getting started with oscar-colony.
+Getting started with using `oscar-colony`:
 
 ```{toctree}
 :maxdepth: 2
-:hidden:
 
 installation
 typical_workflow
+pyrat
 standard_table
 ```

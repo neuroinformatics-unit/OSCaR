@@ -1,6 +1,9 @@
 API
 ===
 
+Modules
+-------
+
 .. autosummary::
    :toctree: api_generated
    :template: custom-module.rst

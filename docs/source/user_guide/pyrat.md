@@ -29,4 +29,48 @@ Set these variables however you prefer - just make sure they are _never_ checked
 
 ## Pulling data from the PyRAT api
 
+First, let's set our environment variables. We'll use `python-dotenv` for this, but feel free to use whatever method you like.
+
+We can create a `.env` file containing:
+```
+PYRAT_URL=https://my-pyrat-instance
+PYRAT_CLIENT_TOKEN=my-client-token
+PYRAT_USER_TOKEN=my-user-token
+```
+You would need to update the values to match your PyRAT instance.
+
+Then load it with:
+```python
+from dotenv import load_dotenv
+
+load_dotenv()
+```
+
+Now we can fetch data via OSCaR. Let's retrieve all available animals from a given line:
+```
+from oscar_colony.colony_management.pyrat.api import get_pyrat_data
+animal_data = get_pyrat_data(
+    species_name="Mouse",
+    line_name="MY-LINE",
+)
+```
+
+As this could be a very large amount of data, it is returned as a generator of
+[pandas](https://pandas.pydata.org/) dataframes that we can loop through to process one-by-one.
+
 ## Standardising data from the PyRAT api
+
+Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table.md).
+
+We do this with:
+```python
+standardised_dfs = []
+
+# Loop through the returned animal data, and standardise each
+for animal_df in animal_data:
+    standard_df = standardise_pyrat_csv(animal_df)
+    standardised_dfs.append(standard_df)
+
+# Join all the standardised dataframes into one
+standard_df = pd.concat(standardised_dfs)
+```
