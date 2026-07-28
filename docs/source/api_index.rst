@@ -3,6 +3,7 @@ API
 
 .. autosummary::
    :toctree: api_generated
+   :template: custom-module.rst
    :recursive:
 
    oscar_colony.breeding_scheme

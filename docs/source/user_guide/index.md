@@ -8,5 +8,5 @@ Getting started with oscar-colony.
 
 installation
 typical_workflow
-standard_csv
+standard_table
 ```
