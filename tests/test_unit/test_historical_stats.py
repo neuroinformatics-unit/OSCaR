@@ -468,6 +468,8 @@ def test_handling_ungenotyped_individuals_in_stats(expected_stats_ungenotyped):
 @pytest.fixture
 def expected_stats_multi_parent_1_mutation():
     return LineStatistics(
+        line_name="Line-A",
+        mutations=["Mut-A"],
         n_mutations=1,
         total_n_offspring=6,
         total_n_genotyped_offspring=6,
@@ -538,6 +540,8 @@ def expected_stats_multi_parent_1_mutation():
 @pytest.fixture
 def expected_stats_multi_parent_2_mutations():
     return LineStatistics(
+        line_name="Line-AB",
+        mutations=["Mut-A", "Mut-B"],
         n_mutations=2,
         total_n_offspring=5,
         total_n_genotyped_offspring=5,
@@ -616,6 +620,8 @@ def expected_stats_multi_parent_2_mutations():
 @pytest.fixture
 def expected_stats_multi_parent_3_mutations():
     return LineStatistics(
+        line_name="Line-ABC",
+        mutations=["Mut-A", "Mut-B", "Mut-C"],
         n_mutations=3,
         total_n_offspring=6,
         total_n_genotyped_offspring=6,
