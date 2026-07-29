@@ -338,3 +338,27 @@ def test_breeding_scheme_equality():
     assert BreedingScheme(
         parent_1_genotype, parent_2_genotype
     ) != BreedingScheme(parent_2_genotype, parent_2_genotype)
+
+
+@pytest.mark.parametrize(
+    "genotype_string, genotype_tuple",
+    [
+        pytest.param("wt", (Genotype.WT,), id="WT"),
+        pytest.param("wt_het", (Genotype.WT, Genotype.HET), id="WT_HET"),
+        pytest.param(
+            "wt_het_hom",
+            (Genotype.WT, Genotype.HET, Genotype.HOM),
+            id="WT_HET_HOM",
+        ),
+    ],
+)
+@pytest.mark.parametrize("conversion_direction", ["from", "to"])
+def test_genotype_conversion(
+    genotype_string, genotype_tuple, conversion_direction
+):
+    """Test conversion of a tuple of genotypes to / from a string"""
+
+    if conversion_direction == "from":
+        assert Genotype.from_string(genotype_string) == genotype_tuple
+    else:
+        assert Genotype.to_string(genotype_tuple) == genotype_string

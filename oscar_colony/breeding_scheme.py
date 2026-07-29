@@ -17,6 +17,9 @@ class Genotype(IntEnum):
     HET = 1
     HOM = 2
 
+    def __str__(self):
+        return self.name
+
     @classmethod
     def from_string(cls, genotype_str: str) -> tuple[Self, ...]:
         """Create a tuple of Genotype from a string representation.
@@ -40,6 +43,28 @@ class Genotype(IntEnum):
             for genotype_string in genotype_strings
         ]
         return tuple(genotypes)
+
+    @classmethod
+    def to_string(cls, genotype_tuple: tuple[Self, ...]) -> str:
+        """Create a string representation from a tuple of genotypes.
+
+        E.g. (Genotype.WT, Genotype.HET, Genotype.HOM) -> wt_het_hom
+
+        Parameters
+        ----------
+        genotype_tuple : tuple[Self, ...]
+            Tuple of Genotype
+
+        Returns
+        -------
+        str
+            String corresponding to the input tuple. This will be one or more
+            wt, het or hom separated by an underscore.
+        """
+        genotype_strings = [
+            genotype.name.lower() for genotype in genotype_tuple
+        ]
+        return "_".join(genotype_strings)
 
 
 class BreedingScheme:
@@ -105,14 +130,10 @@ class BreedingScheme:
         parent_genotypes = sorted(
             [self.parent_1_genotype, self.parent_2_genotype]
         )
-        parent_1_str = "_".join(
-            [genotype.name.lower() for genotype in parent_genotypes[0]]
-        )
-        parent_2_str = "_".join(
-            [genotype.name.lower() for genotype in parent_genotypes[1]]
-        )
+        parent_1_str = Genotype.to_string(parent_genotypes[0])
+        parent_2_str = Genotype.to_string(parent_genotypes[1])
 
-        return f"BreedingScheme({parent_1_str}x{parent_2_str})"
+        return f"{parent_1_str} x {parent_2_str}"
 
     def mendelian_ratio(self) -> dict[tuple[Genotype, ...], float]:
         """Calculate the theoretical mendelian ratio for this breeding scheme.

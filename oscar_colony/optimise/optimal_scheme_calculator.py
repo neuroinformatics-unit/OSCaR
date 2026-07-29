@@ -111,6 +111,11 @@ def _optimise_n_matings(
     dict[BreedingScheme, int]
         Returns a dict mapping each breeding scheme to the optimal
         number of matings
+
+    Raises
+    ------
+    ValueError
+        If the optimisation problem was infeasible, and couldn't be optimised.
     """
 
     # Extract sorted names of breeding schemes / required genotypes as a list,
