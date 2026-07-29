@@ -17,7 +17,7 @@ from oscar_colony.optimise.optimal_scheme_calculator import (
     [
         pytest.param(
             "required_n_per_genotype_1_mutation",
-            LineStatistics(n_mutations=1),
+            LineStatistics(line_name="Line-A", n_mutations=1),
             5.58,
             "n_matings_1_mutation",
             "surplus_1_mutation",
@@ -25,7 +25,7 @@ from oscar_colony.optimise.optimal_scheme_calculator import (
         ),
         pytest.param(
             "required_n_per_genotype_2_mutations",
-            LineStatistics(n_mutations=2),
+            LineStatistics(line_name="Line-A", n_mutations=2),
             5.79,
             "n_matings_2_mutations",
             "surplus_2_mutations",
