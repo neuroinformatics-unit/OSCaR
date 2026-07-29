@@ -46,7 +46,7 @@ class Genotype(IntEnum):
 
     @classmethod
     def to_string(cls, genotype_tuple: tuple[Self, ...]) -> str:
-        """Create a string representation from a tuple of genotype.
+        """Create a string representation from a tuple of genotypes.
 
         E.g. (Genotype.WT, Genotype.HET, Genotype.HOM) -> wt_het_hom
 
