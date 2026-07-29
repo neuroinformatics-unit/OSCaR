@@ -10,8 +10,8 @@ This step should be done by an administrator of your institution's PyRAT instanc
 
 You will need to contact Scionics (the creators of PyRAT) to approve access for OSCaR:
 
-- Ask them to setup a new API client called 'OSCaR' on your pyRAT server; they should send you a 'client token'.
-- The new API client will appear under `ADMINISTRATION > API` in pyRAT, and an administrator will need to enable it from there.
+- Ask them to setup a new API client called 'OSCaR' on your PyRAT server; they should send you a 'client token'.
+- The new API client will appear under `ADMINISTRATION > API` in PyRAT, and an administrator will need to enable it from there.
 
 ## User tokens
 
@@ -21,7 +21,7 @@ Once the client is enabled, any user can request a user token by logging into Py
 
 Once all tokens have been created (as above), they can be provided to OSCaR by setting the following environment variables:
 
-- `PYRAT_URL`: the url of the pyRAT instance you want to access
+- `PYRAT_URL`: the url of the PyRAT instance you want to access
 - `PYRAT_CLIENT_TOKEN`: the client token sent to you by Scionics
 - `PYRAT_USER_TOKEN`: the user token created via 'Request access' in PyRAT
 
@@ -29,7 +29,7 @@ Set these variables however you prefer - just make sure they are _never_ checked
 
 ## Pulling data from the PyRAT api
 
-See the docs for the {mod}`~oscar_colony.colony_management.pyrat.api` module, for full details of how OSCaR can pull data from the pyRAT api.
+See the docs for the {mod}`~oscar_colony.colony_management.pyrat.api` module, for full details of how OSCaR can pull data from the PyRAT api.
 Below, we'll walk through an example of retrieving data for a named line.
 
 First, let's set our environment variables. We'll use `python-dotenv` for this, but feel free to use whatever method you like.

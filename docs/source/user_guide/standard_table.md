@@ -17,10 +17,10 @@ Each row represents one animal with columns:
 - `ID_father_1`: the ID of the animal's father
 - `ID_mother_1`: the ID of the animal's mother
 - `sacrifice_reason`: a description of why the animal was sacrificed
-- `n_mutations`: the number of mutations the line has (this should match the number of values given in the `mutations` and `genotype_*` columns)
-- `mutation_1` / `mutation_2`: the names of the mutations for this line (these should be identical, and in the same order, across all animals from the same line)
+- `n_mutations`: the number of mutations the line has. This should match the number of `mutation_NUMBER` columns (see below)
+- `mutation_1` / `mutation_2`...: the names of the mutations for this line (these should be identical, and in the same order, across all animals from the same line)
 
-    For all genotype columns below, the number of values is equal to `n_mutations` and is given in the order of the mutations names `mutation_1`, `mutation_2`...:
+    For all genotype columns below, the number of values is equal to `n_mutations` and is given in the order of the mutation names `mutation_1`, `mutation_2`...:
 - `genotype_offspring`: the genotype of the animal. `wt`, `het` or `hom` _only_, separated by underscores.
 - `genotype_father`: the genotype of the animal's father. `wt`, `het` or `hom` _only_, separated by underscores.
 - `genotype_mother`: the genotype of the animal's mother. `wt`, `het` or `hom` _only_, separated by underscores.
@@ -46,7 +46,7 @@ Here we have added one extra column for `ID_mother_2`.
 
 Note: there should still only be one `genotype_mother` and one `genotype_father` column, as the genotypes of all parents of the same sex should be identical. If they are not, then there's no unambiguous way of determining the breeding scheme that animal came from.
 
-All animals must have at least one male parent and one female parent listed.
+All animals must have at least one mother and one father listed.
 
 ## Un-genotyped animals
 
