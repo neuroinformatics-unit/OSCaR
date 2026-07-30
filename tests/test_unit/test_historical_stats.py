@@ -440,4 +440,12 @@ def test_scheme_summary_df(expected_stats_2_mutations):
     a DataFrame.
     """
 
-    return expected_stats_2_mutations.create_scheme_summary_df()
+    summary_df = expected_stats_2_mutations.create_scheme_summary_df()
+    expected_summary_df = pd.read_csv(
+        pooch_data_path("converted-scheme-summary.csv")
+    )
+
+    # convert summary df Scheme column to string for comparison
+    summary_df = summary_df.astype({"Scheme": "str"})
+
+    pd.testing.assert_frame_equal(summary_df, expected_summary_df)

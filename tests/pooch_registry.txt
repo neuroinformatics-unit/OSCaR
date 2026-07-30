@@ -42,3 +42,5 @@ pyrat-data-multiple-parents-3-mutations.csv f3c04628889a958c7f2e98f68fa52b18c961
 standardised-data-multiple-parents-1-mutation.csv 996a64db684c498e4d1b7d2b07402637b99de9452bb38cd55f34d85754fabb07
 standardised-data-multiple-parents-2-mutations.csv 0ea8691a000debbb032eb57f6cfa97ae0e8afbfbbb578c0d0a07c82eac4c0176
 standardised-data-multiple-parents-3-mutations.csv d6cad621cbda05b48db513c319d7275b6258818429c96400938734b876711021
+
+converted-scheme-summary.csv b021973fa604ca9cf3744f0cfd0e12f3ec6f6ad519422d6404e9550b6e2f2c1d
