@@ -434,6 +434,20 @@ def test_handling_ungenotyped_individuals_in_stats(expected_stats_ungenotyped):
     assert_dataclass_equal(line_stats, expected_stats_ungenotyped, abs=1e-3)
 
 
+def test_total_number_genotype_df(expected_stats_2_mutations):
+    """
+    Test creation of a summary dataframe from
+    LineStatistics.total_n_offspring_per_genotype
+    """
+
+    genotype_df = expected_stats_2_mutations.create_n_per_genotype_df()
+    expected_genotype_df = pd.read_csv(
+        pooch_data_path("converted-total-number.csv")
+    )
+
+    pd.testing.assert_frame_equal(genotype_df, expected_genotype_df)
+
+
 def test_scheme_summary_df(expected_stats_2_mutations):
     """
     Test creation of a summary dataframe from
