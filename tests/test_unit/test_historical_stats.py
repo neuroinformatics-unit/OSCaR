@@ -440,7 +440,9 @@ def test_scheme_summary_df(expected_stats_2_mutations):
     LineStatistics.stats_per_breeding_scheme
     """
 
-    summary_df = expected_stats_2_mutations.create_scheme_summary_df()
+    summary_df = expected_stats_2_mutations.create_scheme_summary_df(
+        decimal_places=2
+    )
     expected_summary_df = pd.read_csv(
         pooch_data_path("converted-scheme-summary.csv")
     )
@@ -474,7 +476,9 @@ def test_scheme_proportion_df(expected_stats_2_mutations):
     LineStatistics.stats_per_breeding_scheme.proportion_offspring_per_genotype
     """
 
-    proportion_df = expected_stats_2_mutations.create_scheme_proportion_df()
+    proportion_df = expected_stats_2_mutations.create_scheme_proportion_df(
+        decimal_places=2
+    )
     expected_proportion_df = pd.read_csv(
         pooch_data_path("converted-scheme-proportion.csv")
     )
