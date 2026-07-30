@@ -162,7 +162,6 @@ class BreedingScheme:
         for genotype, n_with_genotype in genotype_sums.items():
             mendelian_ratios[genotype] = n_with_genotype / total_sum
 
-        logging.debug(f"{self} mendelian ratio: {mendelian_ratios}")
         return mendelian_ratios
 
     def _parent_allele_combos(

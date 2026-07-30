@@ -9,7 +9,7 @@ requires-python = ">=3.11.0"
 dynamic = ["version"]
 
 dependencies = [
-    "fancylog[dev]>=0.8.0",
+    "fancylog[git]>=0.8.0",
     "numpy",
     "pandas",
     "requests",
@@ -46,8 +46,6 @@ dev = [
   "pooch",
   "python-dotenv",
   "responses",
-  "fancylog>=0.8.0",
-  "gitpython>=3.1.50",
 ]
 docs = [
     "linkify-it-py",
