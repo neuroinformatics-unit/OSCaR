@@ -11,8 +11,8 @@ from tests.pooch_test_data import pooch_data_path
     "pyrat_csv_name, expected_csv_name",
     [
         pytest.param(
-            "pyrat-data-single-mutation.csv",
-            "standardised-data-single-mutation.csv",
+            "pyrat-data-1-mutation.csv",
+            "standardised-data-1-mutation.csv",
             id="1 mutation",
         ),
         pytest.param(
@@ -51,20 +51,52 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
     )
 
 
-def test_standardise_genotypes():
+@pytest.mark.parametrize(
+    "pyrat_csv_name, expected_csv_name",
+    [
+        pytest.param(
+            "pyrat-data-forbidden-genotypes.csv",
+            "standardised-data-forbidden-genotypes.csv",
+            id="forbidden genotypes",
+        ),
+        pytest.param(
+            "pyrat-data-forbidden-schemes.csv",
+            "standardised-data-forbidden-schemes.csv",
+            id="forbidden schemes",
+        ),
+        pytest.param(
+            "pyrat-data-forbidden-parents.csv",
+            "standardised-data-forbidden-parents.csv",
+            id="forbidden parents",
+        ),
+    ],
+)
+@pytest.mark.parametrize("input_type", ["path", "dataframe"])
+def test_forbidden_data(pyrat_csv_name, expected_csv_name, input_type):
     """
-    Test standardisation of a dataframe containing forbidden genotypes (e.g.
+    Test forbidden data combinations, to make sure they are correctly filtered.
+
+    1. Test standardisation of a dataframe containing forbidden genotypes (e.g.
     +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
+
+    2. Test that impossible breeding schemes are removed from raw data.
+    (e.g. hom x hom parents cannot make wt offspring)
+
+    3. Test that impossible parent schemes are removed. Cases where there are
+    one parent or no parents.
     """
 
-    pyrat_csv = pd.read_csv(
-        pooch_data_path("pyrat-data-forbidden-genotypes.csv")
-    )
-    expected_csv = pd.read_csv(
-        pooch_data_path("standardised-data-forbidden-genotypes.csv")
-    )
+    pyrat_csv_path = pooch_data_path(pyrat_csv_name)
+    expected_csv_path = pooch_data_path(expected_csv_name)
 
-    standard_csv = standardise_pyrat_csv(pyrat_csv)
+    pyrat_csv = pd.read_csv(pyrat_csv_path)
+    expected_csv = pd.read_csv(expected_csv_path)
+
+    if input_type == "path":
+        standard_csv = standardise_pyrat_csv(pyrat_csv_path)
+    else:
+        standard_csv = standardise_pyrat_csv(pyrat_csv)
+
     pd.testing.assert_frame_equal(
         standard_csv.reset_index(drop=True),
         expected_csv.reset_index(drop=True),
@@ -96,8 +128,8 @@ def test_standardise_multiple_parents_pyrat_csv(
     pyrat_csv_name, expected_csv_name, input_type
 ):
     """
-    Test standardisation of dataframes containing lines with 1, 2 or
-    3 mutations.
+    Test standardisation of dataframes containing multiple parents
+    with 1, 2 or 3 mutations.
     """
 
     pyrat_csv_path = pooch_data_path(pyrat_csv_name)
@@ -111,26 +143,6 @@ def test_standardise_multiple_parents_pyrat_csv(
     else:
         standard_csv = standardise_pyrat_csv(pyrat_csv)
 
-    pd.testing.assert_frame_equal(
-        standard_csv.reset_index(drop=True),
-        expected_csv.reset_index(drop=True),
-    )
-
-
-def test_is_impossible_breeding_scheme():
-    """
-    Test that impossible breeding schemes are removed from raw data.
-    (e.g. hom x hom parents cannot make wt offspring)
-    """
-
-    pyrat_csv = pd.read_csv(
-        pooch_data_path("pyrat-data-forbidden-schemes.csv")
-    )
-    expected_csv = pd.read_csv(
-        pooch_data_path("standardised-data-forbidden-schemes.csv")
-    )
-
-    standard_csv = standardise_pyrat_csv(pyrat_csv)
     pd.testing.assert_frame_equal(
         standard_csv.reset_index(drop=True),
         expected_csv.reset_index(drop=True),
