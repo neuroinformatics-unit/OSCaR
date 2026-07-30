@@ -29,7 +29,7 @@ class SurplusSummary:
         default_factory=dict
     )
 
-    def create_genotype_df(self, decimal_places: int = 2):
+    def create_genotype_df(self, decimal_places: int = 2) -> pd.DataFrame:
         """
         Create a pandas dataframe from surplus_per_genotype, with all values
         rounded to a given number of decimal places.

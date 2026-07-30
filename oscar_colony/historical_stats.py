@@ -41,6 +41,80 @@ class LineStatistics:
         BreedingScheme, BreedingSchemeStatistics
     ] = field(default_factory=dict)
 
+    def create_n_per_genotype_df(self) -> pd.DataFrame:
+        """
+        Create a DataFrame from total_n_offspring_per_genotype.
+
+        Columns are: 'Genotype' and 'N offspring'.
+        """
+
+        n_per_genotype = self.total_n_offspring_per_genotype
+        n_per_genotype_df = pd.DataFrame(
+            n_per_genotype.items(),
+            columns=("Genotype", "N offspring"),
+        )
+        n_per_genotype_df["Genotype"] = n_per_genotype_df["Genotype"].apply(
+            Genotype.to_string
+        )
+
+        return n_per_genotype_df
+
+    def create_scheme_summary_df(self) -> pd.DataFrame:
+
+        scheme_summary_rows = []
+        for scheme, stats in self.stats_per_breeding_scheme.items():
+            scheme_summary_rows.append(
+                [
+                    scheme,
+                    stats.n_breeding_pairs,
+                    stats.n_successful_matings,
+                    round(stats.average_litter_size, 2),
+                    round(stats.average_n_litters_per_pair, 2),
+                    stats.total_n_offspring,
+                    stats.total_n_genotyped_offspring,
+                ]
+            )
+
+        scheme_summary_df = pd.DataFrame(
+            scheme_summary_rows,
+            columns=[
+                "Scheme",
+                "N breeding pairs",
+                "Total successful matings",
+                "Average litter size",
+                "Average litters per pair",
+                "Total offspring",
+                "Total genotyped offspring",
+            ],
+        )
+
+        return scheme_summary_df
+
+    def create_scheme_number_df(self) -> pd.DataFrame:
+        scheme_number_dfs = []
+        for scheme, stats in self.stats_per_breeding_scheme.items():
+            n_per_genotype_df = pd.DataFrame(stats.n_offspring_per_genotype)
+            n_per_genotype_df["Scheme"] = scheme
+            scheme_number_dfs.append(n_per_genotype_df)
+
+        scheme_number_df = pd.concat(scheme_number_dfs)
+        scheme_number_df = scheme_number_df.round(decimals=2)
+        scheme_number_df.columns = [
+            Genotype.to_string(col_name) if col_name != "Scheme" else col_name
+            for col_name in scheme_number_df.columns
+        ]
+
+        # Put scheme as first column, and rest of genotypes in
+        # alphabetical order
+        sorted_genotype_cols = sorted(
+            scheme_number_df.loc[
+                :, scheme_number_df.columns != "Scheme"
+            ].columns
+        )
+        scheme_number_df = scheme_number_df[["Scheme", *sorted_genotype_cols]]
+
+        return scheme_number_df
+
 
 def calculate_historical_stats_for_line(
     standardised_data: pd.DataFrame, line_name: str
