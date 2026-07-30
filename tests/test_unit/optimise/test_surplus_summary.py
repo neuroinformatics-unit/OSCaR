@@ -1,6 +1,7 @@
 import pytest
 
 from oscar_colony.optimise.surplus_summary import create_surplus_summary
+from tests.helpers import assert_dataclass_equal
 
 
 @pytest.mark.parametrize(
@@ -38,4 +39,6 @@ def test_create_surplus_summary(
         request.getfixturevalue(offspring_per_scheme),
     )
 
-    assert surplus_summary == request.getfixturevalue(expected_surplus)
+    assert_dataclass_equal(
+        surplus_summary, request.getfixturevalue(expected_surplus), abs=1e-4
+    )
