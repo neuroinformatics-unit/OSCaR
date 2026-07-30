@@ -436,8 +436,8 @@ def test_handling_ungenotyped_individuals_in_stats(expected_stats_ungenotyped):
 
 def test_scheme_summary_df(expected_stats_2_mutations):
     """
-    Test conversion of LineStatistics.total_n_offspring_per_genotype into
-    a DataFrame.
+    Test creation of a summary dataframe from
+    LineStatistics.stats_per_breeding_scheme
     """
 
     summary_df = expected_stats_2_mutations.create_scheme_summary_df()
@@ -449,3 +449,20 @@ def test_scheme_summary_df(expected_stats_2_mutations):
     summary_df = summary_df.astype({"Scheme": "str"})
 
     pd.testing.assert_frame_equal(summary_df, expected_summary_df)
+
+
+def test_scheme_number_df(expected_stats_2_mutations):
+    """
+    Test creation of a dataframe from
+    LineStatistics.stats_per_breeding_scheme.n_offspring_per_genotype
+    """
+
+    number_df = expected_stats_2_mutations.create_scheme_number_df()
+    expected_number_df = pd.read_csv(
+        pooch_data_path("converted-scheme-number.csv")
+    )
+
+    # convert summary df Scheme column to string for comparison
+    number_df = number_df.astype({"Scheme": "str"})
+
+    pd.testing.assert_frame_equal(number_df, expected_number_df)

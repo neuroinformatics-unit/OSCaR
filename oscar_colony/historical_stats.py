@@ -93,11 +93,11 @@ class LineStatistics:
     def create_scheme_number_df(self) -> pd.DataFrame:
         scheme_number_dfs = []
         for scheme, stats in self.stats_per_breeding_scheme.items():
-            n_per_genotype_df = pd.DataFrame(stats.n_offspring_per_genotype)
+            n_per_genotype_df = pd.DataFrame([stats.n_offspring_per_genotype])
             n_per_genotype_df["Scheme"] = scheme
             scheme_number_dfs.append(n_per_genotype_df)
 
-        scheme_number_df = pd.concat(scheme_number_dfs)
+        scheme_number_df = pd.concat(scheme_number_dfs).reset_index(drop=True)
         scheme_number_df = scheme_number_df.round(decimals=2)
         scheme_number_df.columns = [
             Genotype.to_string(col_name) if col_name != "Scheme" else col_name
