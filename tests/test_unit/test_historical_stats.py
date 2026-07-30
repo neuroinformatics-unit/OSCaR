@@ -466,3 +466,20 @@ def test_scheme_number_df(expected_stats_2_mutations):
     number_df = number_df.astype({"Scheme": "str"})
 
     pd.testing.assert_frame_equal(number_df, expected_number_df)
+
+
+def test_scheme_proportion_df(expected_stats_2_mutations):
+    """
+    Test creation of a dataframe from
+    LineStatistics.stats_per_breeding_scheme.proportion_offspring_per_genotype
+    """
+
+    proportion_df = expected_stats_2_mutations.create_scheme_proportion_df()
+    expected_proportion_df = pd.read_csv(
+        pooch_data_path("converted-scheme-proportion.csv")
+    )
+
+    # convert summary df Scheme column to string for comparison
+    proportion_df = proportion_df.astype({"Scheme": "str"})
+
+    pd.testing.assert_frame_equal(proportion_df, expected_proportion_df)

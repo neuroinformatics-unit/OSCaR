@@ -115,6 +115,33 @@ class LineStatistics:
 
         return scheme_number_df
 
+    def create_scheme_proportion_df(self) -> pd.DataFrame:
+        scheme_number_dfs = []
+        for scheme, stats in self.stats_per_breeding_scheme.items():
+            n_per_genotype_df = pd.DataFrame(
+                [stats.proportion_offspring_per_genotype]
+            )
+            n_per_genotype_df["Scheme"] = scheme
+            scheme_number_dfs.append(n_per_genotype_df)
+
+        scheme_number_df = pd.concat(scheme_number_dfs).reset_index(drop=True)
+        scheme_number_df = scheme_number_df.round(decimals=2)
+        scheme_number_df.columns = [
+            Genotype.to_string(col_name) if col_name != "Scheme" else col_name
+            for col_name in scheme_number_df.columns
+        ]
+
+        # Put scheme as first column, and rest of genotypes in
+        # alphabetical order
+        sorted_genotype_cols = sorted(
+            scheme_number_df.loc[
+                :, scheme_number_df.columns != "Scheme"
+            ].columns
+        )
+        scheme_number_df = scheme_number_df[["Scheme", *sorted_genotype_cols]]
+
+        return scheme_number_df
+
 
 def calculate_historical_stats_for_line(
     standardised_data: pd.DataFrame, line_name: str

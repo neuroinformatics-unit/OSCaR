@@ -45,3 +45,4 @@ standardised-data-multiple-parents-3-mutations.csv d6cad621cbda05b48db513c319d72
 
 converted-scheme-summary.csv b021973fa604ca9cf3744f0cfd0e12f3ec6f6ad519422d6404e9550b6e2f2c1d
 converted-scheme-number.csv d596b46a303bca895a255283c654736def0c14a80f88ad590c05d7f5888de18a
+converted-scheme-proportion.csv 59d26a83a3706b6a693791bf61e186659feb91ddb16cfac7477eab14c9b64d1b
