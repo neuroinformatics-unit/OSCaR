@@ -29,31 +29,41 @@ class SurplusSummary:
         default_factory=dict
     )
 
-    def create_genotype_df(self, decimal_places: int = 2) -> pd.DataFrame:
+    def create_genotype_df(
+        self, decimal_places: int | None = None
+    ) -> pd.DataFrame:
         """
         Create a pandas dataframe from surplus_per_genotype, with all values
-        rounded to a given number of decimal places.
+        (optionally) rounded to a given number of decimal places.
         """
         rows = []
         for genotype, surplus in self.surplus_per_genotype.items():
+            required_n = surplus.total_n - surplus.total_n_surplus
             rows.append(
                 (
                     Genotype.to_string(genotype),
-                    round(surplus.total_n, decimal_places),
-                    round(surplus.total_n_surplus, decimal_places),
-                    round(surplus.percent_surplus, decimal_places),
+                    required_n,
+                    surplus.total_n,
+                    surplus.total_n_surplus,
+                    surplus.percent_surplus,
                 )
             )
 
-        return pd.DataFrame(
+        genotype_df = pd.DataFrame(
             rows,
             columns=[
                 "Genotype",
+                "Required N",
                 "Total N",
                 "Total N Surplus",
                 "Percent Surplus",
             ],
         )
+
+        if decimal_places is not None:
+            genotype_df = genotype_df.round(decimals=decimal_places)
+
+        return genotype_df
 
 
 def create_surplus_summary(
