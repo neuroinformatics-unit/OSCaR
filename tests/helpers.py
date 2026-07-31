@@ -50,28 +50,29 @@ def _assert_close(
         values to indicate where in the structure the error came from.
     """
 
-    # assertion message that will be printed with pytest report
-    message = f"actual is {actual} vs in expected {expected}"
-    if message_prefix:
-        message = f"{message_prefix} in {message}"
-
     if isinstance(actual, Mapping):
-        assert actual.keys() == expected.keys()
-        for key in actual:
-            if message_prefix:
-                new_prefix = f"{message_prefix} - {key}"
-            else:
-                new_prefix = key
+        message = (
+            f"actual keys are {actual.keys()} vs in expected {expected.keys()}"
+        )
+        if message_prefix:
+            message = f"{message_prefix} {message}"
+        assert actual.keys() == expected.keys(), message
 
+        for key in actual:
+            new_prefix = f"{message_prefix} - {key}" if message_prefix else key
             _assert_close(
                 actual[key],
                 expected[key],
                 abs_tolerance=abs_tolerance,
                 message_prefix=new_prefix,
             )
+        return
 
-    elif isinstance(actual, float):
+    message = f"actual is {actual} vs in expected {expected}"
+    if message_prefix:
+        message = f"{message_prefix} in {message}"
+
+    if isinstance(actual, float):
         assert actual == pytest.approx(expected, abs=abs_tolerance), message
-
     else:
         assert actual == expected, message
