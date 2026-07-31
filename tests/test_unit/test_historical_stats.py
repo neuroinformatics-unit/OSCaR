@@ -355,7 +355,7 @@ def test_calculate_historical_stats_for_line(
     line_stats = calculate_historical_stats_for_line(
         standardised_csv, line_name
     )
-    assert_dataclass_equal(line_stats, expected_stats, abs=1e-3)
+    assert_dataclass_equal(line_stats, expected_stats, abs_tolerance=1e-3)
 
 
 @pytest.fixture
@@ -431,7 +431,9 @@ def test_handling_ungenotyped_individuals_in_stats(expected_stats_ungenotyped):
     )
 
     line_stats = calculate_historical_stats_for_line(standard_csv, "Line-AB")
-    assert_dataclass_equal(line_stats, expected_stats_ungenotyped, abs=1e-3)
+    assert_dataclass_equal(
+        line_stats, expected_stats_ungenotyped, abs_tolerance=1e-3
+    )
 
 
 def test_total_number_genotype_df(expected_stats_2_mutations):

@@ -4,7 +4,9 @@ from typing import Any, Mapping
 import pytest
 
 
-def assert_dataclass_equal(actual, expected, abs: float = 1e-3) -> None:
+def assert_dataclass_equal(
+    actual, expected, abs_tolerance: float = 1e-3
+) -> None:
     """Assert two dataclasses are equal.
 
     This can handle dataclasses with nested items e.g. dictionaries within
@@ -17,17 +19,20 @@ def assert_dataclass_equal(actual, expected, abs: float = 1e-3) -> None:
         The actual dataclass
     expected : dataclass
         The expected dataclass
-    abs : float, optional
+    abs_tolerance : float, optional
         The absolute tolerance for comparing float values inside the
         dataclasses. This is passed to pytest.approx()
     """
     actual_dict = asdict(actual)
     expected_dict = asdict(expected)
-    _assert_close(actual_dict, expected_dict, abs=abs)
+    _assert_close(actual_dict, expected_dict, abs_tolerance=abs_tolerance)
 
 
 def _assert_close(
-    actual: Any, expected: Any, abs: float, message_prefix: str | None = None
+    actual: Any,
+    expected: Any,
+    abs_tolerance: float,
+    message_prefix: str | None = None,
 ) -> None:
     """Assert two values are close, handling nested dicts.
 
@@ -37,7 +42,7 @@ def _assert_close(
         The actual value
     expected : Any
         The expected value
-    abs : float
+    abs_tolerance : float
         The absolute tolerance for comparing float values - this is passed to
         pytest.approx()
     message_prefix : str | None, optional
@@ -59,11 +64,14 @@ def _assert_close(
                 new_prefix = key
 
             _assert_close(
-                actual[key], expected[key], abs=abs, message_prefix=new_prefix
+                actual[key],
+                expected[key],
+                abs_tolerance=abs_tolerance,
+                message_prefix=new_prefix,
             )
 
     elif isinstance(actual, float):
-        assert actual == pytest.approx(expected, abs=abs), message
+        assert actual == pytest.approx(expected, abs=abs_tolerance), message
 
     else:
         assert actual == expected, message

@@ -32,9 +32,20 @@ class SurplusSummary:
     def create_genotype_df(
         self, decimal_places: int | None = None
     ) -> pd.DataFrame:
-        """
-        Create a pandas dataframe from surplus_per_genotype, with all values
-        (optionally) rounded to a given number of decimal places.
+        """Create a pandas dataframe from surplus_per_genotype.
+
+        Columns are: 'Genotype', 'Required N', 'Total N', 'Total N Surplus'
+        and 'Percent Surplus'
+
+        Parameters
+        ----------
+        decimal_places : int | None, optional
+            Number of decimal places to round float values to
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame summarising totals and surplus per genotype
         """
         rows = []
         for genotype, surplus in self.surplus_per_genotype.items():

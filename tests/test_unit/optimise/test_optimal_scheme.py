@@ -59,7 +59,9 @@ def test_calculate_optimal_scheme(
 
     assert n_matings_per_scheme == request.getfixturevalue(expected_n_matings)
     assert_dataclass_equal(
-        surplus_summary, request.getfixturevalue(expected_surplus), abs=1e-4
+        surplus_summary,
+        request.getfixturevalue(expected_surplus),
+        abs_tolerance=1e-4,
     )
 
 

@@ -42,7 +42,9 @@ def test_create_surplus_summary(
     )
 
     assert_dataclass_equal(
-        surplus_summary, request.getfixturevalue(expected_surplus), abs=1e-4
+        surplus_summary,
+        request.getfixturevalue(expected_surplus),
+        abs_tolerance=1e-4,
     )
 
 
