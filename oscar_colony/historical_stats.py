@@ -173,7 +173,9 @@ class LineStatistics:
         scheme_dfs = []
         for scheme, stats in self.stats_per_breeding_scheme.items():
             if use_number:
-                genotype_df = pd.DataFrame([stats.n_offspring_per_genotype])
+                genotype_df = pd.DataFrame(
+                    [stats.n_offspring_per_genotype], dtype="Int64"
+                )
             else:
                 genotype_df = pd.DataFrame(
                     [stats.proportion_offspring_per_genotype]
