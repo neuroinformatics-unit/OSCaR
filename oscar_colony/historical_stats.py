@@ -173,8 +173,12 @@ class LineStatistics:
         scheme_dfs = []
         for scheme, stats in self.stats_per_breeding_scheme.items():
             if use_number:
+                # Read as float, so all columns in the final df have consistent
+                # dtype. Otherwise, those with missing values (NaN) end up as
+                # float and the rest as int, which complicates downstream
+                # processing.
                 genotype_df = pd.DataFrame(
-                    [stats.n_offspring_per_genotype], dtype="Int64"
+                    [stats.n_offspring_per_genotype], dtype="float"
                 )
             else:
                 genotype_df = pd.DataFrame(
