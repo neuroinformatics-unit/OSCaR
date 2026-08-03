@@ -7,6 +7,8 @@ import pandas as pd
 
 from oscar_colony.breeding_scheme import BreedingScheme, Genotype
 
+logger = logging.getLogger(__name__)
+
 
 def standardise_pyrat_csv(
     input_df: pd.DataFrame | Path | str,
@@ -39,7 +41,7 @@ def standardise_pyrat_csv(
     if isinstance(input_df, (Path, str)):
         input_df = pd.read_csv(input_df)
 
-    logging.info(
+    logger.info(
         f"Starting standardisation of pyRAT data: {len(input_df)} rows"
     )
 
@@ -81,21 +83,29 @@ def standardise_pyrat_csv(
     id_offspring_col = standard_df.pop("ID_offspring")
     standard_df.insert(0, "ID_offspring", id_offspring_col)
 
-    n_ungenotyped = standard_df["genotype_offspring"].isna().sum()
-    if n_ungenotyped:
-        ungenotyped_ids = standard_df.loc[
-            standard_df["genotype_offspring"].isna(), "ID_offspring"
-        ].tolist()
-        logging.info(
+    _log_ungenotyped_animals(standard_df)
+
+    logger.info(f"Standardisation complete: {len(standard_df)} rows")
+
+    return standard_df
+
+
+def _log_ungenotyped_animals(standard_df: pd.DataFrame) -> None:
+    """Log the count and IDs of offspring with no genotype recorded.
+
+    Parameters
+    ----------
+    standard_df : pd.DataFrame
+        Standardised dataframe to check for ungenotyped offspring.
+    """
+    ungenotyped = standard_df["genotype_offspring"].isna()
+    n_ungenotyped = ungenotyped.sum()
+    if n_ungenotyped > 0:
+        ungenotyped_ids = standard_df.loc[ungenotyped, "ID_offspring"].tolist()
+        logger.info(
             f"{n_ungenotyped} offspring have "
             f"no genotype recorded: {ungenotyped_ids}"
         )
-
-    logging.info(
-        f"Standardisation complete: {len(standard_df)} rows remaining"
-    )
-
-    return standard_df
 
 
 def _add_n_mutations_column(
@@ -279,17 +289,13 @@ def _filter_or_correct_genotypes(
     filtered_count = len(filtered_data)
     removed_count = len(standard_csv) - filtered_count
 
-    if removed_count:
-        merged_df = pd.merge(
-            standard_csv["ID_offspring"],
-            filtered_data["ID_offspring"],
-            how="outer",
-            indicator=True,
-        )
-        dropped_rows = merged_df[merged_df["_merge"] == "left_only"]
-        logging.info(
+    if removed_count > 0:
+        dropped_ids = standard_csv.loc[
+            ~allowed_genotypes, "ID_offspring"
+        ].tolist()
+        logger.info(
             f"Filtered out {removed_count} invalid genotype row(s) for these "
-            f"offspring IDs : {dropped_rows['ID_offspring'].tolist()} - "
+            f"offspring IDs : {dropped_ids} - "
             f"{filtered_count} remaining"
         )
 
@@ -496,11 +502,11 @@ def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
     removed_count = impossible_input_data.sum()
     filtered_df = standard_df[~impossible_input_data]
 
-    if removed_count:
+    if removed_count > 0:
         removed_ids = standard_df.loc[
             impossible_input_data, "ID_offspring"
         ].tolist()
-        logging.info(
+        logger.info(
             f"Filtered out {removed_count} row(s) "
             "with invalid breeding data for "
             f"these offspring IDs: {removed_ids} - "
@@ -551,6 +557,10 @@ def _check_data_input_validity(
     )
 
     if _is_ambiguous_parentage(mother_genotypes, father_genotypes):
+        logger.info(
+            f"Offspring ID {standardised_df_row.ID_offspring} has "
+            "ambiguous parentage"
+        )
         return True
 
     mother_genotype = mother_genotypes[0]
@@ -559,6 +569,10 @@ def _check_data_input_validity(
     if _is_impossible_breeding_scheme(
         offspring_genotype, mother_genotype, father_genotype
     ):
+        logger.info(
+            f"Offspring ID {standardised_df_row.ID_offspring} has an "
+            "impossible breeding scheme"
+        )
         return True
     return False
 
@@ -599,17 +613,8 @@ def _is_impossible_breeding_scheme(
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
-            logging.info(
-                f"\n Genotype {typed_offspring} is not possible "
-                f"for parents {father_genotype} x {mother_genotype} "
-                f"using the Mendalian ratio"
-            )
             return True
         elif ratio[typed_offspring] == 0:
-            logging.info(
-                f"\n Possibility of genotype {typed_offspring} is 0%"
-                f"for parents {father_genotype} x {mother_genotype}"
-            )
             return True
 
     return False

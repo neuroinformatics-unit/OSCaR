@@ -8,6 +8,8 @@ from oscar_colony.breeding_scheme import (
     Genotype,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class BreedingSchemeStatistics:
@@ -68,7 +70,7 @@ def calculate_historical_stats_for_line(
     if len(line_data) == 0:
         raise ValueError(f"No data for {line_name} found")
 
-    logging.info(
+    logger.info(
         f"Calculating historical stats for line '{line_name}' with "
         f"{len(line_data)} offspring records"
     )
@@ -144,7 +146,7 @@ def _historical_stats_for_breeding_scheme(
         Summary statistics for the breeding scheme
     """
     stats = BreedingSchemeStatistics()
-    logging.debug(
+    logger.debug(
         f"Calculating stats for breeding scheme "
         f"{scheme_data['breeding_scheme'].iloc[0]} "
         f"with {len(scheme_data)} offspring rows"
@@ -190,5 +192,4 @@ def _historical_stats_for_breeding_scheme(
         # Proportions use total_n_genotyped_offspring (excluding un-genotyped)
         proportion = n_offspring / stats.total_n_genotyped_offspring
         stats.proportion_offspring_per_genotype[genotype] = proportion
-        logging.debug(f"{genotype}: {proportion}")
     return stats

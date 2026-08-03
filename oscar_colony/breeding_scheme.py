@@ -5,6 +5,8 @@ from typing import Self
 
 import numpy as np
 
+logger = logging.getLogger(__name__)
+
 
 class Genotype(IntEnum):
     """Genotype status: homozygous (HOM), heterozygous (HET) or WT (wildtype).
@@ -294,7 +296,7 @@ def generate_breeding_schemes(
         two specific parent genotypes)
     """
 
-    logging.info(f"Generating breeding schemes for {n_mutations} mutations")
+    logger.info(f"Generating breeding schemes for {n_mutations} mutations")
     breeding_schemes = []
 
     # First, generate all possible genotypes of a single parent.
@@ -318,7 +320,7 @@ def generate_breeding_schemes(
         if not _breeding_scheme_contains_wt_pairs(parent_1, parent_2):
             breeding_schemes.append(BreedingScheme(parent_1, parent_2))
 
-    logging.info(f"Generated {len(breeding_schemes)} breeding schemes")
+    logger.info(f"Generated {len(breeding_schemes)} breeding schemes")
     return breeding_schemes
 
 
