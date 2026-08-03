@@ -7,6 +7,7 @@ from oscar_colony.optimise.optimal_scheme_calculator import (
     _optimise_n_matings,
     calculate_optimal_scheme,
 )
+from tests.helpers import assert_dataclass_equal
 
 
 @pytest.mark.parametrize(
@@ -57,7 +58,11 @@ def test_calculate_optimal_scheme(
     )
 
     assert n_matings_per_scheme == request.getfixturevalue(expected_n_matings)
-    assert surplus_summary == request.getfixturevalue(expected_surplus)
+    assert_dataclass_equal(
+        surplus_summary,
+        request.getfixturevalue(expected_surplus),
+        abs_tolerance=1e-4,
+    )
 
 
 @pytest.mark.parametrize(

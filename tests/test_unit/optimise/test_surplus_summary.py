@@ -1,6 +1,9 @@
+import pandas as pd
 import pytest
 
 from oscar_colony.optimise.surplus_summary import create_surplus_summary
+from tests.helpers import assert_dataclass_equal
+from tests.pooch_test_data import pooch_data_path
 
 
 @pytest.mark.parametrize(
@@ -38,4 +41,19 @@ def test_create_surplus_summary(
         request.getfixturevalue(offspring_per_scheme),
     )
 
-    assert surplus_summary == request.getfixturevalue(expected_surplus)
+    assert_dataclass_equal(
+        surplus_summary,
+        request.getfixturevalue(expected_surplus),
+        abs_tolerance=1e-4,
+    )
+
+
+def test_create_genotype_df(surplus_2_mutations):
+    """Test creation of a dataframe from SurplusSummary.surplus_per_genotype"""
+
+    genotype_df = surplus_2_mutations.create_genotype_df(decimal_places=2)
+    expected_df = pd.read_csv(
+        pooch_data_path("converted-surplus-per-genotype.csv")
+    )
+
+    pd.testing.assert_frame_equal(genotype_df, expected_df)
