@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 import pytest
 
@@ -356,6 +358,23 @@ def test_calculate_historical_stats_for_line(
         standardised_csv, line_name
     )
     assert_dataclass_equal(line_stats, expected_stats, abs_tolerance=1e-3)
+
+
+def test_calculate_historical_stats_for_line_logs(caplog):
+    standardised_csv = pd.read_csv(
+        pooch_data_path("standardised-data-1-mutation.csv")
+    )
+
+    with caplog.at_level(logging.DEBUG):
+        calculate_historical_stats_for_line(standardised_csv, "Line-A")
+
+    expected_messages = [
+        "Calculating historical stats for line 'Line-A' with "
+        "18 offspring records",
+        "Calculating stats for breeding scheme",
+    ]
+    for message in expected_messages:
+        assert message in caplog.text
 
 
 @pytest.fixture

@@ -9,10 +9,11 @@ requires-python = ">=3.11.0"
 dynamic = ["version"]
 
 dependencies = [
+    "fancylog[git]>=0.8.0",
     "numpy",
     "pandas",
     "requests",
-    "scipy"
+    "scipy",
 ]
 
 license = "BSD-3-Clause"
@@ -44,7 +45,7 @@ dev = [
   "setuptools-scm",
   "pooch",
   "python-dotenv",
-  "responses"
+  "responses",
 ]
 docs = [
     "linkify-it-py",
