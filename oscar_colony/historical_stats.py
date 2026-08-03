@@ -41,6 +41,177 @@ class LineStatistics:
         BreedingScheme, BreedingSchemeStatistics
     ] = field(default_factory=dict)
 
+    def create_n_per_genotype_df(self) -> pd.DataFrame:
+        """
+        Create a DataFrame from total_n_offspring_per_genotype.
+
+        Columns are: 'Genotype' and 'N offspring'.
+        """
+
+        n_per_genotype = self.total_n_offspring_per_genotype
+        n_per_genotype_df = pd.DataFrame(
+            n_per_genotype.items(),
+            columns=("Genotype", "N offspring"),
+        )
+        n_per_genotype_df["Genotype"] = n_per_genotype_df["Genotype"].apply(
+            Genotype.to_string
+        )
+
+        return n_per_genotype_df
+
+    def create_scheme_summary_df(
+        self, decimal_places: int | None = None
+    ) -> pd.DataFrame:
+        """Create a DataFrame from stats_per_breeding_scheme containing
+        summary stats.
+
+        Columns are: "Scheme", "N breeding pairs", "Total successful matings",
+        "Average litter size", "Average litters per pair", "Total offspring",
+        "Total genotyped offspring"
+
+        Parameters
+        ----------
+        decimal_places : int | None, optional
+            Number of decimal places to round float values to
+
+        Returns
+        -------
+        pd.DataFrame
+            Summary stats for each breeding scheme
+        """
+
+        scheme_summary_rows = []
+        for scheme, stats in self.stats_per_breeding_scheme.items():
+            scheme_summary_rows.append(
+                [
+                    scheme,
+                    stats.n_breeding_pairs,
+                    stats.n_successful_matings,
+                    stats.average_litter_size,
+                    stats.average_n_litters_per_pair,
+                    stats.total_n_offspring,
+                    stats.total_n_genotyped_offspring,
+                ]
+            )
+
+        scheme_summary_df = pd.DataFrame(
+            scheme_summary_rows,
+            columns=[
+                "Scheme",
+                "N breeding pairs",
+                "Total successful matings",
+                "Average litter size",
+                "Average litters per pair",
+                "Total offspring",
+                "Total genotyped offspring",
+            ],
+        )
+
+        if decimal_places is not None:
+            scheme_summary_df = scheme_summary_df.round(
+                decimals=decimal_places
+            )
+
+        return scheme_summary_df
+
+    def create_scheme_number_df(self) -> pd.DataFrame:
+        """
+        Create a DataFrame from stats_per_breeding_scheme, summarising the
+        number of offspring per genotype.
+
+        Columns are: 'Scheme', followed by one column per expected genotype
+        e.g. 'wt_het' / 'wt_hom'...
+        """
+        return self._create_scheme_genotype_df(use_number=True)
+
+    def create_scheme_proportion_df(
+        self, decimal_places: int | None = None
+    ) -> pd.DataFrame:
+        """
+        Create a DataFrame from stats_per_breeding_scheme, summarising the
+        proportion of offspring per genotype.
+
+        Columns are: 'Scheme', followed by one column per expected genotype
+        e.g. 'wt_het' / 'wt_hom'...
+
+        Parameters
+        ----------
+        decimal_places : int | None, optional
+            Number of decimal places to round float values to
+
+        Returns
+        -------
+        pd.DataFrame
+            Proportion of genotype per breeding scheme
+        """
+        return self._create_scheme_genotype_df(
+            use_number=False, decimal_places=decimal_places
+        )
+
+    def _create_scheme_genotype_df(
+        self, use_number: bool = True, decimal_places: int | None = None
+    ) -> pd.DataFrame:
+        """
+        Create a DataFrame of number or proportion per genotype
+        per breeding scheme.
+
+        Parameters
+        ----------
+        use_number : bool, optional
+            When True, uses n_offspring_per_genotype. When False,
+            uses proportion_offspring_per_genotype.
+
+        decimal_places : int | None, optional
+            Number of decimal places to round float values to
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame summarising number/proportion per genotype
+        """
+
+        scheme_dfs = []
+        for scheme, stats in self.stats_per_breeding_scheme.items():
+            if use_number:
+                # Read as float, so all columns in the final df have consistent
+                # dtype. Otherwise, those with missing values (NaN) end up as
+                # float and the rest as int, which complicates downstream
+                # processing.
+                genotype_df = pd.DataFrame(
+                    [stats.n_offspring_per_genotype], dtype="float"
+                )
+            else:
+                genotype_df = pd.DataFrame(
+                    [stats.proportion_offspring_per_genotype]
+                )
+
+            genotype_df["Scheme"] = scheme
+            scheme_dfs.append(genotype_df)
+
+        scheme_genotype_df = pd.concat(scheme_dfs).reset_index(drop=True)
+        scheme_genotype_df.columns = [
+            Genotype.to_string(col_name) if col_name != "Scheme" else col_name
+            for col_name in scheme_genotype_df.columns
+        ]
+
+        # Put scheme as first column, and rest of genotypes in
+        # alphabetical order
+        sorted_genotype_cols = sorted(
+            scheme_genotype_df.loc[
+                :, scheme_genotype_df.columns != "Scheme"
+            ].columns
+        )
+        scheme_genotype_df = scheme_genotype_df[
+            ["Scheme", *sorted_genotype_cols]
+        ]
+
+        if decimal_places is not None:
+            scheme_genotype_df = scheme_genotype_df.round(
+                decimals=decimal_places
+            )
+
+        return scheme_genotype_df
+
 
 def calculate_historical_stats_for_line(
     standardised_data: pd.DataFrame, line_name: str
