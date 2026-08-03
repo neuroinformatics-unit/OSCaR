@@ -299,9 +299,13 @@ def _historical_stats_for_breeding_scheme(
     """Calculate summary statistics for an individual breeding scheme
     (within a specific line).
 
-    Accounting for multiple parents by finding every combination of parent
-    then removing the duplicates for total breeding pairs. For Successful
-    matings unique mothers with unique dates are quantified.
+    This accounts for multiple parents by adjusting the 'n_breeding_pairs' and
+    'n_successful_matings'. The total breeding pairs are all unique
+    combinations of father id x mother id, while the number of successful
+    matings are unique combinations of mother_id x date of birth.
+    For example, a scheme with two rows, each with the same two mothers and one
+    father, but different dates of birth, would be counted as 2 breeding pairs,
+    and 4 successful matings.
 
     Parameters
     ----------
@@ -322,8 +326,9 @@ def _historical_stats_for_breeding_scheme(
         c for c in scheme_data.columns if c.startswith("ID_mother_")
     ]
 
-    # breeding pairs: all unique (father_id, mother_id) combinations, taking
-    # the cartesian product of fathers x mothers per row - de-duplicated
+    # breeding pairs: all unique (father_id, mother_id) combinations.
+    # This takes the cartesian product of fathers x mothers per row,
+    # removing any duplicates
     father_combos = (
         scheme_data[father_cols]
         .melt(ignore_index=False, value_name="father_id")
@@ -339,7 +344,7 @@ def _historical_stats_for_breeding_scheme(
     )
     stats.n_breeding_pairs = breeding_pairs.drop_duplicates().shape[0]
 
-    # unique (mother_id, date_of_birth) pairs — mothers
+    # n_successful_matings: unique (mother_id, date_of_birth) pairs.
     mothers_with_date = (
         scheme_data[mother_cols + ["date_of_birth"]]
         .melt(
