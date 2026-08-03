@@ -172,45 +172,67 @@ def test_get_pyrat_data(
     offspring_response,
     expected_csv_name,
     species_response,
-    caplog,
 ):
-    with caplog.at_level(logging.INFO):
-        # stop responses library interfering with pooch requests
-        responses.add_passthru(GIN_REPO.base_url)
+    # stop responses library interfering with pooch requests
+    responses.add_passthru(GIN_REPO.base_url)
 
-        # add mock responses
-        responses.add(species_response)
-        if parent_response is not None:
-            responses.add(parent_response)
-        responses.add(offspring_response)
+    # add mock responses
+    responses.add(species_response)
+    if parent_response is not None:
+        responses.add(parent_response)
+    responses.add(offspring_response)
 
-        pyrat_dfs = get_pyrat_data(
-            species_name="Mouse",
-            birth_date_from=datetime.date(2026, 2, 1),
-            birth_date_to=datetime.date(2026, 3, 1),
-        )
+    pyrat_dfs = get_pyrat_data(
+        species_name="Mouse",
+        birth_date_from=datetime.date(2026, 2, 1),
+        birth_date_to=datetime.date(2026, 3, 1),
+    )
 
-        pyrat_dfs = list(pyrat_dfs)
+    pyrat_dfs = list(pyrat_dfs)
 
     expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
     assert len(pyrat_dfs) == 1
     # use check_like=True to ignore column order
     pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
 
-    log_messages = [record.getMessage() for record in caplog.records]
 
-    assert any(
-        "searching PyRAT using custom parameters" in message
-        for message in log_messages
+@responses.activate
+def test_get_pyrat_data_logs(species_response, caplog):
+    """Test log statements are recorded correctly when fetching pyRAT data"""
+
+    # stop responses library interfering with pooch requests
+    responses.add_passthru(GIN_REPO.base_url)
+
+    # add mock responses
+    responses.add(species_response)
+    responses.add(
+        create_pyrat_response(
+            json_filename="pyrat-api-single-response-parents.json",
+            query_params={"eartag": ["ID-100", "ID-101"]},
+        )
     )
-    assert any(
-        "Converted animal response to dataframe" in message
-        for message in log_messages
+    responses.add(
+        create_pyrat_response(
+            json_filename="pyrat-api-single-response-offspring.json"
+        )
     )
-    assert any(
-        "animals found in PyRAT database" in message
-        for message in log_messages
-    )
+
+    with caplog.at_level(logging.INFO):
+        pyrat_dfs = get_pyrat_data(
+            species_name="Mouse",
+            birth_date_from=datetime.date(2026, 2, 1),
+            birth_date_to=datetime.date(2026, 3, 1),
+        )
+        pyrat_dfs = list(pyrat_dfs)
+
+    expected_messages = [
+        "searching PyRAT using custom parameters: {'species': 'Mouse', "
+        "'birth date from': '2026-02-01', 'birth date to': '2026-03-01'}",
+        "1 animals found in PyRAT database",
+        "Converted animal response to dataframe with 1 rows",
+    ]
+    for message in expected_messages:
+        assert message in caplog.text
 
 
 @responses.activate

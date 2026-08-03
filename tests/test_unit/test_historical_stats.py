@@ -395,15 +395,13 @@ def test_calculate_historical_stats_for_line_logs(caplog):
     with caplog.at_level(logging.DEBUG):
         calculate_historical_stats_for_line(standardised_csv, "Line-A")
 
-    log_messages = [record.getMessage() for record in caplog.records]
-    assert any(
-        "Calculating historical stats for line 'Line-A'" in message
-        for message in log_messages
-    )
-    assert any(
-        "Calculating stats for breeding scheme" in message
-        for message in log_messages
-    )
+    expected_messages = [
+        "Calculating historical stats for line 'Line-A' with "
+        "18 offspring records",
+        "Calculating stats for breeding scheme",
+    ]
+    for message in expected_messages:
+        assert message in caplog.text
 
 
 @pytest.fixture
