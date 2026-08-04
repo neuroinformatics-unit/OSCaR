@@ -13,9 +13,16 @@ from responses import matchers
 from oscar_colony.colony_management.pyrat.api import (
     get_pyrat_data,
     get_pyrat_line_mutations,
+    get_pyrat_line_name,
     get_pyrat_lines,
 )
 from tests.pooch_test_data import GIN_REPO, pooch_data_path
+
+
+@pytest.fixture
+def exclude_gin():
+    """stop responses library interfering with pooch requests"""
+    responses.add_passthru(GIN_REPO.base_url)
 
 
 @pytest.fixture
@@ -173,14 +180,13 @@ def create_pyrat_response(
     ],
 )
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_data(
     parent_response,
     offspring_response,
     expected_csv_name,
     species_response,
 ):
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # add mock responses
     responses.add(species_response)
@@ -203,11 +209,9 @@ def test_get_pyrat_data(
 
 
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_data_logs(species_response, caplog):
     """Test log statements are recorded correctly when fetching pyRAT data"""
-
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # add mock responses
     responses.add(species_response)
@@ -303,6 +307,7 @@ def test_invalid_species_name(species_response):
 
 
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_lines():
     """
     Test fetching of line names and ids from the pyRAT api.
@@ -310,8 +315,6 @@ def test_get_pyrat_lines():
     This test uses 3 available lines with a max_n_rows of 2 - so there should
     be two requests, and two final dataframes.
     """
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # create mock line responses. We have two here, as there's a total of
     # 3 lines available, but we are limiting max_n_rows to 2 per request.
@@ -350,14 +353,12 @@ def test_get_pyrat_lines():
 
 
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_line_mutations():
     """
     Test fetching of an alphabetical list of line mutations from the
     pyRAT api.
     """
-
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # create mock line mutations response
     line_id = 111
@@ -375,13 +376,34 @@ def test_get_pyrat_line_mutations():
 def test_get_pyrat_line_name():
     """Test fetching a line name from a line id."""
 
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
-
-    # create mock line mutations response
-    line_id = 111
+    # create mock line name response with one entry
+    line_id = 12
     lines_response = create_pyrat_response(
         "strains",
+        json_data=[{"id": line_id, "name": "Line-AB"}],
+        query_params={
+            "k": ["name", "id"],
+            "id": 12,
+        },
+    )
+    responses.add(lines_response)
+
+    line_name = get_pyrat_line_name(line_id)
+    assert line_name == "Line-AB"
+
+
+@responses.activate
+def test_get_pyrat_line_name_invalid():
+    """Test returning multiple line names throws an error."""
+
+    # create mock line name response with two entries
+    line_id = 12
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[
+            {"id": line_id, "name": "Line-AB"},
+            {"id": line_id, "name": "Line-BC"},
+        ],
         query_params={
             "k": ["name", "id"],
             "id": line_id,
@@ -389,5 +411,6 @@ def test_get_pyrat_line_name():
     )
     responses.add(lines_response)
 
-    line_name = get_pyrat_line_mutations(line_id)
-    assert line_name == "Line-AB"
+    error_msg = "Multiple lines returned for id: 12"
+    with pytest.raises(ValueError, match=error_msg):
+        get_pyrat_line_name(line_id)
