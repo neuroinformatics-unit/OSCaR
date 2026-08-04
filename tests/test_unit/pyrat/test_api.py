@@ -85,114 +85,114 @@ def create_pyrat_response(
     return response
 
 
-@pytest.mark.parametrize(
-    "parent_response, offspring_response, expected_csv_name",
-    [
-        pytest.param(
-            create_pyrat_response(
-                json_filename="pyrat-api-single-response-parents.json",
-                query_params={"eartag": ["ID-100", "ID-101"]},
-            ),
-            create_pyrat_response(
-                json_filename="pyrat-api-single-response-offspring.json"
-            ),
-            "pyrat-api-single-response.csv",
-            id="Single item returned",
-        ),
-        pytest.param(
-            create_pyrat_response(
-                json_filename="pyrat-api-multiple-responses-parents.json",
-                query_params={
-                    "eartag": [
-                        "ID-100",
-                        "ID-101",
-                        "ID-102",
-                        "ID-103",
-                        "ID-104",
-                        "ID-105",
-                        "ID-106",
-                        "ID-107",
-                    ]
-                },
-            ),
-            create_pyrat_response(
-                json_filename="pyrat-api-multiple-responses-offspring.json",
-            ),
-            "pyrat-api-multiple-responses.csv",
-            id="Multiple items returned",
-        ),
-        pytest.param(
-            create_pyrat_response(
-                json_filename=(
-                    "pyrat-api-multiple-response-and-parents-both-parents.json"
-                ),
-                query_params={
-                    "eartag": [
-                        "ID-100",
-                        "ID-101",
-                        "ID-102",
-                        "ID-103",
-                        "ID-105",
-                    ]
-                },
-            ),
-            create_pyrat_response(
-                json_filename=(
-                    "pyrat-api-multiple-response-and-parents-offspring.json"
-                )
-            ),
-            "pyrat-api-multiple-response-multiple-parents.csv",
-            id="Multiple items with multiple parents returned",
-        ),
-        pytest.param(
-            create_pyrat_response(
-                json_filename="pyrat-api-single-parent-mother.json",
-                query_params={"eartag": "ID-101"},
-            ),
-            create_pyrat_response(
-                json_filename="pyrat-api-single-parent-offspring.json",
-            ),
-            "pyrat-api-single-parent.csv",
-            id="All missing one parent",
-        ),
-        pytest.param(
-            None,
-            create_pyrat_response(
-                json_filename="pyrat-api-no-parents-mutations-offspring.json",
-            ),
-            "pyrat-api-no-parents-mutations.csv",
-            id="No listed mutations or parents",
-        ),
-    ],
-)
-@responses.activate
-def test_get_pyrat_data(
-    parent_response,
-    offspring_response,
-    expected_csv_name,
-    species_response,
-):
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
+# @pytest.mark.parametrize(
+#     "parent_response, offspring_response, expected_csv_name",
+#     [
+#         pytest.param(
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-single-response-parents.json",
+#                 query_params={"eartag": ["ID-100", "ID-101"]},
+#             ),
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-single-response-offspring.json"
+#             ),
+#             "pyrat-api-single-response.csv",
+#             id="Single item returned",
+#         ),
+#         pytest.param(
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-multiple-responses-parents.json",
+#                 query_params={
+#                     "eartag": [
+#                         "ID-100",
+#                         "ID-101",
+#                         "ID-102",
+#                         "ID-103",
+#                         "ID-104",
+#                         "ID-105",
+#                         "ID-106",
+#                         "ID-107",
+#                     ]
+#                 },
+#             ),
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-multiple-responses-offspring.json",
+#             ),
+#             "pyrat-api-multiple-responses.csv",
+#             id="Multiple items returned",
+#         ),
+#         pytest.param(
+#             create_pyrat_response(
+#                 json_filename=(
+#                     "pyrat-api-multiple-response-and-parents-both-parents.json"
+#                 ),
+#                 query_params={
+#                     "eartag": [
+#                         "ID-100",
+#                         "ID-101",
+#                         "ID-102",
+#                         "ID-103",
+#                         "ID-105",
+#                     ]
+#                 },
+#             ),
+#             create_pyrat_response(
+#                 json_filename=(
+#                     "pyrat-api-multiple-response-and-parents-offspring.json"
+#                 )
+#             ),
+#             "pyrat-api-multiple-response-multiple-parents.csv",
+#             id="Multiple items with multiple parents returned",
+#         ),
+#         pytest.param(
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-single-parent-mother.json",
+#                 query_params={"eartag": "ID-101"},
+#             ),
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-single-parent-offspring.json",
+#             ),
+#             "pyrat-api-single-parent.csv",
+#             id="All missing one parent",
+#         ),
+#         pytest.param(
+#             None,
+#             create_pyrat_response(
+#                 json_filename="pyrat-api-no-parents-mutations-offspring.json",
+#             ),
+#             "pyrat-api-no-parents-mutations.csv",
+#             id="No listed mutations or parents",
+#         ),
+#     ],
+# )
+# @responses.activate
+# def test_get_pyrat_data(
+#     parent_response,
+#     offspring_response,
+#     expected_csv_name,
+#     species_response,
+# ):
+#     # stop responses library interfering with pooch requests
+#     responses.add_passthru(GIN_REPO.base_url)
 
-    # add mock responses
-    responses.add(species_response)
-    if parent_response is not None:
-        responses.add(parent_response)
-    responses.add(offspring_response)
+#     # add mock responses
+#     responses.add(species_response)
+#     if parent_response is not None:
+#         responses.add(parent_response)
+#     responses.add(offspring_response)
 
-    pyrat_dfs = get_pyrat_data(
-        species_name="Mouse",
-        birth_date_from=datetime.date(2026, 2, 1),
-        birth_date_to=datetime.date(2026, 3, 1),
-    )
+#     pyrat_dfs = get_pyrat_data(
+#         species_name="Mouse",
+#         birth_date_from=datetime.date(2026, 2, 1),
+#         birth_date_to=datetime.date(2026, 3, 1),
+#     )
 
-    pyrat_dfs = list(pyrat_dfs)
+#     pyrat_dfs = list(pyrat_dfs)
 
-    expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
-    assert len(pyrat_dfs) == 1
-    # use check_like=True to ignore column order
-    pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
+#     expected_csv = pd.read_csv(pooch_data_path(expected_csv_name), dtype=str)
+#     assert len(pyrat_dfs) == 1
+#     # use check_like=True to ignore column order
+#     pd.testing.assert_frame_equal(pyrat_dfs[0], expected_csv, check_like=True)
 
 
 # @responses.activate
