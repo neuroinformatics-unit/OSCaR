@@ -1,3 +1,4 @@
+import logging
 import re
 from pathlib import Path
 
@@ -38,6 +39,10 @@ def standardise_pyrat_csv(
     if isinstance(input_df, (Path, str)):
         input_df = pd.read_csv(input_df)
 
+    logging.info(
+        f"Starting standardisation of pyRAT data: {len(input_df)} rows"
+    )
+
     rename_col_dict = _create_rename_dict(input_df)
     mutation_cols, genotype_cols = _create_mutation_genotype_dicts(input_df)
 
@@ -60,6 +65,7 @@ def standardise_pyrat_csv(
     standard_df = _add_n_mutations_column(
         standard_df, genotype_cols["offspring"]
     )
+
     standard_df = standard_df.groupby("line_name").apply(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
     )
@@ -74,6 +80,20 @@ def standardise_pyrat_csv(
     # for readability, make sure ID_offspring is first
     id_offspring_col = standard_df.pop("ID_offspring")
     standard_df.insert(0, "ID_offspring", id_offspring_col)
+
+    n_ungenotyped = standard_df["genotype_offspring"].isna().sum()
+    if n_ungenotyped:
+        ungenotyped_ids = standard_df.loc[
+            standard_df["genotype_offspring"].isna(), "ID_offspring"
+        ].tolist()
+        logging.info(
+            f"{n_ungenotyped} offspring have "
+            f"no genotype recorded: {ungenotyped_ids}"
+        )
+
+    logging.info(
+        f"Standardisation complete: {len(standard_df)} rows remaining"
+    )
 
     return standard_df
 
@@ -256,6 +276,22 @@ def _filter_or_correct_genotypes(
         | genotype_data.isna()
     ).all(axis=1)
     filtered_data = filtered_data.loc[allowed_genotypes, :]
+    filtered_count = len(filtered_data)
+    removed_count = len(standard_csv) - filtered_count
+
+    if removed_count:
+        merged_df = pd.merge(
+            standard_csv["ID_offspring"],
+            filtered_data["ID_offspring"],
+            how="outer",
+            indicator=True,
+        )
+        dropped_rows = merged_df[merged_df["_merge"] == "left_only"]
+        logging.info(
+            f"Filtered out {removed_count} invalid genotype row(s) for these "
+            f"offspring IDs : {dropped_rows['ID_offspring'].tolist()} - "
+            f"{filtered_count} remaining"
+        )
 
     return filtered_data
 
@@ -456,8 +492,22 @@ def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
         mother_col_names=mother_col_names,
         father_col_names=father_col_names,
     )
-    standard_df = standard_df[~impossible_input_data]
-    return standard_df
+
+    removed_count = impossible_input_data.sum()
+    filtered_df = standard_df[~impossible_input_data]
+
+    if removed_count:
+        removed_ids = standard_df.loc[
+            impossible_input_data, "ID_offspring"
+        ].tolist()
+        logging.info(
+            f"Filtered out {removed_count} row(s) "
+            "with invalid breeding data for "
+            f"these offspring IDs: {removed_ids} - "
+            f"{len(filtered_df)} remaining"
+        )
+
+    return filtered_df
 
 
 def _check_data_input_validity(
@@ -549,8 +599,17 @@ def _is_impossible_breeding_scheme(
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
+            logging.info(
+                f"\n Genotype {typed_offspring} is not possible "
+                f"for parents {father_genotype} x {mother_genotype} "
+                f"using the Mendalian ratio"
+            )
             return True
         elif ratio[typed_offspring] == 0:
+            logging.info(
+                f"\n Possibility of genotype {typed_offspring} is 0%"
+                f"for parents {father_genotype} x {mother_genotype}"
+            )
             return True
 
     return False

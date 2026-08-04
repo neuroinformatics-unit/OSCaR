@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 from typing import Any, Iterator
 
@@ -63,24 +64,30 @@ def get_pyrat_data(
         "state": ["live", "sacrificed", "exported"],
         "l": max_n_rows,
     }
-
+    log_params = {}
     if line_name is not None:
         params["strain_name_with_id_like"] = line_name
+        log_params["strain name with id like"] = line_name
 
     if species_name is not None:
         params["species"] = _get_species_id(species_name)
+        log_params["species"] = species_name
 
     if birth_date_from is not None:
         params["birth_date_from"] = birth_date_from.isoformat()
+        log_params["birth date from"] = birth_date_from.isoformat()
 
     if birth_date_to is not None:
         params["birth_date_to"] = birth_date_to.isoformat()
+        log_params["birth date to"] = birth_date_to.isoformat()
 
     # Make one request to determine how many results there are
+    logging.info(f"searching PyRAT using custom parameters: {log_params}")
     animals_response = _make_pyrat_request("animals", params)
     yield _convert_animals_to_df(animals_response.json())
     headers = animals_response.headers
     total_n = int(headers["x-total-count"])
+    logging.info(f"{total_n} animals found in PyRAT database")
 
     # If more results than max_n_rows, keep making requests and yielding result
     for start_n in range(max_n_rows, total_n, max_n_rows):
@@ -195,6 +202,10 @@ def _make_pyrat_request(
     # If the request didn't succeed, raise an error containing the status
     # code
     response.raise_for_status()
+    logging.debug(
+        f"PyRAT response complete: endpoint={endpoint_name} "
+        f"status_code={response.status_code}"
+    )
 
     return response
 
@@ -275,6 +286,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
 
     animals_df = pd.DataFrame(animals_data)
     if animals_df.empty:
+        logging.info("no animals collected for this search")
         return animals_df
 
     # Convert dateborn to Year-Month-Day format (removing time info)
@@ -304,7 +316,9 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
             "species_name": "Species",
         }
     )
-
+    logging.info(
+        f"Converted animal response to dataframe with {len(animals_df)} rows"
+    )
     return animals_df
 
 
@@ -337,6 +351,10 @@ def _expand_mutations_data(selected_df: pd.DataFrame) -> pd.DataFrame:
     # If no mutations are listed for any animals, return an empty Mutation 1 /
     # Grade 1 column
     if mutations_df.empty:
+        logging.info(
+            f"no mutation(s) found for these animal_ids : "
+            f"{selected_df['animalid'].explode().unique().tolist()}"
+        )
         selected_df = selected_df.drop(["mutations"], axis=1)
         selected_df[f"{mutation_col_name} 1"] = pd.Series(dtype=str)
         selected_df[f"{grade_col_name} 1"] = pd.Series(dtype=str)
@@ -399,6 +417,10 @@ def _expand_parents_data(animals_df: pd.DataFrame) -> pd.DataFrame:
     # If no parents are listed for ANY animals, return empty mother / father
     # columns, with empty mutation / grade
     if parents_df.empty:
+        logging.info(
+            f"no parent(s) found for these animal_ids : "
+            f"{animals_df['animalid'].explode().unique().tolist()}"
+        )
         animals_df = animals_df.loc[:, ["animalid"]]
         _add_empty_parent_cols(animals_df, "Mother 1")
         _add_empty_parent_cols(animals_df, "Father 1")
@@ -487,6 +509,10 @@ def _parent_column_renaming(expanded_df: pd.DataFrame):
 
     for parent in ["Mother 1", "Father 1"]:
         if f"{parent}: Mutation 1" not in merged_df.columns:
+            logging.info(
+                f"{parent} not recorded for animalid(s) : "
+                f"{merged_df['animalid'].unique().tolist()}"
+            )
             _add_empty_parent_cols(merged_df, parent)
 
     return merged_df
