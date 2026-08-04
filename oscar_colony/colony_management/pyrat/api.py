@@ -144,6 +144,35 @@ def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
         yield pd.DataFrame(lines_response.json())
 
 
+def get_line_name(line_id: int) -> str:
+    """Get the name of a line from its ID"""
+
+    params = {
+        "k": ["name", "id"],
+        "id": line_id,
+    }
+
+    lines_response = _make_pyrat_request("strains", params).json()
+    if len(lines_response) > 1:
+        msg = f"Multiple lines returned for id: {line_id}"
+        raise ValueError(msg)
+
+    return lines_response[0]["name"]
+
+
+def get_line_id(line_name: str) -> int:
+    """Get the ID of a line from its name"""
+
+    params = {"k": ["name", "id"], "name_with_id": line_name}
+
+    lines_response = _make_pyrat_request("strains", params).json()
+    if len(lines_response) > 1:
+        msg = f"Multiple lines returned for name: {line_name}"
+        raise ValueError(msg)
+
+    return lines_response[0]["id"]
+
+
 def get_pyrat_line_mutations(line_id: int) -> list[str]:
     """Get mutation names for the given line id.
 
@@ -153,7 +182,7 @@ def get_pyrat_line_mutations(line_id: int) -> list[str]:
     Parameters
     ----------
     line_id : int
-        Id of the line (e.g. as returned from get_pyrat_lines)
+        Id of the line (e.g. as returned from get_line_id or get_pyrat_lines)
 
     Returns
     -------
