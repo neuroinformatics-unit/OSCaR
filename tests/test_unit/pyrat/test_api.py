@@ -443,7 +443,7 @@ def test_get_pyrat_line_id():
 def test_get_pyrat_line_id_invalid():
     """Test returning multiple line names throws an error."""
 
-    # create mock line name response with two entries
+    # create mock line id response with two entries
     line_id = 12
     line_name = "Line-AB"
     lines_response = create_pyrat_response(
