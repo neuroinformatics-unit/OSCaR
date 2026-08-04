@@ -12,6 +12,7 @@ from responses import matchers
 
 from oscar_colony.colony_management.pyrat.api import (
     get_pyrat_data,
+    get_pyrat_line_id,
     get_pyrat_line_mutations,
     get_pyrat_line_name,
     get_pyrat_lines,
@@ -378,18 +379,19 @@ def test_get_pyrat_line_name():
 
     # create mock line name response with one entry
     line_id = 12
+    line_name = "Line-AB"
     lines_response = create_pyrat_response(
         "strains",
-        json_data=[{"id": line_id, "name": "Line-AB"}],
+        json_data=[{"id": line_id, "name": line_name}],
         query_params={
             "k": ["name", "id"],
-            "id": 12,
+            "id": line_id,
         },
     )
     responses.add(lines_response)
 
-    line_name = get_pyrat_line_name(line_id)
-    assert line_name == "Line-AB"
+    fetched_line_name = get_pyrat_line_name(line_id)
+    assert fetched_line_name == line_name
 
 
 @responses.activate
@@ -414,3 +416,49 @@ def test_get_pyrat_line_name_invalid():
     error_msg = "Multiple lines returned for id: 12"
     with pytest.raises(ValueError, match=error_msg):
         get_pyrat_line_name(line_id)
+
+
+@responses.activate
+def test_get_pyrat_line_id():
+    """Test fetching a line id from a line name."""
+
+    # create mock line name response with one entry
+    line_id = 12
+    line_name = "Line-AB"
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[{"id": line_id, "name": line_name}],
+        query_params={
+            "k": ["name", "id"],
+            "name_with_id": line_name,
+        },
+    )
+    responses.add(lines_response)
+
+    fetched_line_id = get_pyrat_line_id(line_name)
+    assert fetched_line_id == line_id
+
+
+@responses.activate
+def test_get_pyrat_line_id_invalid():
+    """Test returning multiple line names throws an error."""
+
+    # create mock line name response with two entries
+    line_id = 12
+    line_name = "Line-AB"
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[
+            {"id": line_id, "name": line_name},
+            {"id": line_id, "name": "Line-BC"},
+        ],
+        query_params={
+            "k": ["name", "id"],
+            "name_with_id": line_name,
+        },
+    )
+    responses.add(lines_response)
+
+    error_msg = "Multiple lines returned for name: Line-AB"
+    with pytest.raises(ValueError, match=error_msg):
+        get_pyrat_line_id(line_name)
