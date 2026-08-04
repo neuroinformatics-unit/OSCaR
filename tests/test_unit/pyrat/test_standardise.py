@@ -54,31 +54,44 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
 
 
 @pytest.mark.parametrize(
-    "pyrat_csv_name, expected_csv_name, expected_log",
+    "pyrat_csv_name, expected_csv_name, expected_logs",
     [
         pytest.param(
             "pyrat-data-forbidden-genotypes.csv",
             "standardised-data-forbidden-genotypes.csv",
-            "Filtered out 5 invalid genotype row(s)",
+            [
+                "Filtered out 5 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-002', 'ID-003', 'ID-004', 'ID-005', 'ID-010'] - "
+                "9 remaining",
+                "3 offspring have no genotype recorded: "
+                "['ID-012', 'ID-013', 'ID-014']",
+            ],
             id="forbidden genotypes",
         ),
         pytest.param(
             "pyrat-data-forbidden-schemes.csv",
             "standardised-data-forbidden-schemes.csv",
-            "invalid breeding data",
+            [
+                "Filtered out 3 row(s) with invalid breeding data for these "
+                "offspring IDs: ['ID-008', 'ID-009', 'ID-010'] - 7 remaining",
+            ],
             id="forbidden schemes",
         ),
         pytest.param(
             "pyrat-data-forbidden-parents.csv",
             "standardised-data-forbidden-parents.csv",
-            "invalid breeding data",
+            [
+                "Filtered out 5 row(s) with invalid breeding data for these "
+                "offspring IDs: ['ID-001', 'ID-002', 'ID-003', 'ID-004', "
+                "'ID-005'] - 1 remaining",
+            ],
             id="forbidden parents",
         ),
     ],
 )
 @pytest.mark.parametrize("input_type", ["path", "dataframe"])
 def test_forbidden_data(
-    pyrat_csv_name, expected_csv_name, expected_log, input_type, caplog
+    pyrat_csv_name, expected_csv_name, expected_logs, input_type, caplog
 ):
     """
     Test forbidden data combinations, to make sure they are correctly filtered.
@@ -110,8 +123,8 @@ def test_forbidden_data(
         expected_csv.reset_index(drop=True),
     )
 
-    log_messages = [record.getMessage() for record in caplog.records]
-    assert any(expected_log in message for message in log_messages)
+    for expected_log in expected_logs:
+        assert expected_log in caplog.text
 
 
 @pytest.mark.parametrize(
@@ -161,19 +174,19 @@ def test_standardise_multiple_parents_pyrat_csv(
 
 
 def test_standardise_pyrat_csv_logs(caplog):
+    """
+    Test log statements are recorded correctly, for a dataframe with no
+    invalid data.
+    """
 
-    pyrat_csv_path = pooch_data_path(
-        "pyrat-data-multiple-parents-3-mutations.csv"
-    )
+    pyrat_csv_path = pooch_data_path("pyrat-data-3-mutations.csv")
 
     with caplog.at_level(logging.INFO):
         standardise_pyrat_csv(pyrat_csv_path)
 
-    log_messages = [record.getMessage() for record in caplog.records]
-    assert any(
-        "Starting standardisation of pyRAT data" in message
-        for message in log_messages
-    )
-    assert any(
-        "Standardisation complete:" in message for message in log_messages
-    )
+    expected_messages = [
+        "Starting standardisation of pyRAT data: 29 rows",
+        "Standardisation complete: 29 rows",
+    ]
+    for message in expected_messages:
+        assert message in caplog.text
