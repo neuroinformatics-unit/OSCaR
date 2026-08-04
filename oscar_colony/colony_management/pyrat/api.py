@@ -144,7 +144,7 @@ def get_pyrat_lines(max_n_rows: int = 10000) -> Iterator[pd.DataFrame]:
         yield pd.DataFrame(lines_response.json())
 
 
-def get_line_name(line_id: int) -> str:
+def get_pyrat_line_name(line_id: int) -> str:
     """Get the name of a line from its ID"""
 
     params = {
@@ -160,7 +160,7 @@ def get_line_name(line_id: int) -> str:
     return lines_response[0]["name"]
 
 
-def get_line_id(line_name: str) -> int:
+def get_pyrat_line_id(line_name: str) -> int:
     """Get the ID of a line from its name"""
 
     params = {"k": ["name", "id"], "name_with_id": line_name}

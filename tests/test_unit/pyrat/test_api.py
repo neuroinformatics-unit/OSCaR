@@ -22,28 +22,32 @@ from tests.pooch_test_data import GIN_REPO, pooch_data_path
 def species_response():
     """Default response to give for a request to the /species endpoint"""
 
-    return responses.Response(
-        method="GET",
-        url=f"{os.environ['PYRAT_URL']}/api/v3/species",
-        json=[{"id": 1, "name": "Mouse"}, {"id": 2, "name": "Rat"}],
+    return create_pyrat_response(
+        endpoint_name="species",
+        json_data=[{"id": 1, "name": "Mouse"}, {"id": 2, "name": "Rat"}],
     )
 
 
 def create_pyrat_response(
     endpoint_name: str = "animals",
     json_filename: str | None = None,
+    json_data: list[Any] | None = None,
     query_params: dict[str, Any] | None = None,
     total_count: int | None = None,
 ) -> responses.Response:
     """Create a mock response for a request to the pyRAT api.
+
+    If neither json_filename or json_data are provided, then the json data
+    will be empty.
 
     Parameters
     ----------
     endpoint_name: str, optional
         The name of the pyRAT endpoint. Defaults to 'animals'
     json_filename : str | None, optional
-        Json filename of response data. If not given, the json data will
-        be empty.
+        Json filename of response data.
+    json_data: list[Any] | None, optional
+        Json data for the response. Ignored if json_filename is also provided.
     query_params : dict[str, Any] | None, optional
         The required query parameters to return this response. Note: matching
         isn't strict, so while the request must contain the given parameters,
@@ -59,21 +63,23 @@ def create_pyrat_response(
     """
     if json_filename is not None:
         with open(pooch_data_path(json_filename)) as f:
-            json_data = json.load(f)
+            json_response = json.load(f)
+    elif json_data is not None:
+        json_response = json_data
     else:
-        json_data = []
+        json_response = []
 
     if total_count is None:
-        total_count = len(json_data)
+        total_count = len(json_response)
 
     # x-count is the total number of items returned in this response
     # x-total-count is the total number of available items
     response = responses.Response(
         method="GET",
         url=f"{os.environ['PYRAT_URL']}/api/v3/{endpoint_name}",
-        json=json_data,
+        json=json_response,
         headers={
-            "x-count": str(len(json_data)),
+            "x-count": str(len(json_response)),
             "x-total-count": str(total_count),
         },
     )
@@ -363,3 +369,25 @@ def test_get_pyrat_line_mutations():
 
     line_mutations = get_pyrat_line_mutations(line_id)
     assert line_mutations == ["Mut-A", "Mut-B", "Mut-C"]
+
+
+@responses.activate
+def test_get_pyrat_line_name():
+    """Test fetching a line name from a line id."""
+
+    # stop responses library interfering with pooch requests
+    responses.add_passthru(GIN_REPO.base_url)
+
+    # create mock line mutations response
+    line_id = 111
+    lines_response = create_pyrat_response(
+        "strains",
+        query_params={
+            "k": ["name", "id"],
+            "id": line_id,
+        },
+    )
+    responses.add(lines_response)
+
+    line_name = get_pyrat_line_mutations(line_id)
+    assert line_name == "Line-AB"
