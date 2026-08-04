@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 
 import pandas as pd
@@ -6,6 +7,8 @@ from oscar_colony.breeding_scheme import (
     BreedingScheme,
     Genotype,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -238,6 +241,10 @@ def calculate_historical_stats_for_line(
     if len(line_data) == 0:
         raise ValueError(f"No data for {line_name} found")
 
+    logger.info(
+        f"Calculating historical stats for line '{line_name}' with "
+        f"{len(line_data)} offspring records"
+    )
     breeding_schemes = line_data.apply(_create_breeding_scheme, axis=1)
     data_with_schemes = line_data.copy()
     data_with_schemes["breeding_scheme"] = breeding_schemes
@@ -318,6 +325,11 @@ def _historical_stats_for_breeding_scheme(
         Summary statistics for the breeding scheme
     """
     stats = BreedingSchemeStatistics()
+    logger.debug(
+        f"Calculating stats for breeding scheme "
+        f"{scheme_data['breeding_scheme'].iloc[0]} "
+        f"with {len(scheme_data)} offspring rows"
+    )
 
     father_cols = [
         c for c in scheme_data.columns if c.startswith("ID_father_")
@@ -389,5 +401,4 @@ def _historical_stats_for_breeding_scheme(
         # Proportions use total_n_genotyped_offspring (excluding un-genotyped)
         proportion = n_offspring / stats.total_n_genotyped_offspring
         stats.proportion_offspring_per_genotype[genotype] = proportion
-
     return stats

@@ -1,3 +1,4 @@
+import logging
 import re
 from pathlib import Path
 
@@ -5,6 +6,8 @@ import numpy as np
 import pandas as pd
 
 from oscar_colony.breeding_scheme import BreedingScheme, Genotype
+
+logger = logging.getLogger(__name__)
 
 
 def standardise_pyrat_csv(
@@ -38,6 +41,10 @@ def standardise_pyrat_csv(
     if isinstance(input_df, (Path, str)):
         input_df = pd.read_csv(input_df)
 
+    logger.info(
+        f"Starting standardisation of pyRAT data: {len(input_df)} rows"
+    )
+
     rename_col_dict = _create_rename_dict(input_df)
     mutation_cols, genotype_cols = _create_mutation_genotype_dicts(input_df)
 
@@ -60,6 +67,7 @@ def standardise_pyrat_csv(
     standard_df = _add_n_mutations_column(
         standard_df, genotype_cols["offspring"]
     )
+
     standard_df = standard_df.groupby("line_name").apply(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
     )
@@ -75,7 +83,29 @@ def standardise_pyrat_csv(
     id_offspring_col = standard_df.pop("ID_offspring")
     standard_df.insert(0, "ID_offspring", id_offspring_col)
 
+    _log_ungenotyped_animals(standard_df)
+
+    logger.info(f"Standardisation complete: {len(standard_df)} rows")
+
     return standard_df
+
+
+def _log_ungenotyped_animals(standard_df: pd.DataFrame) -> None:
+    """Log the count and IDs of offspring with no genotype recorded.
+
+    Parameters
+    ----------
+    standard_df : pd.DataFrame
+        Standardised dataframe to check for ungenotyped offspring.
+    """
+    ungenotyped = standard_df["genotype_offspring"].isna()
+    n_ungenotyped = ungenotyped.sum()
+    if n_ungenotyped > 0:
+        ungenotyped_ids = standard_df.loc[ungenotyped, "ID_offspring"].tolist()
+        logger.info(
+            f"{n_ungenotyped} offspring have "
+            f"no genotype recorded: {ungenotyped_ids}"
+        )
 
 
 def _add_n_mutations_column(
@@ -256,6 +286,18 @@ def _filter_or_correct_genotypes(
         | genotype_data.isna()
     ).all(axis=1)
     filtered_data = filtered_data.loc[allowed_genotypes, :]
+    filtered_count = len(filtered_data)
+    removed_count = len(standard_csv) - filtered_count
+
+    if removed_count > 0:
+        dropped_ids = standard_csv.loc[
+            ~allowed_genotypes, "ID_offspring"
+        ].tolist()
+        logger.info(
+            f"Filtered out {removed_count} invalid genotype row(s) for these "
+            f"offspring IDs : {dropped_ids} - "
+            f"{filtered_count} remaining"
+        )
 
     return filtered_data
 
@@ -456,8 +498,22 @@ def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
         mother_col_names=mother_col_names,
         father_col_names=father_col_names,
     )
-    standard_df = standard_df[~impossible_input_data]
-    return standard_df
+
+    removed_count = impossible_input_data.sum()
+    filtered_df = standard_df[~impossible_input_data]
+
+    if removed_count > 0:
+        removed_ids = standard_df.loc[
+            impossible_input_data, "ID_offspring"
+        ].tolist()
+        logger.info(
+            f"Filtered out {removed_count} row(s) "
+            "with invalid breeding data for "
+            f"these offspring IDs: {removed_ids} - "
+            f"{len(filtered_df)} remaining"
+        )
+
+    return filtered_df
 
 
 def _check_data_input_validity(
@@ -501,6 +557,10 @@ def _check_data_input_validity(
     )
 
     if _is_ambiguous_parentage(mother_genotypes, father_genotypes):
+        logger.info(
+            f"Offspring ID {standardised_df_row.ID_offspring} has "
+            "ambiguous parentage"
+        )
         return True
 
     mother_genotype = mother_genotypes[0]
@@ -509,6 +569,10 @@ def _check_data_input_validity(
     if _is_impossible_breeding_scheme(
         offspring_genotype, mother_genotype, father_genotype
     ):
+        logger.info(
+            f"Offspring ID {standardised_df_row.ID_offspring} has an "
+            "impossible breeding scheme"
+        )
         return True
     return False
 
