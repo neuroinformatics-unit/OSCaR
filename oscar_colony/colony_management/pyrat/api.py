@@ -182,7 +182,8 @@ def get_pyrat_line_mutations(line_id: int) -> list[str]:
     Parameters
     ----------
     line_id : int
-        Id of the line (e.g. as returned from get_line_id or get_pyrat_lines)
+        Id of the line (e.g. as returned from get_pyrat_line_id
+        or get_pyrat_lines)
 
     Returns
     -------
