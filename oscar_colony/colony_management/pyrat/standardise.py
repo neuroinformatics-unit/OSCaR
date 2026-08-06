@@ -102,8 +102,10 @@ def _log_ungenotyped_animals(standard_df: pd.DataFrame) -> None:
     n_ungenotyped = ungenotyped.sum()
     if n_ungenotyped > 0:
         ungenotyped_ids = standard_df.loc[ungenotyped, "ID_offspring"].tolist()
-        logger.info(f"{n_ungenotyped} offspring have no genotype recorded")
-        logger.debug(f"Offspring with no genotypes are : {ungenotyped_ids}")
+        logger.info(
+            f"{n_ungenotyped} offspring have "
+            f"no genotype recorded: {ungenotyped_ids}"
+        )
 
 
 def _add_n_mutations_column(
@@ -288,34 +290,13 @@ def _filter_or_correct_genotypes(
     removed_count = len(standard_csv) - filtered_count
 
     if removed_count > 0:
-        dropped_rows = standard_csv.loc[~allowed_genotypes]
-
-        # Creates a dictionary of {linename: number of dropped rows}
-        lines_affected = dropped_rows["line_name"].value_counts().to_dict()
-
-        # Finds and extracts which genotype caused the dropped values.
-        # Deduplicate the raw values first, since a filtered slice can have
-        # far more cells than distinct invalid genotype values.
-        allowed_genotype_names = {
-            genotype.name.lower() for genotype in Genotype
-        }
-        dropped_values = genotype_data.loc[~allowed_genotypes].to_numpy()
-        invalid_values = sorted(
-            {
-                str(value)
-                for value in set(dropped_values.ravel())
-                if pd.notna(value) and str(value) not in allowed_genotype_names
-            }
-        )
-
+        dropped_ids = standard_csv.loc[
+            ~allowed_genotypes, "ID_offspring"
+        ].tolist()
         logger.info(
-            f"Filtered out {removed_count} invalid genotype row(s) - "
-            f"{filtered_count} row(s) remaining. "
-            f"Invalid genotype value(s): {invalid_values}. "
-            f"Lines affected: {lines_affected}."
-        )
-        logger.debug(
-            f"Filtered offspring IDs: {dropped_rows['ID_offspring'].tolist()}"
+            f"Filtered out {removed_count} invalid genotype row(s) for these "
+            f"offspring IDs : {dropped_ids} - "
+            f"{filtered_count} remaining"
         )
 
     return filtered_data
@@ -511,38 +492,25 @@ def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
         regex=r"genotype_father_\d+$"
     ).columns.tolist()
 
-    filter_reasons = standard_df.apply(
+    impossible_input_data = standard_df.apply(
         _check_data_input_validity,
         axis=1,
         mother_col_names=mother_col_names,
         father_col_names=father_col_names,
     )
 
-    # Returns True if filter reasons has a value
-    impossible_input_data = filter_reasons.notna()
     removed_count = impossible_input_data.sum()
     filtered_df = standard_df[~impossible_input_data]
 
     if removed_count > 0:
-        dropped_rows = standard_df.loc[impossible_input_data]
-
-        # Creates a dictionary of {linename: number of dropped rows}
-        lines_affected = (
-            dropped_rows.index.get_level_values("line_name")
-            .value_counts()
-            .to_dict()
-        )
-        reason_counts = (
-            filter_reasons.loc[impossible_input_data].value_counts().to_dict()
-        )
+        removed_ids = standard_df.loc[
+            impossible_input_data, "ID_offspring"
+        ].tolist()
         logger.info(
-            f"Filtered out {removed_count} row(s) with invalid breeding "
-            f"data - {len(filtered_df)} row(s) remaining. "
-            f"Reasons: {reason_counts}. "
-            f"Lines affected: {lines_affected}."
-        )
-        logger.debug(
-            f"Filtered offspring IDs: {dropped_rows['ID_offspring'].tolist()}"
+            f"Filtered out {removed_count} row(s) "
+            "with invalid breeding data for "
+            f"these offspring IDs: {removed_ids} - "
+            f"{len(filtered_df)} remaining"
         )
 
     return filtered_df
@@ -552,7 +520,7 @@ def _check_data_input_validity(
     standardised_df_row: pd.Series,
     mother_col_names: list[str],
     father_col_names: list[str],
-) -> str | None:
+) -> bool:
     """Checks a Dataframe row for common data input errors.
 
     Takes a row from the standardised df, and runs two functions that test the
@@ -575,9 +543,9 @@ def _check_data_input_validity(
 
     Returns
     -------
-    str | None
-        The reason to filter this row out ("ambiguous parentage" or
-        "impossible breeding scheme"), or None if the row is valid.
+    bool
+        True when an impossible breeding scheme or ambiguous parentage is
+        detected.
     """
 
     offspring_genotype = standardised_df_row["genotype_offspring"]
@@ -589,7 +557,11 @@ def _check_data_input_validity(
     )
 
     if _is_ambiguous_parentage(mother_genotypes, father_genotypes):
-        return "ambiguous parentage"
+        logger.info(
+            f"Offspring ID {standardised_df_row.ID_offspring} has "
+            "ambiguous parentage"
+        )
+        return True
 
     mother_genotype = mother_genotypes[0]
     father_genotype = father_genotypes[0]
@@ -597,9 +569,12 @@ def _check_data_input_validity(
     if _is_impossible_breeding_scheme(
         offspring_genotype, mother_genotype, father_genotype
     ):
-        return "impossible breeding scheme"
-
-    return None
+        logger.info(
+            f"Offspring ID {standardised_df_row.ID_offspring} has an "
+            "impossible breeding scheme"
+        )
+        return True
+    return False
 
 
 def _is_impossible_breeding_scheme(
@@ -638,17 +613,8 @@ def _is_impossible_breeding_scheme(
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
-            logger.debug(
-                f"Genotype {typed_offspring} is not possible "
-                f"for parents {father_genotype} x {mother_genotype} "
-                f"using the Mendelian ratio"
-            )
             return True
         elif ratio[typed_offspring] == 0:
-            logger.debug(
-                f"Possibility of genotype {typed_offspring} is 0% "
-                f"for parents {father_genotype} x {mother_genotype}"
-            )
             return True
 
     return False
