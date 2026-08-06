@@ -12,38 +12,50 @@ from responses import matchers
 
 from oscar_colony.colony_management.pyrat.api import (
     get_pyrat_data,
+    get_pyrat_line_id,
     get_pyrat_line_mutations,
+    get_pyrat_line_name,
     get_pyrat_lines,
 )
 from tests.pooch_test_data import GIN_REPO, pooch_data_path
 
 
 @pytest.fixture
+def exclude_gin():
+    """stop responses library interfering with pooch requests"""
+    responses.add_passthru(GIN_REPO.base_url)
+
+
+@pytest.fixture
 def species_response():
     """Default response to give for a request to the /species endpoint"""
 
-    return responses.Response(
-        method="GET",
-        url=f"{os.environ['PYRAT_URL']}/api/v3/species",
-        json=[{"id": 1, "name": "Mouse"}, {"id": 2, "name": "Rat"}],
+    return create_pyrat_response(
+        endpoint_name="species",
+        json_data=[{"id": 1, "name": "Mouse"}, {"id": 2, "name": "Rat"}],
     )
 
 
 def create_pyrat_response(
     endpoint_name: str = "animals",
     json_filename: str | None = None,
+    json_data: list[Any] | None = None,
     query_params: dict[str, Any] | None = None,
     total_count: int | None = None,
 ) -> responses.Response:
     """Create a mock response for a request to the pyRAT api.
+
+    If neither json_filename or json_data are provided, then the json data
+    will be empty.
 
     Parameters
     ----------
     endpoint_name: str, optional
         The name of the pyRAT endpoint. Defaults to 'animals'
     json_filename : str | None, optional
-        Json filename of response data. If not given, the json data will
-        be empty.
+        Json filename of response data.
+    json_data: list[Any] | None, optional
+        Json data for the response. Ignored if json_filename is also provided.
     query_params : dict[str, Any] | None, optional
         The required query parameters to return this response. Note: matching
         isn't strict, so while the request must contain the given parameters,
@@ -59,21 +71,23 @@ def create_pyrat_response(
     """
     if json_filename is not None:
         with open(pooch_data_path(json_filename)) as f:
-            json_data = json.load(f)
+            json_response = json.load(f)
+    elif json_data is not None:
+        json_response = json_data
     else:
-        json_data = []
+        json_response = []
 
     if total_count is None:
-        total_count = len(json_data)
+        total_count = len(json_response)
 
     # x-count is the total number of items returned in this response
     # x-total-count is the total number of available items
     response = responses.Response(
         method="GET",
         url=f"{os.environ['PYRAT_URL']}/api/v3/{endpoint_name}",
-        json=json_data,
+        json=json_response,
         headers={
-            "x-count": str(len(json_data)),
+            "x-count": str(len(json_response)),
             "x-total-count": str(total_count),
         },
     )
@@ -167,6 +181,7 @@ def create_pyrat_response(
     ],
 )
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_data(
     parent_response,
     offspring_response,
@@ -174,15 +189,12 @@ def test_get_pyrat_data(
     species_response,
     caplog,
 ):
-    with caplog.at_level(logging.INFO):
-        # stop responses library interfering with pooch requests
-        responses.add_passthru(GIN_REPO.base_url)
 
-        # add mock responses
-        responses.add(species_response)
-        if parent_response is not None:
-            responses.add(parent_response)
-        responses.add(offspring_response)
+    # add mock responses
+    responses.add(species_response)
+    if parent_response is not None:
+        responses.add(parent_response)
+    responses.add(offspring_response)
 
     pyrat_dfs = get_pyrat_data(
         species_name="Mouse",
@@ -199,11 +211,9 @@ def test_get_pyrat_data(
 
 
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_data_logs(species_response, caplog):
     """Test log statements are recorded correctly when fetching pyRAT data"""
-
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # add mock responses
     responses.add(species_response)
@@ -299,6 +309,7 @@ def test_invalid_species_name(species_response):
 
 
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_lines():
     """
     Test fetching of line names and ids from the pyRAT api.
@@ -306,8 +317,6 @@ def test_get_pyrat_lines():
     This test uses 3 available lines with a max_n_rows of 2 - so there should
     be two requests, and two final dataframes.
     """
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # create mock line responses. We have two here, as there's a total of
     # 3 lines available, but we are limiting max_n_rows to 2 per request.
@@ -346,14 +355,12 @@ def test_get_pyrat_lines():
 
 
 @responses.activate
+@pytest.mark.usefixtures("exclude_gin")
 def test_get_pyrat_line_mutations():
     """
     Test fetching of an alphabetical list of line mutations from the
     pyRAT api.
     """
-
-    # stop responses library interfering with pooch requests
-    responses.add_passthru(GIN_REPO.base_url)
 
     # create mock line mutations response
     line_id = 111
@@ -365,3 +372,94 @@ def test_get_pyrat_line_mutations():
 
     line_mutations = get_pyrat_line_mutations(line_id)
     assert line_mutations == ["Mut-A", "Mut-B", "Mut-C"]
+
+
+@responses.activate
+def test_get_pyrat_line_name():
+    """Test fetching a line name from a line id."""
+
+    # create mock line name response with one entry
+    line_id = 12
+    line_name = "Line-AB"
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[{"id": line_id, "name": line_name}],
+        query_params={
+            "k": ["name", "id"],
+            "id": line_id,
+        },
+    )
+    responses.add(lines_response)
+
+    fetched_line_name = get_pyrat_line_name(line_id)
+    assert fetched_line_name == line_name
+
+
+@responses.activate
+def test_get_pyrat_line_name_invalid():
+    """Test returning multiple line names throws an error."""
+
+    # create mock line name response with two entries
+    line_id = 12
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[
+            {"id": line_id, "name": "Line-AB"},
+            {"id": line_id, "name": "Line-BC"},
+        ],
+        query_params={
+            "k": ["name", "id"],
+            "id": line_id,
+        },
+    )
+    responses.add(lines_response)
+
+    error_msg = "Multiple lines returned for id: 12"
+    with pytest.raises(ValueError, match=error_msg):
+        get_pyrat_line_name(line_id)
+
+
+@responses.activate
+def test_get_pyrat_line_id():
+    """Test fetching a line id from a line name."""
+
+    # create mock line name response with one entry
+    line_id = 12
+    line_name = "Line-AB"
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[{"id": line_id, "name": line_name}],
+        query_params={
+            "k": ["name", "id"],
+            "name_with_id": line_name,
+        },
+    )
+    responses.add(lines_response)
+
+    fetched_line_id = get_pyrat_line_id(line_name)
+    assert fetched_line_id == line_id
+
+
+@responses.activate
+def test_get_pyrat_line_id_invalid():
+    """Test returning multiple line names throws an error."""
+
+    # create mock line id response with two entries
+    line_id = 12
+    line_name = "Line-AB"
+    lines_response = create_pyrat_response(
+        "strains",
+        json_data=[
+            {"id": line_id, "name": line_name},
+            {"id": line_id, "name": "Line-BC"},
+        ],
+        query_params={
+            "k": ["name", "id"],
+            "name_with_id": line_name,
+        },
+    )
+    responses.add(lines_response)
+
+    error_msg = "Multiple lines returned for name: Line-AB"
+    with pytest.raises(ValueError, match=error_msg):
+        get_pyrat_line_id(line_name)
