@@ -1,9 +1,9 @@
 # Welcome to OSCaR's documentation!
 
-OSCaR (the Open Source Colony-assessment Resource) is a python package for
+OSCaR (Open Source Colony-assessment Resource) is a python package for
 data-driven optimisation of breeding strategies.
 
-These docs cover using OSCaR directly from python e.g. via a python script or jupyter notebook. A web application is also provided, if you'd prefer to use OSCaR via a graphical user interface - see the [oscar web app repository](https://github.com/neuroinformatics-unit/OSCaR-web-app) for documentation on deploying and using this option.
+These docs cover using OSCaR directly from python e.g. via a python script or jupyter notebook. A web application is also provided, if you'd prefer to use OSCaR via a graphical user interface - see the [OSCaR web app repository](https://github.com/neuroinformatics-unit/OSCaR-web-app) for documentation on deploying and using this option.
 
 ::::{grid} 1 2 2 3
 :gutter: 3
