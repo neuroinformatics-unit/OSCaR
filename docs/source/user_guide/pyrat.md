@@ -27,9 +27,9 @@ Once all tokens have been created (as above), they can be provided to OSCaR by s
 
 Set these variables however you prefer - just make sure they are _never_ checked in to version control (tokens should be kept secret). One convenient method is to create a `.env` file and use [`python-dotenv`](https://github.com/theskumar/python-dotenv) to read them. We'll show an example of that below.
 
-## Pulling data from the PyRAT api
+## Pulling data from the PyRAT API
 
-See the docs for the {mod}`~oscar_colony.colony_management.pyrat.api` module, for full details of how OSCaR can pull data from the PyRAT api.
+See the docs for the {mod}`~oscar_colony.colony_management.pyrat.api` module, for full details of how OSCaR can pull data from the PyRAT API.
 Below, we'll walk through an example of retrieving data for a named line.
 
 First, let's set our environment variables. We'll use `python-dotenv` for this, but feel free to use whatever method you like.
@@ -61,7 +61,7 @@ animal_data = get_pyrat_data(
 As this could be a very large amount of data, it is returned as a generator of
 [pandas](https://pandas.pydata.org/) dataframes that we can loop through to process one-by-one.
 
-## Standardising data from the PyRAT api
+## Standardising data from the PyRAT API
 
 Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table.md).
 
