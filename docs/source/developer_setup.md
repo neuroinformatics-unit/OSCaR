@@ -35,7 +35,7 @@ pre-commit install
 
 ## PyRAT access
 
-See the [PyRAT docs](./user_guide/pyrat.md), for information on how to set up client and user tokens.
+See the [PyRAT docs](./user_guide/pyrat), for information on how to set up client and user tokens.
 
 ## Test data
 

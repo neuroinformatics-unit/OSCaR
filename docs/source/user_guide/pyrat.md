@@ -63,7 +63,7 @@ As this could be a very large amount of data, it is returned as a generator of
 
 ## Standardising data from the PyRAT API
 
-Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table.md).
+Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table).
 
 We can do this with:
 ```python
