@@ -84,7 +84,7 @@ for line_name in sorted(set(line_id_by_name) | set(found_count_by_line)):
         expected_mutations_for_line is not None
         and not expected_mutations_for_line
     ):
-        failures.append("wildtype background stock (no mutations in pyRAT)")
+        failures.append("no mutations in pyRAT - possibly WT stock")
 
     if expected_mutations_for_line is not None and found_count:
         missing_mutations = (
@@ -151,8 +151,8 @@ print(
     f"{lines_fully_filtered.sum()} : lines where all offspring were filtered"
 )
 print(
-    f"{report_df['failure'].str.contains('wildtype background').sum()} : "
-    "Wildtype stock like BL6"
+    f"{report_df['failure'].str.contains('WT stock').sum()} : "
+    "no mutations in pyRAT - possibly WT stock"
 )
 print(
     f"{report_df['failure'].str.contains('inconsistent capitalisation').sum()}"
