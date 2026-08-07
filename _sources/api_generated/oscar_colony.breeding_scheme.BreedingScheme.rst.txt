@@ -1,0 +1,25 @@
+oscar\_colony.breeding\_scheme.BreedingScheme
+=============================================
+
+.. currentmodule:: oscar_colony.breeding_scheme
+
+.. autoclass:: BreedingScheme
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BreedingScheme.__init__
+      ~BreedingScheme.mendelian_ratio
+   
+   
+
+   
+   
+   

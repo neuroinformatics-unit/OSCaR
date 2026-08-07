@@ -1,0 +1,37 @@
+oscar\_colony.historical\_stats.BreedingSchemeStatistics
+========================================================
+
+.. currentmodule:: oscar_colony.historical_stats
+
+.. autoclass:: BreedingSchemeStatistics
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BreedingSchemeStatistics.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BreedingSchemeStatistics.average_litter_size
+      ~BreedingSchemeStatistics.average_n_litters_per_pair
+      ~BreedingSchemeStatistics.n_breeding_pairs
+      ~BreedingSchemeStatistics.n_successful_matings
+      ~BreedingSchemeStatistics.total_n_genotyped_offspring
+      ~BreedingSchemeStatistics.total_n_offspring
+      ~BreedingSchemeStatistics.n_offspring_per_genotype
+      ~BreedingSchemeStatistics.proportion_offspring_per_genotype
+   
+   

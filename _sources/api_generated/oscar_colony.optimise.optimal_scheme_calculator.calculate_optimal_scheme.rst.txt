@@ -1,0 +1,6 @@
+oscar\_colony.optimise.optimal\_scheme\_calculator.calculate\_optimal\_scheme
+=============================================================================
+
+.. currentmodule:: oscar_colony.optimise.optimal_scheme_calculator
+
+.. autofunction:: calculate_optimal_scheme

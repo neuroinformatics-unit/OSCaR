@@ -1,0 +1,42 @@
+oscar\_colony.historical\_stats.LineStatistics
+==============================================
+
+.. currentmodule:: oscar_colony.historical_stats
+
+.. autoclass:: LineStatistics
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LineStatistics.__init__
+      ~LineStatistics.create_n_per_genotype_df
+      ~LineStatistics.create_scheme_number_df
+      ~LineStatistics.create_scheme_proportion_df
+      ~LineStatistics.create_scheme_summary_df
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LineStatistics.average_litter_size
+      ~LineStatistics.n_mutations
+      ~LineStatistics.total_n_genotyped_offspring
+      ~LineStatistics.total_n_offspring
+      ~LineStatistics.total_n_successful_matings
+      ~LineStatistics.line_name
+      ~LineStatistics.mutations
+      ~LineStatistics.total_n_offspring_per_genotype
+      ~LineStatistics.stats_per_breeding_scheme
+   
+   

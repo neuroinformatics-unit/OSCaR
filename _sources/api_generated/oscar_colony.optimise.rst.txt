@@ -1,0 +1,16 @@
+﻿oscar\_colony.optimise
+======================
+
+.. automodule:: oscar_colony.optimise
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module.rst
+   :recursive:
+
+   estimate_offspring
+   optimal_scheme_calculator
+   surplus_summary

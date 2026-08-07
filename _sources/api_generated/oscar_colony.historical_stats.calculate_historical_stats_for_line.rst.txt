@@ -1,0 +1,6 @@
+oscar\_colony.historical\_stats.calculate\_historical\_stats\_for\_line
+=======================================================================
+
+.. currentmodule:: oscar_colony.historical_stats
+
+.. autofunction:: calculate_historical_stats_for_line

@@ -1,0 +1,6 @@
+oscar\_colony.colony\_management.pyrat.standardise.standardise\_pyrat\_csv
+==========================================================================
+
+.. currentmodule:: oscar_colony.colony_management.pyrat.standardise
+
+.. autofunction:: standardise_pyrat_csv

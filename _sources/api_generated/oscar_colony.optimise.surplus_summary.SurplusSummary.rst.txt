@@ -1,0 +1,33 @@
+oscar\_colony.optimise.surplus\_summary.SurplusSummary
+======================================================
+
+.. currentmodule:: oscar_colony.optimise.surplus_summary
+
+.. autoclass:: SurplusSummary
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SurplusSummary.__init__
+      ~SurplusSummary.create_genotype_df
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SurplusSummary.total_n
+      ~SurplusSummary.total_n_surplus
+      ~SurplusSummary.surplus_per_genotype
+   
+   

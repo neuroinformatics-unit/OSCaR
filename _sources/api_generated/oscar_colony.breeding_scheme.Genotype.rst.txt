@@ -1,0 +1,45 @@
+oscar\_colony.breeding\_scheme.Genotype
+=======================================
+
+.. currentmodule:: oscar_colony.breeding_scheme
+
+.. autoclass:: Genotype
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Genotype.conjugate
+      ~Genotype.bit_length
+      ~Genotype.bit_count
+      ~Genotype.to_bytes
+      ~Genotype.from_bytes
+      ~Genotype.as_integer_ratio
+      ~Genotype.is_integer
+      ~Genotype.from_string
+      ~Genotype.to_string
+      ~Genotype.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Genotype.real
+      ~Genotype.imag
+      ~Genotype.numerator
+      ~Genotype.denominator
+      ~Genotype.WT
+      ~Genotype.HET
+      ~Genotype.HOM
+   
+   

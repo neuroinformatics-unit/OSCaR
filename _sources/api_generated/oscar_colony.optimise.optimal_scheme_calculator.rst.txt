@@ -1,0 +1,13 @@
+oscar\_colony.optimise.optimal\_scheme\_calculator
+==================================================
+
+.. automodule:: oscar_colony.optimise.optimal_scheme_calculator
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      calculate_optimal_scheme
+   

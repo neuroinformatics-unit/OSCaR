@@ -1,0 +1,22 @@
+﻿oscar\_colony.breeding\_scheme
+==============================
+
+.. automodule:: oscar_colony.breeding_scheme
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      generate_breeding_schemes
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class.rst
+   
+      BreedingScheme
+      Genotype
+   

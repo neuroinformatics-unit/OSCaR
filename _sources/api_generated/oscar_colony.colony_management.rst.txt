@@ -1,0 +1,14 @@
+﻿oscar\_colony.colony\_management
+================================
+
+.. automodule:: oscar_colony.colony_management
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module.rst
+   :recursive:
+
+   pyrat

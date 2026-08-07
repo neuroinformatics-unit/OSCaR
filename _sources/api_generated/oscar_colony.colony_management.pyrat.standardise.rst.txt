@@ -1,0 +1,13 @@
+oscar\_colony.colony\_management.pyrat.standardise
+==================================================
+
+.. automodule:: oscar_colony.colony_management.pyrat.standardise
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      standardise_pyrat_csv
+   

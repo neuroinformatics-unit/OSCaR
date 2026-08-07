@@ -1,0 +1,31 @@
+oscar\_colony.optimise.estimate\_offspring.ExpectedOffspring
+============================================================
+
+.. currentmodule:: oscar_colony.optimise.estimate_offspring
+
+.. autoclass:: ExpectedOffspring
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ExpectedOffspring.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ExpectedOffspring.total_n
+      ~ExpectedOffspring.n_per_genotype
+   
+   

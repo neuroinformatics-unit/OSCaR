@@ -1,0 +1,6 @@
+oscar\_colony.optimise.estimate\_offspring.estimate\_n\_offspring\_per\_mating
+==============================================================================
+
+.. currentmodule:: oscar_colony.optimise.estimate_offspring
+
+.. autofunction:: estimate_n_offspring_per_mating

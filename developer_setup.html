@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Development setup &#8212; OSCaR</title>
+    <title>Developer guide &#8212; OSCaR</title>
   
   
   
@@ -31,6 +31,7 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
   <script defer src="_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
@@ -38,17 +39,18 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=53b53b71"></script>
+    <script src="_static/documentation_options.js?v=f7cdbf68"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer_setup';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="canonical" href="https://oscar.neuroinformatics.dev/developer_setup.html" />
+    <link rel="canonical" href="https://oscar-api.neuroinformatics.dev/developer_setup.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API" href="api_index.html" />
-    <link rel="prev" title="Getting started" href="getting_started.html" />
+    <link rel="prev" title="Standard table structure" href="user_guide/standard_table.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -119,7 +121,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.8</p>
+    <p class="title logo__title">oscar-colony v0.0.9</p>
   
 </a></div>
     
@@ -134,15 +136,15 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="getting_started.html">
-    Getting started
+  <a class="nav-link nav-internal" href="user_guide/index.html">
+    User guide
   </a>
 </li>
 
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    Development setup
+    Developer guide
   </a>
 </li>
 
@@ -249,15 +251,15 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="getting_started.html">
-    Getting started
+  <a class="nav-link nav-internal" href="user_guide/index.html">
+    User guide
   </a>
 </li>
 
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    Development setup
+    Developer guide
   </a>
 </li>
 
@@ -364,7 +366,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Development setup</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Developer guide</span></li>
   </ul>
 </nav>
 </div>
@@ -381,8 +383,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="development-setup">
-<h1>Development setup<a class="headerlink" href="#development-setup" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="developer-guide">
+<h1>Developer guide<a class="headerlink" href="#developer-guide" title="Link to this heading">#</a></h1>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <p>First, install the package locally - here we provide instructions for both <code class="docutils literal notranslate"><span class="pre">uv</span></code> and <code class="docutils literal notranslate"><span class="pre">conda</span></code> (use whichever you prefer).</p>
@@ -417,26 +419,7 @@
 </section>
 <section id="pyrat-access">
 <h2>PyRAT access<a class="headerlink" href="#pyrat-access" title="Link to this heading">#</a></h2>
-<section id="token-creation">
-<h3>Token creation<a class="headerlink" href="#token-creation" title="Link to this heading">#</a></h3>
-<p>To access a <a class="reference external" href="https://www.scionics.com/pyrat.html">PyRAT</a> instance via the code in <code class="docutils literal notranslate"><span class="pre">oscar_colony.colony_management.pyrat</span></code>, you will first need to contact Scionics (the creators of PyRAT) to approve access.</p>
-<ul class="simple">
-<li><p>Ask them to setup a new API client called ‘OSCaR’ on your pyRAT server; they should send you a ‘client token’.</p></li>
-<li><p>The new API client will appear under <code class="docutils literal notranslate"><span class="pre">ADMINISTRATION</span> <span class="pre">&gt;</span> <span class="pre">API</span></code> in pyRAT, and an administrator will need to enable it from there.</p></li>
-</ul>
-<p>This approval process only needs to be done once per pyRAT instance.</p>
-<p>Once the client is enabled, any user can request a user token by logging into PyRAT, going to <code class="docutils literal notranslate"><span class="pre">ADMINISTRATION</span> <span class="pre">&gt;</span> <span class="pre">API</span></code> and clicking the ‘Request access’ button on the <code class="docutils literal notranslate"><span class="pre">OSCaR</span></code> row.</p>
-</section>
-<section id="providing-tokens-to-oscar">
-<h3>Providing tokens to OSCaR<a class="headerlink" href="#providing-tokens-to-oscar" title="Link to this heading">#</a></h3>
-<p>Once all tokens have been created (as above), they can be provided to OSCaR by setting the following environment variables:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PYRAT_URL</span></code>: the url of the pyRAT instance you want to access</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PYRAT_CLIENT_TOKEN</span></code>: the client token sent to you by Scionics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PYRAT_USER_TOKEN</span></code>: the user token created via ‘Request access’ in PyRAT</p></li>
-</ul>
-<p>Set these variables however you prefer - just make sure they are <em>never</em> checked in to version control (tokens should be kept secret). One convenient method is to create a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file at the top level of the repository, then use <a class="reference external" href="https://github.com/theskumar/python-dotenv"><code class="docutils literal notranslate"><span class="pre">python-dotenv</span></code></a> to read them.</p>
-</section>
+<p>See the <a class="reference internal" href="user_guide/pyrat.html"><span class="doc std std-doc">PyRAT docs</span></a>, for information on how to set up client and user tokens.</p>
 </section>
 <section id="test-data">
 <h2>Test data<a class="headerlink" href="#test-data" title="Link to this heading">#</a></h2>
@@ -490,12 +473,12 @@ folder and re-run the above command:</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="getting_started.html"
+       href="user_guide/standard_table.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Getting started</p>
+        <p class="prev-next-title">Standard table structure</p>
       </div>
     </a>
     <a class="right-next"
@@ -532,11 +515,7 @@ folder and re-run the above command:</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-commit">Pre-commit</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyrat-access">PyRAT access</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#token-creation">Token creation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#providing-tokens-to-oscar">Providing tokens to OSCaR</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyrat-access">PyRAT access</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-data">Test data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs-locally">Building the docs locally</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docs-install-with-uv">docs install with uv</a></li>

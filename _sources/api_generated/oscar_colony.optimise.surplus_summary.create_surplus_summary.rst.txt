@@ -1,0 +1,6 @@
+oscar\_colony.optimise.surplus\_summary.create\_surplus\_summary
+================================================================
+
+.. currentmodule:: oscar_colony.optimise.surplus_summary
+
+.. autofunction:: create_surplus_summary

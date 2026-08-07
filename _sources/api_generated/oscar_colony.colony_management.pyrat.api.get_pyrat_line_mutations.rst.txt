@@ -1,0 +1,6 @@
+oscar\_colony.colony\_management.pyrat.api.get\_pyrat\_line\_mutations
+======================================================================
+
+.. currentmodule:: oscar_colony.colony_management.pyrat.api
+
+.. autofunction:: get_pyrat_line_mutations

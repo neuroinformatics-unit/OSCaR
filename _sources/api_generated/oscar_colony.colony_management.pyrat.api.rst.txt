@@ -1,0 +1,17 @@
+oscar\_colony.colony\_management.pyrat.api
+==========================================
+
+.. automodule:: oscar_colony.colony_management.pyrat.api
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_pyrat_data
+      get_pyrat_line_id
+      get_pyrat_line_mutations
+      get_pyrat_line_name
+      get_pyrat_lines
+   

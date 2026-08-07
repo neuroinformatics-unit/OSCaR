@@ -1,0 +1,6 @@
+oscar\_colony.breeding\_scheme.generate\_breeding\_schemes
+==========================================================
+
+.. currentmodule:: oscar_colony.breeding_scheme
+
+.. autofunction:: generate_breeding_schemes

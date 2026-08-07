@@ -1,0 +1,22 @@
+﻿oscar\_colony.historical\_stats
+===============================
+
+.. automodule:: oscar_colony.historical_stats
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      calculate_historical_stats_for_line
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class.rst
+   
+      BreedingSchemeStatistics
+      LineStatistics
+   

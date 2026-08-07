@@ -1,0 +1,828 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>oscar_colony.historical_stats &#8212; OSCaR</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+
+    <script src="../../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/oscar_colony/historical_stats';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="canonical" href="https://oscar-api.neuroinformatics.dev/_modules/oscar_colony/historical_stats.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">oscar-colony v0.0.9</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_setup.html">
+    Developer guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_index.html">
+    API
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/neuroinformatics-unit/OSCaR" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide/index.html">
+    User guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer_setup.html">
+    Developer guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_index.html">
+    API
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/neuroinformatics-unit/OSCaR" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">oscar_colony.historical_stats</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for oscar_colony.historical_stats</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">oscar_colony.breeding_scheme</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BreedingScheme</span><span class="p">,</span>
+    <span class="n">Genotype</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BreedingSchemeStatistics">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.BreedingSchemeStatistics.html#oscar_colony.historical_stats.BreedingSchemeStatistics">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BreedingSchemeStatistics</span><span class="p">:</span>
+    <span class="n">n_breeding_pairs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_successful_matings</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">average_litter_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">average_n_litters_per_pair</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_n_offspring</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_n_genotyped_offspring</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_offspring_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span>
+    <span class="p">)</span>
+    <span class="n">proportion_offspring_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="LineStatistics">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LineStatistics</span><span class="p">:</span>
+    <span class="n">line_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">mutations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">n_mutations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_n_offspring</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_n_genotyped_offspring</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_n_offspring_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span>
+    <span class="p">)</span>
+    <span class="n">total_n_successful_matings</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">average_litter_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">stats_per_breeding_scheme</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span>
+        <span class="n">BreedingScheme</span><span class="p">,</span> <span class="n">BreedingSchemeStatistics</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LineStatistics.create_n_per_genotype_df">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.create_n_per_genotype_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_n_per_genotype_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DataFrame from total_n_offspring_per_genotype.</span>
+
+<span class="sd">        Columns are: &#39;Genotype&#39; and &#39;N offspring&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_per_genotype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_n_offspring_per_genotype</span>
+        <span class="n">n_per_genotype_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">n_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Genotype&quot;</span><span class="p">,</span> <span class="s2">&quot;N offspring&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">n_per_genotype_df</span><span class="p">[</span><span class="s2">&quot;Genotype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_per_genotype_df</span><span class="p">[</span><span class="s2">&quot;Genotype&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">n_per_genotype_df</span></div>
+
+
+<div class="viewcode-block" id="LineStatistics.create_scheme_summary_df">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.create_scheme_summary_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_scheme_summary_df</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">decimal_places</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DataFrame from stats_per_breeding_scheme containing</span>
+<span class="sd">        summary stats.</span>
+
+<span class="sd">        Columns are: &quot;Scheme&quot;, &quot;N breeding pairs&quot;, &quot;Total successful matings&quot;,</span>
+<span class="sd">        &quot;Average litter size&quot;, &quot;Average litters per pair&quot;, &quot;Total offspring&quot;,</span>
+<span class="sd">        &quot;Total genotyped offspring&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        decimal_places : int | None, optional</span>
+<span class="sd">            Number of decimal places to round float values to</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Summary stats for each breeding scheme</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">scheme_summary_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_per_breeding_scheme</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">scheme_summary_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">scheme</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">.</span><span class="n">n_breeding_pairs</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">.</span><span class="n">n_successful_matings</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">.</span><span class="n">average_litter_size</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">.</span><span class="n">average_n_litters_per_pair</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">.</span><span class="n">total_n_offspring</span><span class="p">,</span>
+                    <span class="n">stats</span><span class="o">.</span><span class="n">total_n_genotyped_offspring</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="n">scheme_summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">scheme_summary_rows</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+                <span class="s2">&quot;Scheme&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;N breeding pairs&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Total successful matings&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Average litter size&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Average litters per pair&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Total offspring&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Total genotyped offspring&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">decimal_places</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scheme_summary_df</span> <span class="o">=</span> <span class="n">scheme_summary_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span>
+                <span class="n">decimals</span><span class="o">=</span><span class="n">decimal_places</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">scheme_summary_df</span></div>
+
+
+<div class="viewcode-block" id="LineStatistics.create_scheme_number_df">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.create_scheme_number_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_scheme_number_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DataFrame from stats_per_breeding_scheme, summarising the</span>
+<span class="sd">        number of offspring per genotype.</span>
+
+<span class="sd">        Columns are: &#39;Scheme&#39;, followed by one column per expected genotype</span>
+<span class="sd">        e.g. &#39;wt_het&#39; / &#39;wt_hom&#39;...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scheme_genotype_df</span><span class="p">(</span><span class="n">use_number</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LineStatistics.create_scheme_proportion_df">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.create_scheme_proportion_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_scheme_proportion_df</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">decimal_places</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DataFrame from stats_per_breeding_scheme, summarising the</span>
+<span class="sd">        proportion of offspring per genotype.</span>
+
+<span class="sd">        Columns are: &#39;Scheme&#39;, followed by one column per expected genotype</span>
+<span class="sd">        e.g. &#39;wt_het&#39; / &#39;wt_hom&#39;...</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        decimal_places : int | None, optional</span>
+<span class="sd">            Number of decimal places to round float values to</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Proportion of genotype per breeding scheme</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_scheme_genotype_df</span><span class="p">(</span>
+            <span class="n">use_number</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">decimal_places</span><span class="o">=</span><span class="n">decimal_places</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_scheme_genotype_df</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">use_number</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">decimal_places</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DataFrame of number or proportion per genotype</span>
+<span class="sd">        per breeding scheme.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        use_number : bool, optional</span>
+<span class="sd">            When True, uses n_offspring_per_genotype. When False,</span>
+<span class="sd">            uses proportion_offspring_per_genotype.</span>
+
+<span class="sd">        decimal_places : int | None, optional</span>
+<span class="sd">            Number of decimal places to round float values to</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            DataFrame summarising number/proportion per genotype</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">scheme_dfs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scheme</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats_per_breeding_scheme</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">use_number</span><span class="p">:</span>
+                <span class="c1"># Read as float, so all columns in the final df have consistent</span>
+                <span class="c1"># dtype. Otherwise, those with missing values (NaN) end up as</span>
+                <span class="c1"># float and the rest as int, which complicates downstream</span>
+                <span class="c1"># processing.</span>
+                <span class="n">genotype_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">stats</span><span class="o">.</span><span class="n">n_offspring_per_genotype</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">genotype_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">stats</span><span class="o">.</span><span class="n">proportion_offspring_per_genotype</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="n">genotype_df</span><span class="p">[</span><span class="s2">&quot;Scheme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme</span>
+            <span class="n">scheme_dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">genotype_df</span><span class="p">)</span>
+
+        <span class="n">scheme_genotype_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">scheme_dfs</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">scheme_genotype_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">col_name</span> <span class="o">!=</span> <span class="s2">&quot;Scheme&quot;</span> <span class="k">else</span> <span class="n">col_name</span>
+            <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">scheme_genotype_df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Put scheme as first column, and rest of genotypes in</span>
+        <span class="c1"># alphabetical order</span>
+        <span class="n">sorted_genotype_cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">scheme_genotype_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                <span class="p">:,</span> <span class="n">scheme_genotype_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s2">&quot;Scheme&quot;</span>
+            <span class="p">]</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">)</span>
+        <span class="n">scheme_genotype_df</span> <span class="o">=</span> <span class="n">scheme_genotype_df</span><span class="p">[</span>
+            <span class="p">[</span><span class="s2">&quot;Scheme&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">sorted_genotype_cols</span><span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">decimal_places</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scheme_genotype_df</span> <span class="o">=</span> <span class="n">scheme_genotype_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span>
+                <span class="n">decimals</span><span class="o">=</span><span class="n">decimal_places</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">scheme_genotype_df</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_historical_stats_for_line">
+<a class="viewcode-back" href="../../api_generated/oscar_colony.historical_stats.calculate_historical_stats_for_line.html#oscar_colony.historical_stats.calculate_historical_stats_for_line">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_historical_stats_for_line</span><span class="p">(</span>
+    <span class="n">standardised_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">line_name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineStatistics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate summary statistics for a specific line from standardised</span>
+<span class="sd">    historical data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    standardised_data : pd.DataFrame</span>
+<span class="sd">        Standardised historical data e.g. from standardise_pyrat_csv</span>
+<span class="sd">    line_name : str</span>
+<span class="sd">        Name of line</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    LineStatistics</span>
+<span class="sd">        Summary statistics for the given line</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">line_data</span> <span class="o">=</span> <span class="n">standardised_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="n">standardised_data</span><span class="o">.</span><span class="n">line_name</span> <span class="o">==</span> <span class="n">line_name</span><span class="p">,</span> <span class="p">:</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No data for </span><span class="si">{</span><span class="n">line_name</span><span class="si">}</span><span class="s2"> found&quot;</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Calculating historical stats for line &#39;</span><span class="si">{</span><span class="n">line_name</span><span class="si">}</span><span class="s2">&#39; with &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">line_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> offspring records&quot;</span>
+    <span class="p">)</span>
+    <span class="n">breeding_schemes</span> <span class="o">=</span> <span class="n">line_data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_create_breeding_scheme</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">data_with_schemes</span> <span class="o">=</span> <span class="n">line_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">data_with_schemes</span><span class="p">[</span><span class="s2">&quot;breeding_scheme&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">breeding_schemes</span>
+
+    <span class="c1"># Get mutation column names in numeric order e.g. mutation_1, mutation_2...</span>
+    <span class="n">mutation_cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">line_data</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^mutation_\d+$&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">mutations</span> <span class="o">=</span> <span class="n">line_data</span><span class="p">[</span><span class="n">mutation_cols</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="n">line_stats</span> <span class="o">=</span> <span class="n">LineStatistics</span><span class="p">(</span>
+        <span class="n">line_name</span><span class="o">=</span><span class="n">line_name</span><span class="p">,</span>
+        <span class="n">mutations</span><span class="o">=</span><span class="n">mutations</span><span class="p">,</span>
+        <span class="n">n_mutations</span><span class="o">=</span><span class="n">line_data</span><span class="o">.</span><span class="n">n_mutations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">total_n_offspring</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">line_data</span><span class="p">),</span>
+        <span class="n">total_n_genotyped_offspring</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="o">~</span><span class="n">line_data</span><span class="o">.</span><span class="n">genotype_offspring</span><span class="o">.</span><span class="n">isna</span><span class="p">()),</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">breeding_scheme</span> <span class="ow">in</span> <span class="n">data_with_schemes</span><span class="p">[</span><span class="s2">&quot;breeding_scheme&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="n">breeding_scheme_data</span> <span class="o">=</span> <span class="n">data_with_schemes</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+            <span class="n">data_with_schemes</span><span class="o">.</span><span class="n">breeding_scheme</span> <span class="o">==</span> <span class="n">breeding_scheme</span><span class="p">,</span> <span class="p">:</span>
+        <span class="p">]</span>
+        <span class="n">scheme_stats</span> <span class="o">=</span> <span class="n">_historical_stats_for_breeding_scheme</span><span class="p">(</span>
+            <span class="n">breeding_scheme_data</span>
+        <span class="p">)</span>
+
+        <span class="n">line_stats</span><span class="o">.</span><span class="n">stats_per_breeding_scheme</span><span class="p">[</span><span class="n">breeding_scheme</span><span class="p">]</span> <span class="o">=</span> <span class="n">scheme_stats</span>
+        <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_successful_matings</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="n">scheme_stats</span><span class="o">.</span><span class="n">n_successful_matings</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Update summary of number of offspring per genotype across entire line</span>
+        <span class="k">for</span> <span class="p">(</span>
+            <span class="n">genotype</span><span class="p">,</span>
+            <span class="n">n_offspring</span><span class="p">,</span>
+        <span class="p">)</span> <span class="ow">in</span> <span class="n">scheme_stats</span><span class="o">.</span><span class="n">n_offspring_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_offspring_per_genotype</span><span class="p">:</span>
+                <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_offspring_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="n">n_offspring</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_offspring_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">n_offspring</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Use total_n_offspring for litter size (including un-genotyped)</span>
+    <span class="n">line_stats</span><span class="o">.</span><span class="n">average_litter_size</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_offspring</span> <span class="o">/</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_successful_matings</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">line_stats</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_breeding_scheme</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreedingScheme</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">BreedingScheme</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">genotype_father</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">genotype_mother</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_historical_stats_for_breeding_scheme</span><span class="p">(</span>
+    <span class="n">scheme_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BreedingSchemeStatistics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate summary statistics for an individual breeding scheme</span>
+<span class="sd">    (within a specific line).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scheme_data : pd.DataFrame</span>
+<span class="sd">        Dataframe of data for a single breeding scheme and line</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    BreedingSchemeStatistics</span>
+<span class="sd">        Summary statistics for the breeding scheme</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">BreedingSchemeStatistics</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Calculating stats for breeding scheme &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scheme_data</span><span class="p">[</span><span class="s1">&#39;breeding_scheme&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scheme_data</span><span class="p">)</span><span class="si">}</span><span class="s2"> offspring rows&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># breeding pairs is unique combos of father ID x mother ID</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">n_breeding_pairs</span> <span class="o">=</span> <span class="n">scheme_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;ID_father_1&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_mother_1&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">ngroups</span>
+
+    <span class="c1"># Successful matings is unique combos of father ID x mother ID x date</span>
+    <span class="c1"># (assuming only one per day)</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">n_successful_matings</span> <span class="o">=</span> <span class="n">scheme_data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;ID_father_1&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_mother_1&quot;</span><span class="p">,</span> <span class="s2">&quot;date_of_birth&quot;</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">ngroups</span>
+
+    <span class="n">stats</span><span class="o">.</span><span class="n">total_n_offspring</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scheme_data</span><span class="p">)</span>
+
+    <span class="n">genotyped_rows</span> <span class="o">=</span> <span class="n">scheme_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">scheme_data</span><span class="o">.</span><span class="n">genotype_offspring</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">total_n_genotyped_offspring</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">genotyped_rows</span><span class="p">)</span>
+
+    <span class="c1"># litter size calculations use total_no_offspring (including</span>
+    <span class="c1"># un-genotyped individuals)</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">average_litter_size</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">total_n_offspring</span> <span class="o">/</span> <span class="n">stats</span><span class="o">.</span><span class="n">n_successful_matings</span>
+    <span class="p">)</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">average_n_litters_per_pair</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">n_successful_matings</span> <span class="o">/</span> <span class="n">stats</span><span class="o">.</span><span class="n">n_breeding_pairs</span>
+    <span class="p">)</span>
+
+    <span class="c1"># convert string representation e.g. wt_hom_het to tuple representation</span>
+    <span class="c1"># of genotype: (Genotype.WT, Genotype.HOM, Genotype.HET)</span>
+    <span class="n">genotyped_rows</span><span class="p">[</span><span class="s2">&quot;genotype_offspring&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">genotyped_rows</span><span class="p">[</span>
+        <span class="s2">&quot;genotype_offspring&quot;</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">Genotype</span><span class="o">.</span><span class="n">from_string</span><span class="p">)</span>
+
+    <span class="c1"># Number and proportion of offspring per genotype</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">n_offspring_per_genotype</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">genotyped_rows</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;genotype_offspring&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">n_offspring</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">n_offspring_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Proportions use total_n_genotyped_offspring (excluding un-genotyped)</span>
+        <span class="n">proportion</span> <span class="o">=</span> <span class="n">n_offspring</span> <span class="o">/</span> <span class="n">stats</span><span class="o">.</span><span class="n">total_n_genotyped_offspring</span>
+        <span class="n">stats</span><span class="o">.</span><span class="n">proportion_offspring_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">proportion</span>
+    <span class="k">return</span> <span class="n">stats</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, University College London.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
