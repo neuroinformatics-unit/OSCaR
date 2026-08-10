@@ -455,6 +455,511 @@ def test_handling_ungenotyped_individuals_in_stats(expected_stats_ungenotyped):
     )
 
 
+@pytest.fixture
+def expected_stats_multi_parent_1_mutation():
+    return LineStatistics(
+        line_name="Line-A",
+        mutations=["Mut-A"],
+        n_mutations=1,
+        total_n_offspring=16,
+        total_n_genotyped_offspring=16,
+        total_n_offspring_per_genotype={
+            (Genotype.HET,): 8,
+            (Genotype.HOM,): 3,
+            (Genotype.WT,): 5,
+        },
+        total_n_successful_matings=23,
+        average_litter_size=0.696,
+        stats_per_breeding_scheme={
+            BreedingScheme("hom", "het"): BreedingSchemeStatistics(
+                n_breeding_pairs=6,
+                n_successful_matings=4,
+                average_litter_size=0.75,
+                average_n_litters_per_pair=0.667,
+                total_n_offspring=3,
+                total_n_genotyped_offspring=3,
+                n_offspring_per_genotype={
+                    (Genotype.HET,): 2,
+                    (Genotype.HOM,): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET,): 0.667,
+                    (Genotype.HOM,): 0.333,
+                },
+            ),
+            BreedingScheme("wt", "wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.WT,): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT,): 1.0,
+                },
+            ),
+            BreedingScheme("het", "wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=12,
+                n_successful_matings=10,
+                average_litter_size=0.7,
+                average_n_litters_per_pair=0.833,
+                total_n_offspring=7,
+                total_n_genotyped_offspring=7,
+                n_offspring_per_genotype={
+                    (Genotype.WT,): 3,
+                    (Genotype.HET,): 4,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT,): 0.429,
+                    (Genotype.HET,): 0.571,
+                },
+            ),
+            BreedingScheme("hom", "hom"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=4,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.HOM,): 2,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HOM,): 1.0,
+                },
+            ),
+            BreedingScheme("het", "het"): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=1,
+                average_litter_size=2.0,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.WT,): 1,
+                    (Genotype.HET,): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT,): 0.5,
+                    (Genotype.HET,): 0.5,
+                },
+            ),
+            BreedingScheme("hom", "wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET,): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET,): 1.0,
+                },
+            ),
+        },
+    )
+
+
+@pytest.fixture
+def expected_stats_multi_parent_2_mutations():
+    return LineStatistics(
+        line_name="Line-AB",
+        mutations=["Mut-A", "Mut-B"],
+        n_mutations=2,
+        total_n_offspring=15,
+        total_n_genotyped_offspring=15,
+        total_n_offspring_per_genotype={
+            (Genotype.WT, Genotype.HET): 3,
+            (Genotype.HET, Genotype.WT): 5,
+            (Genotype.HET, Genotype.HET): 5,
+            (Genotype.HOM, Genotype.HET): 2,
+        },
+        total_n_successful_matings=22,
+        average_litter_size=0.682,
+        stats_per_breeding_scheme={
+            BreedingScheme("wt_het", "het_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=10,
+                n_successful_matings=8,
+                average_litter_size=0.625,
+                average_n_litters_per_pair=0.8,
+                total_n_offspring=5,
+                total_n_genotyped_offspring=5,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET): 1,
+                    (Genotype.HET, Genotype.WT): 2,
+                    (Genotype.HET, Genotype.HET): 2,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET): 0.2,
+                    (Genotype.HET, Genotype.WT): 0.4,
+                    (Genotype.HET, Genotype.HET): 0.4,
+                },
+            ),
+            BreedingScheme("hom_wt", "hom_het"): BreedingSchemeStatistics(
+                n_breeding_pairs=6,
+                n_successful_matings=4,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.667,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.HOM, Genotype.HET): 2,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HOM, Genotype.HET): 1.0,
+                },
+            ),
+            BreedingScheme("hom_wt", "het_het"): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=1,
+                average_litter_size=1.0,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET): 1.0,
+                },
+            ),
+            BreedingScheme("het_wt", "wt_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT): 1.0,
+                },
+            ),
+            BreedingScheme("het_het", "het_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=3,
+                average_litter_size=1.0,
+                average_n_litters_per_pair=0.75,
+                total_n_offspring=3,
+                total_n_genotyped_offspring=3,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET): 1,
+                    (Genotype.HET, Genotype.WT): 1,
+                    (Genotype.HET, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET): 0.333,
+                    (Genotype.HET, Genotype.WT): 0.333,
+                    (Genotype.HET, Genotype.HET): 0.333,
+                },
+            ),
+            BreedingScheme("hom_het", "wt_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET): 1.0,
+                },
+            ),
+            BreedingScheme("het_het", "wt_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=1.0,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET): 1,
+                    (Genotype.HET, Genotype.WT): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET): 0.5,
+                    (Genotype.HET, Genotype.WT): 0.5,
+                },
+            ),
+        },
+    )
+
+
+@pytest.fixture
+def expected_stats_multi_parent_3_mutations():
+    return LineStatistics(
+        line_name="Line-ABC",
+        mutations=["Mut-A", "Mut-B", "Mut-C"],
+        n_mutations=3,
+        total_n_offspring=16,
+        total_n_genotyped_offspring=16,
+        total_n_offspring_per_genotype={
+            (Genotype.WT, Genotype.WT, Genotype.HOM): 2,
+            (Genotype.HOM, Genotype.WT, Genotype.WT): 1,
+            (Genotype.HET, Genotype.HET, Genotype.HET): 3,
+            (Genotype.HET, Genotype.HOM, Genotype.HET): 1,
+            (Genotype.HET, Genotype.WT, Genotype.WT): 1,
+            (Genotype.HET, Genotype.WT, Genotype.HOM): 1,
+            (Genotype.WT, Genotype.HET, Genotype.HET): 1,
+            (Genotype.HET, Genotype.WT, Genotype.HET): 2,
+            (Genotype.WT, Genotype.HET, Genotype.WT): 2,
+            (Genotype.HET, Genotype.HET, Genotype.HOM): 1,
+            (Genotype.HOM, Genotype.HET, Genotype.WT): 1,
+        },
+        total_n_successful_matings=25,
+        average_litter_size=0.64,
+        stats_per_breeding_scheme={
+            BreedingScheme(
+                "wt_wt_het", "het_het_het"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.WT, Genotype.HOM): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.WT, Genotype.HOM): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "het_het_het", "hom_wt_het"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HOM, Genotype.WT, Genotype.WT): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HOM, Genotype.WT, Genotype.WT): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "het_het_het", "wt_het_het"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET, Genotype.HET): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "het_hom_wt", "wt_het_hom"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HOM, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HOM, Genotype.HET): 1.0,
+                },
+            ),
+            BreedingScheme("het_wt_wt", "wt_wt_wt"): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT, Genotype.WT): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT, Genotype.WT): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "het_wt_hom", "wt_wt_hom"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT, Genotype.HOM): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.WT, Genotype.HOM): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "het_wt_wt", "wt_het_hom"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=4,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=2.0,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET, Genotype.HET): 1,
+                    (Genotype.HET, Genotype.WT, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET, Genotype.HET): 0.5,
+                    (Genotype.HET, Genotype.WT, Genotype.HET): 0.5,
+                },
+            ),
+            BreedingScheme(
+                "wt_het_hom", "het_wt_het"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=1.0,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.WT, Genotype.HOM): 1,
+                    (Genotype.HET, Genotype.HET, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.WT, Genotype.HOM): 0.5,
+                    (Genotype.HET, Genotype.HET, Genotype.HET): 0.5,
+                },
+            ),
+            BreedingScheme(
+                "het_wt_het", "het_het_wt"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=1,
+                average_litter_size=2.0,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET, Genotype.WT): 1,
+                    (Genotype.HET, Genotype.HET, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET, Genotype.WT): 0.5,
+                    (Genotype.HET, Genotype.HET, Genotype.HET): 0.5,
+                },
+            ),
+            BreedingScheme(
+                "hom_het_het", "wt_wt_het"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=4,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=0.5,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET, Genotype.HOM): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HET, Genotype.HET, Genotype.HOM): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "hom_wt_het", "hom_het_wt"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=0.5,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=1,
+                total_n_genotyped_offspring=1,
+                n_offspring_per_genotype={
+                    (Genotype.HOM, Genotype.HET, Genotype.WT): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.HOM, Genotype.HET, Genotype.WT): 1.0,
+                },
+            ),
+            BreedingScheme(
+                "het_het_het", "wt_wt_wt"
+            ): BreedingSchemeStatistics(
+                n_breeding_pairs=2,
+                n_successful_matings=2,
+                average_litter_size=1.0,
+                average_n_litters_per_pair=1.0,
+                total_n_offspring=2,
+                total_n_genotyped_offspring=2,
+                n_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET, Genotype.WT): 1,
+                    (Genotype.HET, Genotype.WT, Genotype.HET): 1,
+                },
+                proportion_offspring_per_genotype={
+                    (Genotype.WT, Genotype.HET, Genotype.WT): 0.5,
+                    (Genotype.HET, Genotype.WT, Genotype.HET): 0.5,
+                },
+            ),
+        },
+    )
+
+
+@pytest.mark.parametrize(
+    "standardised_csv_name, line_name, expected_stats",
+    [
+        pytest.param(
+            "standardised-data-multiple-parents-1-mutation.csv",
+            "Line-A",
+            "expected_stats_multi_parent_1_mutation",
+            id="1 mutation",
+        ),
+        pytest.param(
+            "standardised-data-multiple-parents-2-mutations.csv",
+            "Line-AB",
+            "expected_stats_multi_parent_2_mutations",
+            id="2 mutations",
+        ),
+        pytest.param(
+            "standardised-data-multiple-parents-3-mutations.csv",
+            "Line-ABC",
+            "expected_stats_multi_parent_3_mutations",
+            id="3 mutations",
+        ),
+    ],
+)
+def test_calculate_historical_stats_line_multiple_parents(
+    standardised_csv_name, line_name, expected_stats, request
+):
+    """
+    Test calculation of summary historical statistics for lines with 1, 2 or
+    3 mutations accounting for multiple parents.
+    """
+
+    standardised_csv = pd.read_csv(pooch_data_path(standardised_csv_name))
+    expected_stats = request.getfixturevalue(expected_stats)
+
+    line_stats = calculate_historical_stats_for_line(
+        standardised_csv, line_name
+    )
+    assert_dataclass_equal(line_stats, expected_stats, abs_tolerance=1e-3)
+
+
 def test_total_number_genotype_df(expected_stats_2_mutations):
     """
     Test creation of a summary dataframe from
