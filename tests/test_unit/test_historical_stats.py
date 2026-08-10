@@ -948,7 +948,7 @@ def test_calculate_historical_stats_line_multiple_parents(
 ):
     """
     Test calculation of summary historical statistics for lines with 1, 2 or
-    3 mutations account parents.
+    3 mutations accounting for multiple parents.
     """
 
     standardised_csv = pd.read_csv(pooch_data_path(standardised_csv_name))
