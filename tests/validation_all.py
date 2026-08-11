@@ -79,6 +79,8 @@ for line_name in sorted(set(line_id_by_name) | set(found_count_by_line)):
     failures = []
     if found_count == 0:
         failures.append("no offspring found")
+    elif filtered_count == found_count:
+        failures.append("all offspring filtered")
 
     if (
         expected_mutations_for_line is not None
@@ -131,8 +133,7 @@ for line_name in sorted(set(line_id_by_name) | set(found_count_by_line)):
     )
 
 report_df = pd.DataFrame(report_rows).set_index("line_name")
-with open(OUTPUT_CSV_PATH, "w") as csv_file:
-    report_df.to_csv(csv_file)
+report_df.to_csv(OUTPUT_CSV_PATH)
 print(f"Validation report written to {OUTPUT_CSV_PATH}")
 
 lines_with_remaining_offspring = report_df["remaining"] > 0
