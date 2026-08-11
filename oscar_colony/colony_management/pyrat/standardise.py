@@ -280,7 +280,6 @@ def _filter_or_correct_genotypes(
             custom_conversions = {}
 
     genotype_conversions = {
-        "+/-": Genotype.HET,
         "ko/ko": Genotype.HOM,
         "ko/+": Genotype.HET,
         "ko/-": Genotype.HET,
