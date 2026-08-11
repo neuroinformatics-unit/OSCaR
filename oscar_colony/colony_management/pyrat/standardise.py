@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def standardise_pyrat_csv(
-    input_df: pd.DataFrame | Path | str,
+    input_df: pd.DataFrame | Path | str, wt_plus_or_minus: bool | None = None
 ) -> pd.DataFrame:
     """Standardise a csv file exported from pyRAT.
 
@@ -31,6 +31,9 @@ def standardise_pyrat_csv(
     ----------
     input_csv : pd.DataFrame | Path | str
         Csv file exported from pyRAT.
+    wt_plus_or_minus : bool| None = None
+        User selected bool, True represents that - is WT vice versa. None will
+        result in +/- combinations being filtered.
 
     Returns
     -------
@@ -61,7 +64,7 @@ def standardise_pyrat_csv(
     standard_df = input_df[required_cols].rename(columns=rename_col_dict)
 
     standard_df = _filter_or_correct_genotypes(
-        standard_df, all_genotype_cols_list
+        standard_df, all_genotype_cols_list, wt_plus_or_minus
     )
 
     standard_df = _add_n_mutations_column(
@@ -235,13 +238,16 @@ def _create_mutation_genotype_dicts(
 
 
 def _filter_or_correct_genotypes(
-    standard_csv: pd.DataFrame, genotype_cols: list[str]
+    standard_csv: pd.DataFrame,
+    genotype_cols: list[str],
+    wt_plus_or_minus: bool | None = None,
 ) -> pd.DataFrame:
     """Filter or correct rows so that only genotypes of wt, het or hom remain.
 
     Where possible, this will convert alternative forms to wt/het/hom e.g.
     ko/ko -> hom. If an un-ambiguous conversion isn't possible
-    (like T, Tg, N, +, -), rows that contain these will be removed.
+    (like T, Tg, N, +, -), rows that contain these will be removed. +/- can be
+    user specified in order to customise filtration.
 
     Parameters
     ----------
@@ -249,6 +255,9 @@ def _filter_or_correct_genotypes(
         Dataframe to filter
     genotype_cols : list[str]
         Names of all genotype columns including offspring, father and mother
+    wt_plus_or_minus : bool| None = None
+            User selected bool, True represents that - is WT vice versa. None
+            will result in +/- combinations being filtered.
 
     Returns
     -------
@@ -256,7 +265,22 @@ def _filter_or_correct_genotypes(
         Dataframe with only wt, het or hom in genotype columns
     """
 
+    match wt_plus_or_minus:
+        case True:
+            custom_conversions = {
+                "-/-": Genotype.WT,
+                "+/+": Genotype.HOM,
+            }
+        case False:
+            custom_conversions = {
+                "-/-": Genotype.HOM,
+                "+/+": Genotype.WT,
+            }
+        case _:
+            custom_conversions = {}
+
     genotype_conversions = {
+        "+/-": Genotype.HET,
         "ko/ko": Genotype.HOM,
         "ko/+": Genotype.HET,
         "ko/-": Genotype.HET,
@@ -267,7 +291,10 @@ def _filter_or_correct_genotypes(
         "ki/-": Genotype.HET,
         "+/ki": Genotype.HET,
         "-/ki": Genotype.HET,
+        "dp1Tyb": Genotype.HET,
     }
+
+    genotype_conversions = genotype_conversions | custom_conversions
 
     # convert genotypes where possible
     genotype_data = standard_csv.loc[:, genotype_cols]
