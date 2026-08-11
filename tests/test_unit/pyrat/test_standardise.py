@@ -73,8 +73,8 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             "standardised-data-forbidden-schemes.csv",
             [
                 "Filtered out 3 row(s) with invalid breeding data for these "
-                "offspring IDs: ['ID-008', 'ID-009', 'ID-010'] - "
-                "7 remaining",
+                "offspring IDs: ['ID-008', 'ID-009', 'ID-010']"
+                " - 7 remaining",
             ],
             id="forbidden schemes",
         ),
