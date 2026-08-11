@@ -54,7 +54,7 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
 
 
 @pytest.mark.parametrize(
-    "pyrat_csv_name, expected_csv_name, expected_logs",
+    "pyrat_csv_name, expected_csv_name, expected_logs, wt_plus_or_minus",
     [
         pytest.param(
             "pyrat-data-forbidden-genotypes.csv",
@@ -66,7 +66,34 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
             ],
+            None,
             id="forbidden genotypes",
+        ),
+        pytest.param(
+            "pyrat-data-forbidden-genotypes-false.csv",
+            "standardised-data-forbidden-genotypes-false.csv",
+            [
+                "Filtered out 5 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-003'] - "
+                "13 remaining",
+                "3 offspring have no genotype recorded: "
+                "['ID-012', 'ID-013', 'ID-014']",
+            ],
+            False,
+            id="forbidden genotypes false",
+        ),
+        pytest.param(
+            "pyrat-data-forbidden-genotypes-true.csv",
+            "standardised-data-forbidden-genotypes-true.csv",
+            [
+                "Filtered out 5 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-003', 'ID-004', 'ID-010'] - "
+                "9 remaining",
+                "3 offspring have no genotype recorded: "
+                "['ID-012', 'ID-013', 'ID-014']",
+            ],
+            True,
+            id="forbidden genotypes true",
         ),
         pytest.param(
             "pyrat-data-forbidden-schemes.csv",
@@ -76,6 +103,7 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
                 "offspring IDs: ['ID-008', 'ID-009', 'ID-010']"
                 " - 7 remaining",
             ],
+            None,
             id="forbidden schemes",
         ),
         pytest.param(
@@ -86,13 +114,19 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
                 "offspring IDs: ['ID-001', 'ID-002', 'ID-003', 'ID-004', "
                 "'ID-005'] - 1 remaining",
             ],
+            None,
             id="forbidden parents",
         ),
     ],
 )
 @pytest.mark.parametrize("input_type", ["path", "dataframe"])
 def test_forbidden_data(
-    pyrat_csv_name, expected_csv_name, expected_logs, input_type, caplog
+    pyrat_csv_name,
+    expected_csv_name,
+    expected_logs,
+    wt_plus_or_minus,
+    input_type,
+    caplog,
 ):
     """
     Test forbidden data combinations, to make sure they are correctly filtered.
@@ -115,9 +149,11 @@ def test_forbidden_data(
 
     with caplog.at_level(logging.INFO):
         if input_type == "path":
-            standard_csv = standardise_pyrat_csv(pyrat_csv_path)
+            standard_csv = standardise_pyrat_csv(
+                pyrat_csv_path, wt_plus_or_minus
+            )
         else:
-            standard_csv = standardise_pyrat_csv(pyrat_csv)
+            standard_csv = standardise_pyrat_csv(pyrat_csv, wt_plus_or_minus)
 
     pd.testing.assert_frame_equal(
         standard_csv.reset_index(drop=True),
