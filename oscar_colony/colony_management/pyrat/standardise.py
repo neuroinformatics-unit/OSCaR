@@ -268,13 +268,13 @@ def _filter_or_correct_genotypes(
     match wt_plus_or_minus:
         case True:
             custom_conversions = {
-                "-/-": Genotype.WT,
-                "+/+": Genotype.HOM,
+                "-": Genotype.WT,
+                "+": Genotype.HOM,
             }
         case False:
             custom_conversions = {
-                "-/-": Genotype.HOM,
-                "+/+": Genotype.WT,
+                "-": Genotype.HOM,
+                "+": Genotype.WT,
             }
         case _:
             custom_conversions = {}
