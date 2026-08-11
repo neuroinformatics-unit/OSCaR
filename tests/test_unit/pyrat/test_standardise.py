@@ -62,7 +62,7 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             [
                 "Filtered out 5 invalid genotype row(s) for these offspring "
                 "IDs : ['ID-002', 'ID-003', 'ID-004', 'ID-005', 'ID-010'] - "
-                "9 remaining",
+                "10 remaining",
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
             ],

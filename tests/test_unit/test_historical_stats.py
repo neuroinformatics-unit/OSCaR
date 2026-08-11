@@ -383,25 +383,25 @@ def expected_stats_ungenotyped():
         line_name="Line-AB",
         mutations=["Mut-A", "Mut-B"],
         n_mutations=2,
-        total_n_offspring=9,
-        total_n_genotyped_offspring=6,
+        total_n_offspring=10,
+        total_n_genotyped_offspring=7,
         total_n_offspring_per_genotype={
             (Genotype.HET, Genotype.WT): 1,
-            (Genotype.HET, Genotype.HOM): 3,
+            (Genotype.HET, Genotype.HOM): 4,
             (Genotype.HET, Genotype.HET): 2,
         },
         total_n_successful_matings=3,
-        average_litter_size=3.0,
+        average_litter_size=3.333,
         stats_per_breeding_scheme={
             BreedingScheme("wt_hom", "hom_het"): BreedingSchemeStatistics(
                 n_breeding_pairs=1,
                 n_successful_matings=1,
-                average_litter_size=5.0,
+                average_litter_size=6.0,
                 average_n_litters_per_pair=1.0,
-                total_n_offspring=5,
-                total_n_genotyped_offspring=3,
+                total_n_offspring=6,
+                total_n_genotyped_offspring=4,
                 n_offspring_per_genotype={
-                    (Genotype.HET, Genotype.HOM): 3,
+                    (Genotype.HET, Genotype.HOM): 4,
                 },
                 proportion_offspring_per_genotype={
                     (Genotype.HET, Genotype.HOM): 1,
