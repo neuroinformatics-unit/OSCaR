@@ -133,13 +133,19 @@ def test_forbidden_data(
     """
     Test forbidden data combinations, to make sure they are correctly filtered.
 
-    1. Test standardisation of a dataframe containing forbidden genotypes (e.g.
+    1. Test standardisation of dataframe containing forbidden genotypes (e.g.
     +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
 
-    2. Test that impossible breeding schemes are removed from raw data.
+    2. Test standardisation of dataframe containing forbidden genotypes where
+    the user has specified that + equals WT
+
+    3. Test standardisation of dataframe containing forbidden genotypes where
+    the user has specified that - equals WT
+
+    4. Test that impossible breeding schemes are removed from raw data.
     (e.g. hom x hom parents cannot make wt offspring)
 
-    3. Test that impossible parent schemes are removed. Cases where there are
+    5. Test that impossible parent schemes are removed. Cases where there are
     one parent or no parents.
     """
 

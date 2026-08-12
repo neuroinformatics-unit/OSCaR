@@ -64,6 +64,11 @@ As this could be a very large amount of data, it is returned as a generator of
 ## Standardising data from the PyRAT API
 
 Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table).
+Since some data is ambiguous within PyRAT, the user can specify how they want
++ or - represented within standardise_pyrat_csv:
+    If left blank, all + and - genotypes will be filtered,
+    If True: all + genotypes will be treated as Hom and - will be WT
+    If False: all - genotypes will be treated as Hom and + will be WT
 
 We can do this with:
 ```python

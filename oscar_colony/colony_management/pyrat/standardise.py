@@ -19,7 +19,8 @@ def standardise_pyrat_csv(
     - standardising column names with a dynamic dict
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
-    - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko
+    - Correcting or removing forbidden genotypes like Tg, ko/ko. Allows for
+    user input to determine whether + or - is included.
     - adding summary columns for 'genotype_offspring', 'genotype_father' and
     'genotype_mother' that match the order of 'mutations'.
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
@@ -32,8 +33,8 @@ def standardise_pyrat_csv(
     input_csv : pd.DataFrame | Path | str
         Csv file exported from pyRAT.
     wt_plus_or_minus : bool| None = None
-        User selected bool, True represents that - is WT vice versa. None will
-        result in +/- combinations being filtered.
+        User selected bool, True represents that - is WT and vice versa. No
+        input will result in + and - being filtered.
 
     Returns
     -------
@@ -246,8 +247,8 @@ def _filter_or_correct_genotypes(
 
     Where possible, this will convert alternative forms to wt/het/hom e.g.
     ko/ko -> hom. If an un-ambiguous conversion isn't possible
-    (like T, Tg, N, +, -), rows that contain these will be removed. +/- can be
-    user specified in order to customise filtration.
+    (like T, Tg, N, +, -), rows that contain these will be removed. User input
+    can be used to determine whether + or - is WT.
 
     Parameters
     ----------
@@ -256,8 +257,8 @@ def _filter_or_correct_genotypes(
     genotype_cols : list[str]
         Names of all genotype columns including offspring, father and mother
     wt_plus_or_minus : bool| None = None
-            User selected bool, True represents that - is WT vice versa. None
-            will result in +/- combinations being filtered.
+        User selected bool, True represents that - is WT and vice versa. No
+        input will result in + and - being filtered.
 
     Returns
     -------
