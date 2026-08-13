@@ -312,7 +312,9 @@ def _filter_or_correct_genotypes(
         genotype_data.isin([genotype.name.lower() for genotype in Genotype])
         | genotype_data.isna()
     ).all(axis=1)
-    filtered_data = filtered_data.loc[allowed_genotypes, :]
+    filtered_data = filtered_data.loc[allowed_genotypes, genotype_cols] = (
+        "unknown"
+    )
     filtered_count = len(filtered_data)
     removed_count = len(standard_csv) - filtered_count
 
@@ -527,7 +529,13 @@ def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     removed_count = impossible_input_data.sum()
-    filtered_df = standard_df[~impossible_input_data]
+    filtered_df = standard_df.copy()
+
+    genotype_cols = [
+        col for col in filtered_df.columns if col.startswith("genotype_")
+    ]
+
+    filtered_df.loc[impossible_input_data, genotype_cols] = "unknown"
 
     if removed_count > 0:
         removed_ids = standard_df.loc[
