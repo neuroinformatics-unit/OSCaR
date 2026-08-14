@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from oscar_colony.colony_management.pyrat.standardise import (
+    WildtypeSymbol,
     standardise_pyrat_csv,
 )
 from tests.pooch_test_data import pooch_data_path
@@ -70,32 +71,30 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             id="forbidden genotypes",
         ),
         pytest.param(
-            "pyrat-data-forbidden-genotypes-false.csv",
-            "standardised-data-forbidden-genotypes-false.csv",
+            "pyrat-data-forbidden-genotypes.csv",
+            "standardised-data-forbidden-genotypes-plus-wt.csv",
             [
                 "Filtered out 1 invalid genotype row(s) for these offspring "
                 "IDs : ['ID-003'] - "
-                "13 remaining",
+                "14 remaining",
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
             ],
-            False,
-            id="forbidden genotypes false",
+            WildtypeSymbol.PLUS,
+            id="forbidden genotypes - plus is wt",
         ),
         pytest.param(
-            "pyrat-data-forbidden-genotypes-true.csv",
-            "standardised-data-forbidden-genotypes-true.csv",
+            "pyrat-data-forbidden-genotypes.csv",
+            "standardised-data-forbidden-genotypes-minus-wt.csv",
             [
                 "Filtered out 1 invalid genotype row(s) for these offspring "
                 "IDs : ['ID-003'] - "
-                "13 remaining",
-                "Filtered out 2 row(s) with invalid breeding data for these "
-                "offspring IDs: ['ID-004', 'ID-005'] - 11 remaining",
+                "14 remaining",
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
             ],
-            True,
-            id="forbidden genotypes true",
+            WildtypeSymbol.MINUS,
+            id="forbidden genotypes - minus is wt",
         ),
         pytest.param(
             "pyrat-data-forbidden-schemes.csv",
@@ -137,10 +136,10 @@ def test_forbidden_data(
     +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
 
     2. Test standardisation of dataframe containing forbidden genotypes where
-    the user has specified that + equals WT
+    the user has specified that + is WT (and - is HOM)
 
     3. Test standardisation of dataframe containing forbidden genotypes where
-    the user has specified that - equals WT
+    the user has specified that - is WT (and + is HOM)
 
     4. Test that impossible breeding schemes are removed from raw data.
     (e.g. hom x hom parents cannot make wt offspring)
@@ -158,10 +157,12 @@ def test_forbidden_data(
     with caplog.at_level(logging.INFO):
         if input_type == "path":
             standard_csv = standardise_pyrat_csv(
-                pyrat_csv_path, wt_plus_or_minus
+                pyrat_csv_path, wt_plus_or_minus=wt_plus_or_minus
             )
         else:
-            standard_csv = standardise_pyrat_csv(pyrat_csv, wt_plus_or_minus)
+            standard_csv = standardise_pyrat_csv(
+                pyrat_csv, wt_plus_or_minus=wt_plus_or_minus
+            )
 
     pd.testing.assert_frame_equal(
         standard_csv.reset_index(drop=True),

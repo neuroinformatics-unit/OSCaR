@@ -86,4 +86,19 @@ for animal_df in animal_data:
 standard_df = pd.concat(standardised_dfs)
 ```
 
+Some genotypes are ambiguous within PyRAT - the `wt_plus_or_minus` parameter of
+`standardise_pyrat_csv` lets you specify which of + and - is wildtype:
+
+- If left blank, all rows containing + or - genotypes will be filtered out
+- `WildtypeSymbol.PLUS`: + genotypes are treated as WT, and - as HOM
+- `WildtypeSymbol.MINUS`: - genotypes are treated as WT, and + as HOM
+
+```python
+from oscar_colony.colony_management.pyrat.standardise import WildtypeSymbol
+
+standard_df = standardise_pyrat_csv(
+    animal_df, wt_plus_or_minus=WildtypeSymbol.PLUS
+)
+```
+
 See the docs for the {mod}`~oscar_colony.colony_management.pyrat.standardise` module, for full details of how data is standardised.

@@ -187,7 +187,6 @@ def test_get_pyrat_data(
     offspring_response,
     expected_csv_name,
     species_response,
-    caplog,
 ):
 
     # add mock responses
