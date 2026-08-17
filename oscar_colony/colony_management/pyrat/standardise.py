@@ -19,8 +19,8 @@ class WildtypeSymbol(StrEnum):
     treated as homozygous.
     """
 
-    PLUS = "+"
-    MINUS = "-"
+    PLUS = "+/+"
+    MINUS = "-/-"
 
 
 def standardise_pyrat_csv(
@@ -34,7 +34,7 @@ def standardise_pyrat_csv(
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
     - Correcting or removing forbidden genotypes like Tg, ko/ko. The
-    wt_plus_or_minus option determines whether + / - are converted or removed.
+    wt_plus_or_minus option determines if +/+ or -/- are converted or removed.
     - adding summary columns for 'genotype_offspring', 'genotype_father' and
     'genotype_mother' that match the order of 'mutations'.
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
@@ -47,9 +47,9 @@ def standardise_pyrat_csv(
     input_csv : pd.DataFrame | Path | str
         Csv file exported from pyRAT.
     wt_plus_or_minus : WildtypeSymbol | None = None
-        When WildtypeSymbol.PLUS, + is WT and - is HOM. When
-        WildtypeSymbol.MINUS, - is WT and + is HOM. No input will result in +
-        and - being filtered.
+        When WildtypeSymbol.PLUS, +/+ is WT and -/- is HOM. When
+        WildtypeSymbol.MINUS, -/- is WT and +/+ is HOM. No input will result in
+        +/+ and -/- being filtered.
 
     Returns
     -------
@@ -263,7 +263,7 @@ def _filter_or_correct_genotypes(
     Where possible, this will convert alternative forms to wt/het/hom e.g.
     ko/ko -> hom. If an un-ambiguous conversion isn't possible
     (like T, Tg, N, +, -), rows that contain these will be removed. Provide the
-    wt_plus_or_minus option to allow +/- rows to be converted instead.
+    wt_plus_or_minus option to allow -/- and +/+ rows to be converted instead.
 
     Parameters
     ----------
@@ -272,9 +272,9 @@ def _filter_or_correct_genotypes(
     genotype_cols : list[str]
         Names of all genotype columns including offspring, father and mother
     wt_plus_or_minus : WildtypeSymbol | None = None
-        When WildtypeSymbol.PLUS, + is WT and - is HOM. When
-        WildtypeSymbol.MINUS, - is WT and + is HOM. No input will result in +
-        and - being filtered.
+        When WildtypeSymbol.PLUS, +/+ is WT and -/- is HOM. When
+        WildtypeSymbol.MINUS, -/- is WT and +/+ is HOM. No input will result in
+        +/+ and -/- being filtered.
 
     Returns
     -------
@@ -285,13 +285,13 @@ def _filter_or_correct_genotypes(
     match wt_plus_or_minus:
         case WildtypeSymbol.PLUS:
             custom_conversions = {
-                "+": Genotype.WT,
-                "-": Genotype.HOM,
+                "+/+": Genotype.WT,
+                "-/-": Genotype.HOM,
             }
         case WildtypeSymbol.MINUS:
             custom_conversions = {
-                "+": Genotype.HOM,
-                "-": Genotype.WT,
+                "+/+": Genotype.HOM,
+                "-/-": Genotype.WT,
             }
         case _:
             custom_conversions = {}
