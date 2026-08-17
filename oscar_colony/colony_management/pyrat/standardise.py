@@ -19,14 +19,14 @@ def standardise_pyrat_csv(
     - standardising column names with a dynamic dict
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
-    - Correcting or removing forbidden genotypes like Tg, ko/ko. Allows for
-    user input to determine whether + or - is included.
+    - Correcting forbidden genotypes like Tg, ko/ko. Allows for user input to
+    determine whether + or - is included.
     - adding summary columns for 'genotype_offspring', 'genotype_father' and
     'genotype_mother' that match the order of 'mutations'.
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
     - filling any missing genotypes with wildtype
     - removing columns that aren't needed for further processing steps
-    - checking data input validity and removing impossible input data
+    - checking data input validity and tagging impossible input data
 
     Parameters
     ----------
@@ -34,7 +34,7 @@ def standardise_pyrat_csv(
         Csv file exported from pyRAT.
     wt_plus_or_minus : bool| None = None
         User selected bool, True represents that - is WT and vice versa. No
-        input will result in + and - being filtered.
+        input will result in + and - being tagged as unknown.
 
     Returns
     -------
@@ -64,7 +64,7 @@ def standardise_pyrat_csv(
 
     standard_df = input_df[required_cols].rename(columns=rename_col_dict)
 
-    standard_df = _filter_or_correct_genotypes(
+    standard_df = _standardise_genotypes(
         standard_df, all_genotype_cols_list, wt_plus_or_minus
     )
 
@@ -76,7 +76,7 @@ def standardise_pyrat_csv(
         _make_combined_genotype_columns_for_line, mutation_cols, genotype_cols
     )
 
-    standard_df = _filter_data_input_validity(standard_df)
+    standard_df = _assign_input_validity_tag(standard_df)
 
     standard_df = _collapse_parent_genotype(standard_df)
     standard_df = standard_df.reset_index().drop(
@@ -238,32 +238,33 @@ def _create_mutation_genotype_dicts(
     return mutation_dict, genotype_dict
 
 
-def _filter_or_correct_genotypes(
+def _standardise_genotypes(
     standard_csv: pd.DataFrame,
     genotype_cols: list[str],
     wt_plus_or_minus: bool | None = None,
 ) -> pd.DataFrame:
-    """Filter or correct rows so that only genotypes of wt, het or hom remain.
+    """
+    Standardise rows so that only genotypes of wt, het, hom or unknown remain.
 
     Where possible, this will convert alternative forms to wt/het/hom e.g.
     ko/ko -> hom. If an un-ambiguous conversion isn't possible
-    (like T, Tg, N, +, -), rows that contain these will be removed. User input
+    (like T, Tg, N, +, -), these genotypes are marked as unknown. User input
     can be used to determine whether + or - is WT.
 
     Parameters
     ----------
     standard_csv : pd.DataFrame
-        Dataframe to filter
+        Dataframe to correct
     genotype_cols : list[str]
         Names of all genotype columns including offspring, father and mother
     wt_plus_or_minus : bool| None = None
         User selected bool, True represents that - is WT and vice versa. No
-        input will result in + and - being filtered.
+        input will result in + and - being marked as unknown.
 
     Returns
     -------
     pd.DataFrame
-        Dataframe with only wt, het or hom in genotype columns
+        Dataframe with only wt, het, hom or unknown in genotype columns
     """
 
     match wt_plus_or_minus:
@@ -291,44 +292,46 @@ def _filter_or_correct_genotypes(
         "ki/-": Genotype.HET,
         "+/ki": Genotype.HET,
         "-/ki": Genotype.HET,
-        "dp1Tyb": Genotype.HET,
+        "dp1tyb": Genotype.HET,
     }
 
     genotype_conversions = genotype_conversions | custom_conversions
 
     # convert genotypes where possible
-    genotype_data = standard_csv.loc[:, genotype_cols]
-    for old_genotype, new_genotype in genotype_conversions.items():
-        genotype_data = genotype_data.replace(
-            to_replace=old_genotype, value=new_genotype.name.lower()
-        )
+    genotype_data = standard_csv.loc[:, genotype_cols].replace(
+        {
+            old_genotype: new_genotype.name.lower()
+            for old_genotype, new_genotype in genotype_conversions.items()
+        }
+    )
 
-    filtered_data = standard_csv.copy()
-    filtered_data.loc[:, genotype_cols] = genotype_data
-
-    # remove rows where any of the genotype values aren't in the allowed set:
-    # wt, het, hom or empty
-    allowed_genotypes = (
+    # creates a mask for values that aren't converted
+    not_allowed = ~(
         genotype_data.isin([genotype.name.lower() for genotype in Genotype])
         | genotype_data.isna()
-    ).all(axis=1)
-    filtered_data = filtered_data.loc[allowed_genotypes, genotype_cols] = (
-        "unknown"
     )
-    filtered_count = len(filtered_data)
-    removed_count = len(standard_csv) - filtered_count
 
-    if removed_count > 0:
-        dropped_ids = standard_csv.loc[
-            ~allowed_genotypes, "ID_offspring"
-        ].tolist()
+    # where data is tagged as not allowed, it is converted to unknown
+    genotype_data = genotype_data.mask(
+        not_allowed, Genotype.UNKNOWN.name.lower()
+    )
+
+    # changes values in genotype cols to the new standardised names
+    corrected_data = standard_csv.copy()
+    corrected_data.loc[:, genotype_cols] = genotype_data
+
+    # populate logs with ambiguous genotypes to unknown, if any
+    marked_rows = not_allowed.any(axis=1)
+    marked_count = marked_rows.sum()
+    if marked_count > 0:
+        marked_ids = standard_csv.loc[marked_rows, "ID_offspring"].tolist()
         logger.info(
-            f"Filtered out {removed_count} invalid genotype row(s) for these "
-            f"offspring IDs : {dropped_ids} - "
-            f"{filtered_count} remaining"
+            f"Marked {marked_count} invalid genotype row(s) as "
+            f"{Genotype.UNKNOWN.name.lower()} "
+            f"for these offspring IDs : {marked_ids}"
         )
 
-    return filtered_data
+    return corrected_data
 
 
 def _make_combined_genotype_columns_for_line(
@@ -473,17 +476,14 @@ def _make_combined_genotype_column_for_identifier(
         # If all offspring mutations in a row are NaN, leave as-is -> these are
         # un-genotyped individuals.
         # If only some are NaN, then fill with wt
-        genotyped_rows = ~pivoted_mutations.isna().all(axis=1)
-        pivoted_mutations.loc[genotyped_rows, :] = pivoted_mutations.loc[
-            genotyped_rows, :
-        ].fillna(wildtype_str)
+        rows_to_wt_fill = ~pivoted_mutations.isna().all(axis=1)
     else:
         # Fill wildtype for rows where a parent is actually recorded.
-        parent_id_col = f"ID_{identifier_key}"
-        parent_recorded = line_data[parent_id_col].notna()
-        pivoted_mutations.loc[parent_recorded, :] = pivoted_mutations.loc[
-            parent_recorded, :
-        ].fillna(wildtype_str)
+        rows_to_wt_fill = line_data[f"ID_{identifier_key}"].notna()
+
+    pivoted_mutations.loc[rows_to_wt_fill, :] = pivoted_mutations.loc[
+        rows_to_wt_fill, :
+    ].fillna(wildtype_str)
 
     # Combine pivoted mutations into a single summary column
     new_col_name = f"genotype_{identifier_key}"
@@ -498,22 +498,24 @@ def _make_combined_genotype_column_for_identifier(
     line_data.drop(columns=mutation_cols + genotype_cols, inplace=True)
 
 
-def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
-    """Removes rows containing invalid data.
+def _assign_input_validity_tag(standard_df: pd.DataFrame) -> pd.DataFrame:
+    """Tags rows containing invalid data as unknown.
 
     Runs _check_data_input_validity on each row, if that returns an issue for
-    a particular row, then that row is removed from the final DataFrame.
+    a particular row, then all recorded genotypes for that row are tagged as
+    unknown.
 
     Parameters
     ----------
     standard_df : pd.DataFrame
-        DataFrame to filter
+        DataFrame to tag
 
     Returns
     -------
     pd.DataFrame
-        filtered DataFrame
+        DataFrame with invalid genotypes tagged as unknown
     """
+
     mother_col_names = standard_df.filter(
         regex=r"genotype_mother_\d+$"
     ).columns.tolist()
@@ -528,27 +530,30 @@ def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
         father_col_names=father_col_names,
     )
 
-    removed_count = impossible_input_data.sum()
-    filtered_df = standard_df.copy()
+    tagged_count = impossible_input_data.sum()
+    tagged_df = standard_df.copy()
 
     genotype_cols = [
-        col for col in filtered_df.columns if col.startswith("genotype_")
+        col for col in tagged_df.columns if col.startswith("genotype_")
     ]
 
-    filtered_df.loc[impossible_input_data, genotype_cols] = "unknown"
+    # replace genotype value with unknown where impossible_input_data is true
+    tagged_df.loc[impossible_input_data, genotype_cols] = (
+        Genotype.UNKNOWN.name.lower()
+    )
 
-    if removed_count > 0:
-        removed_ids = standard_df.loc[
+    if tagged_count > 0:
+        tagged_ids = standard_df.loc[
             impossible_input_data, "ID_offspring"
         ].tolist()
         logger.info(
-            f"Filtered out {removed_count} row(s) "
-            "with invalid breeding data for "
-            f"these offspring IDs: {removed_ids} - "
-            f"{len(filtered_df)} remaining"
+            f"Marked {tagged_count} row(s) "
+            "with invalid breeding data as "
+            f"{Genotype.UNKNOWN.name.lower()} for "
+            f"these offspring IDs: {tagged_ids}"
         )
 
-    return filtered_df
+    return tagged_df
 
 
 def _check_data_input_validity(
@@ -561,7 +566,7 @@ def _check_data_input_validity(
     Takes a row from the standardised df, and runs two functions that test the
     validity of recorded data. Whether each sex of parent have the same
     genotype, or whether the breeding scheme is possible. If either of these
-    detect an issue, then this function will flag for removal.
+    detect an issue, then this function will return True
 
     Parameters
     ----------
@@ -644,7 +649,13 @@ def _is_impossible_breeding_scheme(
     # Only processes when offspring is assigned a genotype
     if not pd.isna(offspring_genotype):
         typed_offspring = Genotype.from_string(offspring_genotype)
-        scheme = BreedingScheme(father_genotype, mother_genotype)
+        typed_mother = Genotype.from_string(mother_genotype)
+        typed_father = Genotype.from_string(father_genotype)
+
+        if Genotype.UNKNOWN in typed_offspring + typed_mother + typed_father:
+            return False
+
+        scheme = BreedingScheme(typed_father, typed_mother)
         ratio = scheme.mendelian_ratio()
 
         if typed_offspring not in ratio:
