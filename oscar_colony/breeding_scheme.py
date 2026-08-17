@@ -14,11 +14,15 @@ class Genotype(IntEnum):
     Each animal will have two copies (alleles) of a particular gene - each
     being either wildtype or mutated. The value of the enum is the number of
     mutated copies for that genotype.
+
+    UNKNOWN is used where a genotype couldn't be determined from the recorded
+    data - its value doesn't represent a number of mutated copies.
     """
 
     WT = 0
     HET = 1
     HOM = 2
+    UNKNOWN = 3
 
     def __str__(self):
         return self.name
