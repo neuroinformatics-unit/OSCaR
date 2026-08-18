@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class BreedingSchemeStatistics:
     n_breeding_pairs: int = 0
     n_successful_matings: int = 0
-    average_litter_size: float = 0
+    average_litter_size: tuple[float, float] = (0, 0)
     average_n_litters_per_pair: float = 0
     total_n_offspring: int = 0
     total_n_genotyped_offspring: int = 0
@@ -38,7 +38,7 @@ class LineStatistics:
         default_factory=dict
     )
     total_n_successful_matings: int = 0
-    average_litter_size: float = 0
+    average_litter_size: tuple[float, float] = (0, 0)
 
     stats_per_breeding_scheme: dict[
         BreedingScheme, BreedingSchemeStatistics
@@ -288,9 +288,25 @@ def calculate_historical_stats_for_line(
                     n_offspring
                 )
 
+    offspring_sex = line_data["offspring_sex"].value_counts()
+    n_male_offspring = int(offspring_sex.loc["m"])
+    n_female_offspring = int(offspring_sex.loc["f"])
+
     # Use total_n_offspring for litter size (including un-genotyped)
+    # (male, female)
     line_stats.average_litter_size = (
-        line_stats.total_n_offspring / line_stats.total_n_successful_matings
+        n_male_offspring
+        * (
+            line_stats.total_n_offspring
+            / line_stats.total_n_successful_matings
+        )
+        / int(offspring_sex.sum()),
+        n_female_offspring
+        * (
+            line_stats.total_n_offspring
+            / line_stats.total_n_successful_matings
+        )
+        / int(offspring_sex.sum()),
     )
 
     return line_stats
@@ -371,17 +387,27 @@ def _historical_stats_for_breeding_scheme(
         .drop_duplicates()
         .shape[0]
     )
-
     stats.total_n_offspring = len(scheme_data)
 
     genotyped_rows = scheme_data.loc[~scheme_data.genotype_offspring.isna()]
     stats.total_n_genotyped_offspring = len(genotyped_rows)
 
+    offspring_sex = scheme_data["offspring_sex"].value_counts()
+    n_male_offspring = int(offspring_sex.loc["m"])
+    n_female_offspring = int(offspring_sex.loc["f"])
+
     # litter size calculations use total_no_offspring (including
     # un-genotyped individuals)
+    # (male, female)
     stats.average_litter_size = (
-        stats.total_n_offspring / stats.n_successful_matings
+        n_male_offspring
+        * (stats.total_n_offspring / stats.n_successful_matings)
+        / int(offspring_sex.sum()),
+        n_female_offspring
+        * (stats.total_n_offspring / stats.n_successful_matings)
+        / int(offspring_sex.sum()),
     )
+
     stats.average_n_litters_per_pair = (
         stats.n_successful_matings / stats.n_breeding_pairs
     )

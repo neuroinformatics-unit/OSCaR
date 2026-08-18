@@ -13,6 +13,8 @@ class ExpectedOffspring:
     """Summary of expected average number of offspring from a single mating"""
 
     total_n: float = 0  # litter size
+    total_m: float = 0  # males in litter
+    total_f: float = 0  # females in litter
 
     n_per_genotype: dict[tuple[Genotype, ...], float] = field(
         default_factory=dict
@@ -35,7 +37,7 @@ def estimate_n_offspring_per_mating(
     ----------
     line_stats : LineStatistics
         Statistics from historical data for the line
-    default_litter_size: float
+    default_litter_size: int
         The default value used for average litter size if there isn't enough
         historical data for the line. This should usually be set to the average
         litter size across all available data for all lines.
@@ -64,20 +66,32 @@ def estimate_n_offspring_per_mating(
     n_mutations = line_stats.n_mutations
     breeding_schemes = generate_breeding_schemes(n_mutations)
 
+    # assuming default is a 50:50 split
+    default_male_litter_size = default_litter_size / 2
+    default_female_litter_size = default_litter_size / 2
+
     expected_offspring_per_scheme = {}
     for breeding_scheme in breeding_schemes:
         expected_offspring = ExpectedOffspring()
         litter_size = _expected_litter_size(
-            breeding_scheme, line_stats, min_n_matings, default_litter_size
+            breeding_scheme,
+            line_stats,
+            min_n_matings,
+            (default_male_litter_size, default_female_litter_size),
         )
-        expected_offspring.total_n = litter_size
+
+        expected_offspring.total_n = sum(litter_size)
+        expected_offspring.total_m = litter_size[0]
+        expected_offspring.total_f = litter_size[1]
 
         proportion_per_genotype = _expected_proportion_per_genotype(
             breeding_scheme, line_stats, min_n_offspring
         )
 
         for genotype, proportion in proportion_per_genotype.items():
-            expected_n = proportion * litter_size
+            expected_n = proportion * expected_offspring.total_n
+            # expected_m =
+            # expected_f =
             if expected_n > 0:
                 expected_offspring.n_per_genotype[genotype] = expected_n
 
@@ -90,8 +104,8 @@ def _expected_litter_size(
     breeding_scheme: BreedingScheme,
     line_stats: LineStatistics,
     min_n_matings: int,
-    default_litter_size: float,
-) -> float:
+    default_litter_size: tuple[float, float],
+) -> tuple[float, float]:
     """Create an estimated average litter size (total number of individuals
     produced from one mating).
 
@@ -113,8 +127,8 @@ def _expected_litter_size(
 
     Returns
     -------
-    float
-        Expected litter size
+    tuple(float,float)
+        Expected male and female litter size
     """
 
     scheme_stats = line_stats.stats_per_breeding_scheme.get(

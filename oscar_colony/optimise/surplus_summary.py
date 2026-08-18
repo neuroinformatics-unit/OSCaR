@@ -24,6 +24,10 @@ class SurplusSummary:
 
     total_n: float = 0
     total_n_surplus: float = 0
+    total_m: float = 0
+    total_m_surplus: float = 0
+    total_f: float = 0
+    total_f_surplus: float = 0
 
     surplus_per_genotype: dict[tuple[Genotype, ...], GenotypeSurplus] = field(
         default_factory=dict
@@ -81,6 +85,7 @@ def create_surplus_summary(
     required_n_per_genotype: dict[tuple[Genotype, ...], int],
     n_matings_per_scheme: dict[BreedingScheme, int],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
+    proportion_of_males: float = 0.50,
 ) -> SurplusSummary:
     """Create a summary of the total and surplus numbers for the
     given combination of breeding schemes.
@@ -102,11 +107,24 @@ def create_surplus_summary(
     """
     surplus_summary = SurplusSummary()
     surplus_per_genotype = surplus_summary.surplus_per_genotype
+    total_required = sum(required_n_per_genotype.values())
+    proportion_of_females = 1 - proportion_of_males
+
+    n_males_required = total_required * proportion_of_males
+    n_females_required = total_required * proportion_of_females
 
     # Get number of expected offspring overall / per genotype
     for breeding_scheme, n_matings in n_matings_per_scheme.items():
         expected_offspring = offspring_per_scheme[breeding_scheme]
         surplus_summary.total_n += expected_offspring.total_n * n_matings
+        surplus_summary.total_m += expected_offspring.total_n * (
+            (n_matings / expected_offspring.total_n)
+            * expected_offspring.total_m
+        )
+        surplus_summary.total_f += expected_offspring.total_n * (
+            (n_matings / expected_offspring.total_n)
+            * expected_offspring.total_f
+        )
 
         n_per_genotype = expected_offspring.n_per_genotype
         for genotype, n_per_mating in n_per_genotype.items():
@@ -115,8 +133,13 @@ def create_surplus_summary(
             surplus_per_genotype[genotype].total_n += n_per_mating * n_matings
 
     # Calculate total surplus
-    total_required = sum(required_n_per_genotype.values())
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
+    surplus_summary.total_m_surplus = (
+        surplus_summary.total_m - n_males_required
+    )
+    surplus_summary.total_f_surplus = (
+        surplus_summary.total_m - n_females_required
+    )
 
     # Calculate surplus per genotype
     for genotype, surplus in surplus_per_genotype.items():
