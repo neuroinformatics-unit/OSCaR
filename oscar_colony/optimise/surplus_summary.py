@@ -33,14 +33,19 @@ class GenotypeSurplus:
 
 @dataclass
 class SurplusSummary:
-    """Summary of surplus across all genotypes"""
+    """Summary of surplus across all genotypes.
+
+    Male / female numbers are None where no genotype was requested as a
+    split of (n_males, n_females). Where some were, they only cover those
+    genotypes.
+    """
 
     total_n: float = 0
     total_n_surplus: float = 0
-    total_m: float = 0
-    total_m_surplus: float = 0
-    total_f: float = 0
-    total_f_surplus: float = 0
+    total_m: float | None = None
+    total_m_surplus: float | None = None
+    total_f: float | None = None
+    total_f_surplus: float | None = None
 
     surplus_per_genotype: dict[tuple[Genotype, ...], GenotypeSurplus] = field(
         default_factory=dict
@@ -145,8 +150,10 @@ def create_surplus_summary(
     total_required = 0
     n_males_required = 0
     n_females_required = 0
+    sex_requested = False
     for required_n in required_n_per_genotype.values():
         if isinstance(required_n, tuple):
+            sex_requested = True
             n_males_required += required_n[0]
             n_females_required += required_n[1]
             total_required += sum(required_n)
@@ -160,8 +167,6 @@ def create_surplus_summary(
         proportion_male = expected_offspring.proportion_male
 
         surplus_summary.total_n += total_n
-        surplus_summary.total_m += total_n * proportion_male
-        surplus_summary.total_f += total_n * (1 - proportion_male)
 
         n_per_genotype = expected_offspring.n_per_genotype
         for genotype, n_per_mating in n_per_genotype.items():
@@ -176,12 +181,6 @@ def create_surplus_summary(
 
     # Calculate total surplus
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
-    surplus_summary.total_m_surplus = (
-        surplus_summary.total_m - n_males_required
-    )
-    surplus_summary.total_f_surplus = (
-        surplus_summary.total_f - n_females_required
-    )
 
     # Calculate surplus per genotype. Males / females are only reported
     # where a split was specifically asked for.
@@ -192,17 +191,34 @@ def create_surplus_summary(
             required_n = required_m + required_f
             surplus.total_m_surplus = surplus.total_m - required_m
             surplus.total_f_surplus = surplus.total_f - required_f
-            surplus.m_percent_surplus = (
-                surplus.total_m_surplus / surplus.total_m
-            ) * 100
-            surplus.f_percent_surplus = (
-                surplus.total_f_surplus / surplus.total_f
-            ) * 100
+            if surplus.total_m > 0:
+                surplus.m_percent_surplus = (
+                    surplus.total_m_surplus / surplus.total_m
+                ) * 100
+            if surplus.total_f > 0:
+                surplus.f_percent_surplus = (
+                    surplus.total_f_surplus / surplus.total_f
+                ) * 100
 
         surplus.total_n_surplus = surplus.total_n - required_n
         surplus.percent_surplus = (
             surplus.total_n_surplus / surplus.total_n
         ) * 100
+
+    # Summary male / female numbers only cover the genotypes that were
+    # requested as a split, so they can be compared to the required numbers
+    if sex_requested:
+        total_m = 0.0
+        total_f = 0.0
+        for surplus in surplus_per_genotype.values():
+            if surplus.total_m_surplus is not None:
+                total_m += surplus.total_m
+                total_f += surplus.total_f
+
+        surplus_summary.total_m = total_m
+        surplus_summary.total_f = total_f
+        surplus_summary.total_m_surplus = total_m - n_males_required
+        surplus_summary.total_f_surplus = total_f - n_females_required
 
     # Warn where the plan doesn't reach the required numbers
     for genotype, surplus in surplus_per_genotype.items():
