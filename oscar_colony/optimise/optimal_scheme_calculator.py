@@ -159,10 +159,15 @@ def _optimise_n_matings(
             constraint_coefficients += [[], []]
             constraint_lower_limits += [n_males, n_females]
             constraint_genotypes += [(genotype, "m"), (genotype, "f")]
-        else:
+        elif isinstance(required_n, int):
             constraint_coefficients.append([])
             constraint_lower_limits.append(required_n)
             constraint_genotypes.append((genotype, None))
+        else:
+            raise ValueError(
+                f"Required number for {Genotype.to_string(genotype)} must be "
+                "an int, or a tuple of (n_males, n_females)"
+            )
 
     for breeding_scheme in breeding_schemes:
         expected_offspring = offspring_per_scheme[breeding_scheme]
