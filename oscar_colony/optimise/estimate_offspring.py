@@ -72,9 +72,9 @@ def estimate_n_offspring_per_mating(
             breeding_scheme, line_stats, min_n_matings, default_litter_size
         )
 
-        # Use proportion of males if there's enough sex-assigned offspring, use
-        # accurate proportion of males
-
+        # Use the measured proportion of males if there's enough offspring
+        # with a recorded sex - first for this breeding scheme, then for the
+        # whole line. Otherwise, keep the default even 50:50 split.
         scheme_stats = line_stats.stats_per_breeding_scheme.get(
             breeding_scheme, None
         )
