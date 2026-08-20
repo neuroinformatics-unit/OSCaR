@@ -61,6 +61,9 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             "pyrat-data-forbidden-genotypes.csv",
             "standardised-data-forbidden-genotypes.csv",
             [
+                "Filtered out 7 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-002', 'ID-003', 'ID-004', 'ID-005', 'ID-010', "
+                "'ID-015', 'ID-016'] - 9 remaining",
                 "Filtered out 6 invalid genotype row(s) for these offspring "
                 "IDs : ['ID-002', 'ID-003', 'ID-004', 'ID-005', 'ID-010', "
                 "'ID-016'] - "
