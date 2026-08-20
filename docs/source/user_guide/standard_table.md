@@ -4,15 +4,16 @@ All steps beyond those in: `oscar_colony.colony_management` rely on having data 
 
 Example of format for a line with 2 mutations:
 
-| ID_offspring | line_name | date_of_birth | ID_father_1 | ID_mother_1 | sacrifice_reason | n_mutations | mutation_1 | mutation_2 | genotype_offspring | genotype_father | genotype_mother |
-| ------ | ------  | ---------- | ----- | ----- | ----------------- | - | ------|-------| --------| --------| --------|
-| ID-001 | Line-AB | 15/12/2025 | ID-F1 | ID-M1 | End of experiment | 2 | Mut-A | Mut-B | hom_hom | het_hom | hom_het |
-| ID-002 | Line-AB | 15/12/2025 | ID-F1 | ID-M1 | End of experiment | 2 | Mut-A | Mut-B | wt_wt   | wt_wt   | wt_wt   |
-| ID-003 | Line-AB | 02/01/2026 | ID-F1 | ID-M1 | End of experiment | 2 | Mut-A | Mut-B | wt_het  | wt_hom  | wt_wt   |
+| ID_offspring | line_name | offspring_sex | date_of_birth | ID_father_1 | ID_mother_1 | sacrifice_reason | n_mutations | mutation_1 | mutation_2 | genotype_offspring | genotype_father | genotype_mother |
+| ------ | ------  | - | ---------- | ----- | ----- | ----------------- | - | ------|-------| --------| --------| --------|
+| ID-001 | Line-AB | m | 15/12/2025 | ID-F1 | ID-M1 | End of experiment | 2 | Mut-A | Mut-B | hom_hom | het_hom | hom_het |
+| ID-002 | Line-AB | f | 15/12/2025 | ID-F1 | ID-M1 | End of experiment | 2 | Mut-A | Mut-B | wt_wt   | wt_wt   | wt_wt   |
+| ID-003 | Line-AB | f | 02/01/2026 | ID-F1 | ID-M1 | End of experiment | 2 | Mut-A | Mut-B | wt_het  | wt_hom  | wt_wt   |
 
 Each row represents one animal with columns:
 - `ID_offspring`: the ID of the animal
 - `line_name`: the name of the line
+- `offspring_sex`: the sex of the offspring
 - `date_of_birth`: date of birth
 - `ID_father_1`: the ID of the animal's father
 - `ID_mother_1`: the ID of the animal's mother
