@@ -61,8 +61,9 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             "pyrat-data-forbidden-genotypes.csv",
             "standardised-data-forbidden-genotypes.csv",
             [
-                "Filtered out 5 invalid genotype row(s) for these offspring "
-                "IDs : ['ID-002', 'ID-003', 'ID-004', 'ID-005', 'ID-010'] - "
+                "Filtered out 6 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-002', 'ID-003', 'ID-004', 'ID-005', 'ID-010', "
+                "'ID-016'] - "
                 "10 remaining",
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
@@ -74,8 +75,8 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             "pyrat-data-forbidden-genotypes.csv",
             "standardised-data-forbidden-genotypes-plus-wt.csv",
             [
-                "Filtered out 1 invalid genotype row(s) for these offspring "
-                "IDs : ['ID-003'] - "
+                "Filtered out 2 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-003', 'ID-016'] - "
                 "14 remaining",
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
@@ -87,8 +88,8 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
             "pyrat-data-forbidden-genotypes.csv",
             "standardised-data-forbidden-genotypes-minus-wt.csv",
             [
-                "Filtered out 1 invalid genotype row(s) for these offspring "
-                "IDs : ['ID-003'] - "
+                "Filtered out 2 invalid genotype row(s) for these offspring "
+                "IDs : ['ID-003', 'ID-016'] - "
                 "14 remaining",
                 "3 offspring have no genotype recorded: "
                 "['ID-012', 'ID-013', 'ID-014']",
