@@ -177,8 +177,7 @@ def _optimise_n_matings(
 
         n_per_genotype = expected_offspring.n_per_genotype
         proportion_male = expected_offspring.proportion_male
-        # Proportion of the offspring of each genotype that counts towards
-        # a constraint - all of them, where the sex doesn't matter
+
         proportion_of_sex = {
             "m": proportion_male,
             "f": 1 - proportion_male,
