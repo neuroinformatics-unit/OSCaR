@@ -178,6 +178,8 @@ def _optimise_n_matings(
         n_per_genotype = expected_offspring.n_per_genotype
         proportion_male = expected_offspring.proportion_male
 
+        # None allows mixing of tuples and int, as if no m or f sex will
+        # default to None and will not get divided.
         proportion_of_sex = {
             "m": proportion_male,
             "f": 1 - proportion_male,
