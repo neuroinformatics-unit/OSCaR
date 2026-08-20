@@ -1,5 +1,6 @@
 import logging
 import re
+from enum import StrEnum
 from pathlib import Path
 
 import numpy as np
@@ -10,8 +11,21 @@ from oscar_colony.breeding_scheme import BreedingScheme, Genotype
 logger = logging.getLogger(__name__)
 
 
+class WildtypeSymbol(StrEnum):
+    """Which of pyRAT's ambiguous +/- genotypes represents wildtype.
+
+    Some pyRAT instances record genotypes as + or -, without stating which
+    is wildtype. Whichever symbol is chosen as wildtype, the other is
+    treated as homozygous.
+    """
+
+    PLUS = "+/+"
+    MINUS = "-/-"
+
+
 def standardise_pyrat_csv(
     input_df: pd.DataFrame | Path | str,
+    wt_plus_or_minus: WildtypeSymbol | None = None,
 ) -> pd.DataFrame:
     """Standardise a csv file exported from pyRAT.
 
@@ -19,7 +33,8 @@ def standardise_pyrat_csv(
     - standardising column names with a dynamic dict
     - adding columns for the number of mutations per line (n_mutations) and
     a summary of the mutation names (mutations)
-    - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko
+    - Correcting or removing forbidden genotypes like Tg, ko/ko. The
+    wt_plus_or_minus option determines if +/+ or -/- are converted or removed.
     - adding summary columns for 'genotype_offspring', 'genotype_father' and
     'genotype_mother' that match the order of 'mutations'.
     - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column
@@ -31,6 +46,10 @@ def standardise_pyrat_csv(
     ----------
     input_csv : pd.DataFrame | Path | str
         Csv file exported from pyRAT.
+    wt_plus_or_minus : WildtypeSymbol | None = None
+        When WildtypeSymbol.PLUS, +/+ is WT and -/- is HOM. When
+        WildtypeSymbol.MINUS, -/- is WT and +/+ is HOM. No input will result in
+        +/+ and -/- being filtered.
 
     Returns
     -------
@@ -61,7 +80,7 @@ def standardise_pyrat_csv(
     standard_df = input_df[required_cols].rename(columns=rename_col_dict)
 
     standard_df = _filter_or_correct_genotypes(
-        standard_df, all_genotype_cols_list
+        standard_df, all_genotype_cols_list, wt_plus_or_minus
     )
 
     standard_df = _add_n_mutations_column(
@@ -236,13 +255,16 @@ def _create_mutation_genotype_dicts(
 
 
 def _filter_or_correct_genotypes(
-    standard_csv: pd.DataFrame, genotype_cols: list[str]
+    standard_csv: pd.DataFrame,
+    genotype_cols: list[str],
+    wt_plus_or_minus: WildtypeSymbol | None = None,
 ) -> pd.DataFrame:
     """Filter or correct rows so that only genotypes of wt, het or hom remain.
 
     Where possible, this will convert alternative forms to wt/het/hom e.g.
     ko/ko -> hom. If an un-ambiguous conversion isn't possible
-    (like T, Tg, N, +, -), rows that contain these will be removed.
+    (like T, Tg, N, +, -), rows that contain these will be removed. Provide the
+    wt_plus_or_minus option to allow -/- and +/+ rows to be converted instead.
 
     Parameters
     ----------
@@ -250,12 +272,30 @@ def _filter_or_correct_genotypes(
         Dataframe to filter
     genotype_cols : list[str]
         Names of all genotype columns including offspring, father and mother
+    wt_plus_or_minus : WildtypeSymbol | None = None
+        When WildtypeSymbol.PLUS, +/+ is WT and -/- is HOM. When
+        WildtypeSymbol.MINUS, -/- is WT and +/+ is HOM. No input will result in
+        +/+ and -/- being filtered.
 
     Returns
     -------
     pd.DataFrame
         Dataframe with only wt, het or hom in genotype columns
     """
+
+    match wt_plus_or_minus:
+        case WildtypeSymbol.PLUS:
+            custom_conversions = {
+                "+/+": Genotype.WT,
+                "-/-": Genotype.HOM,
+            }
+        case WildtypeSymbol.MINUS:
+            custom_conversions = {
+                "+/+": Genotype.HOM,
+                "-/-": Genotype.WT,
+            }
+        case _:
+            custom_conversions = {}
 
     genotype_conversions = {
         "ko/ko": Genotype.HOM,
@@ -268,7 +308,10 @@ def _filter_or_correct_genotypes(
         "ki/-": Genotype.HET,
         "+/ki": Genotype.HET,
         "-/ki": Genotype.HET,
+        "dp1tyb": Genotype.HET,
     }
+
+    genotype_conversions = genotype_conversions | custom_conversions
 
     # convert genotypes where possible
     genotype_data = standard_csv.loc[:, genotype_cols]

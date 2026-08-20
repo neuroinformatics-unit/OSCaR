@@ -64,6 +64,11 @@ As this could be a very large amount of data, it is returned as a generator of
 ## Standardising data from the PyRAT API
 
 Now we have the data, it must be converted into OSCaR's [standard table format](./standard_table).
+Since some data is ambiguous within PyRAT, the user can specify how they want
++ or - represented within standardise_pyrat_csv:
+    If left blank, all + and - genotypes will be filtered,
+    If True: all + genotypes will be treated as Hom and - will be WT
+    If False: all - genotypes will be treated as Hom and + will be WT
 
 We can do this with:
 ```python
@@ -79,6 +84,21 @@ for animal_df in animal_data:
 
 # Join all the standardised dataframes into one
 standard_df = pd.concat(standardised_dfs)
+```
+
+Some genotypes are ambiguous within PyRAT - the `wt_plus_or_minus` parameter of
+`standardise_pyrat_csv` lets you specify which of + and - is wildtype:
+
+- If left blank, all rows containing + or - genotypes will be filtered out
+- `WildtypeSymbol.PLUS`: + genotypes are treated as WT, and - as HOM
+- `WildtypeSymbol.MINUS`: - genotypes are treated as WT, and + as HOM
+
+```python
+from oscar_colony.colony_management.pyrat.standardise import WildtypeSymbol
+
+standard_df = standardise_pyrat_csv(
+    animal_df, wt_plus_or_minus=WildtypeSymbol.PLUS
+)
 ```
 
 See the docs for the {mod}`~oscar_colony.colony_management.pyrat.standardise` module, for full details of how data is standardised.
