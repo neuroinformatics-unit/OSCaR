@@ -77,17 +77,89 @@ def surplus_1_mutation():
             (Genotype.HET,): GenotypeSurplus(
                 total_n=1559.6100,
                 total_n_surplus=1.610,
+                total_m=779.805,
+                total_f=779.805,
                 percent_surplus=0.1032,
             ),
             (Genotype.HOM,): GenotypeSurplus(
                 total_n=471.51,
                 total_n_surplus=0.5100,
+                total_m=235.755,
+                total_f=235.755,
                 percent_surplus=0.1082,
             ),
             (Genotype.WT,): GenotypeSurplus(
                 total_n=1177.38,
                 total_n_surplus=1.3800,
+                total_m=588.69,
+                total_f=588.69,
                 percent_surplus=0.1172,
+            ),
+        },
+    )
+
+
+@pytest.fixture
+def required_n_per_genotype_1_mutation_sex_split():
+    return {
+        (Genotype.HET,): (18, 6),
+        (Genotype.HOM,): 10,
+    }
+
+
+@pytest.fixture
+def n_matings_1_mutation_sex_split():
+    return {BreedingScheme("het", "hom"): 10}
+
+
+@pytest.fixture
+def offspring_per_scheme_1_mutation_sex_split():
+    """A single breeding scheme, where 60% of each litter is male."""
+
+    return {
+        BreedingScheme("het", "hom"): ExpectedOffspring(
+            total_n=6,
+            proportion_male=0.6,
+            n_per_genotype={
+                (Genotype.HET,): 3,
+                (Genotype.HOM,): 3,
+            },
+        )
+    }
+
+
+@pytest.fixture
+def surplus_1_mutation_sex_split():
+    """Surplus from 10 matings giving 30 het and 30 hom offspring, 60% of
+    them male. Only het was required as a split of (n_males, n_females), so
+    only it has a male / female surplus.
+    """
+
+    return SurplusSummary(
+        total_n=60,
+        total_n_surplus=26,
+        total_m=18.0,
+        total_m_surplus=0.0,
+        total_f=12.0,
+        total_f_surplus=6.0,
+        surplus_per_genotype={
+            (Genotype.HET,): GenotypeSurplus(
+                total_n=30,
+                total_n_surplus=6,
+                total_m=18.0,
+                total_m_surplus=0.0,
+                m_percent_surplus=0.0,
+                total_f=12.0,
+                total_f_surplus=6.0,
+                f_percent_surplus=50.0,
+                percent_surplus=20.0,
+            ),
+            (Genotype.HOM,): GenotypeSurplus(
+                total_n=30,
+                total_n_surplus=20,
+                total_m=18.0,
+                total_f=12.0,
+                percent_surplus=66.6667,
             ),
         },
     )
@@ -438,46 +510,154 @@ def surplus_2_mutations():
             (Genotype.HET, Genotype.HET): GenotypeSurplus(
                 total_n=380.6925,
                 total_n_surplus=0.6925,
+                total_m=190.34625,
+                total_f=190.34625,
                 percent_surplus=0.1819,
             ),
             (Genotype.HET, Genotype.HOM): GenotypeSurplus(
                 total_n=18.8175,
                 total_n_surplus=0.8175,
+                total_m=9.40875,
+                total_f=9.40875,
                 percent_surplus=4.3444,
             ),
             (Genotype.HOM, Genotype.HET): GenotypeSurplus(
                 total_n=50.6625,
                 total_n_surplus=1.6625,
+                total_m=25.33125,
+                total_f=25.33125,
                 percent_surplus=3.2815,
             ),
             (Genotype.HOM, Genotype.HOM): GenotypeSurplus(
                 total_n=1.4475,
                 total_n_surplus=0.4475,
+                total_m=0.72375,
+                total_f=0.72375,
                 percent_surplus=30.9154,
             ),
             (Genotype.HET, Genotype.WT): GenotypeSurplus(
                 total_n=23.16,
                 total_n_surplus=0.1600,
+                total_m=11.58,
+                total_f=11.58,
                 percent_surplus=0.6908,
             ),
             (Genotype.HOM, Genotype.WT): GenotypeSurplus(
                 total_n=20.265,
                 total_n_surplus=0.2650,
+                total_m=10.1325,
+                total_f=10.1325,
                 percent_surplus=1.3077,
             ),
             (Genotype.WT, Genotype.HET): GenotypeSurplus(
                 total_n=49.2150,
                 total_n_surplus=1.2150,
+                total_m=24.6075,
+                total_f=24.6075,
                 percent_surplus=2.4688,
             ),
             (Genotype.WT, Genotype.WT): GenotypeSurplus(
                 total_n=4.3425,
                 total_n_surplus=0.3425,
+                total_m=2.17125,
+                total_f=2.17125,
                 percent_surplus=7.8872,
             ),
             (Genotype.WT, Genotype.HOM): GenotypeSurplus(
                 total_n=7.2375,
                 total_n_surplus=0.2375,
+                total_m=3.61875,
+                total_f=3.61875,
+                percent_surplus=3.2815,
+            ),
+        },
+    )
+
+
+@pytest.fixture
+def surplus_2_mutations_sex_split():
+    """Surplus where (n_males, n_females) was required for het_het
+    (190, 190) and hom_het (25, 25). All other genotypes were required as a
+    total only, so have no male / female surplus.
+    """
+
+    return SurplusSummary(
+        total_n=555.8400,
+        total_n_surplus=4.8400,
+        total_m=215.6775,
+        total_m_surplus=0.6775,
+        total_f=215.6775,
+        total_f_surplus=0.6775,
+        surplus_per_genotype={
+            (Genotype.HET, Genotype.HET): GenotypeSurplus(
+                total_n=380.6925,
+                total_n_surplus=0.6925,
+                total_m=190.34625,
+                total_m_surplus=0.34625,
+                m_percent_surplus=0.1819,
+                total_f=190.34625,
+                total_f_surplus=0.34625,
+                f_percent_surplus=0.1819,
+                percent_surplus=0.1819,
+            ),
+            (Genotype.HET, Genotype.HOM): GenotypeSurplus(
+                total_n=18.8175,
+                total_n_surplus=0.8175,
+                total_m=9.40875,
+                total_f=9.40875,
+                percent_surplus=4.3444,
+            ),
+            (Genotype.HOM, Genotype.HET): GenotypeSurplus(
+                total_n=50.6625,
+                total_n_surplus=0.6625,
+                total_m=25.33125,
+                total_m_surplus=0.33125,
+                m_percent_surplus=1.3077,
+                total_f=25.33125,
+                total_f_surplus=0.33125,
+                f_percent_surplus=1.3077,
+                percent_surplus=1.3077,
+            ),
+            (Genotype.HOM, Genotype.HOM): GenotypeSurplus(
+                total_n=1.4475,
+                total_n_surplus=0.4475,
+                total_m=0.72375,
+                total_f=0.72375,
+                percent_surplus=30.9154,
+            ),
+            (Genotype.HET, Genotype.WT): GenotypeSurplus(
+                total_n=23.16,
+                total_n_surplus=0.1600,
+                total_m=11.58,
+                total_f=11.58,
+                percent_surplus=0.6908,
+            ),
+            (Genotype.HOM, Genotype.WT): GenotypeSurplus(
+                total_n=20.265,
+                total_n_surplus=0.2650,
+                total_m=10.1325,
+                total_f=10.1325,
+                percent_surplus=1.3077,
+            ),
+            (Genotype.WT, Genotype.HET): GenotypeSurplus(
+                total_n=49.2150,
+                total_n_surplus=1.2150,
+                total_m=24.6075,
+                total_f=24.6075,
+                percent_surplus=2.4688,
+            ),
+            (Genotype.WT, Genotype.WT): GenotypeSurplus(
+                total_n=4.3425,
+                total_n_surplus=0.3425,
+                total_m=2.17125,
+                total_f=2.17125,
+                percent_surplus=7.8872,
+            ),
+            (Genotype.WT, Genotype.HOM): GenotypeSurplus(
+                total_n=7.2375,
+                total_n_surplus=0.2375,
+                total_m=3.61875,
+                total_f=3.61875,
                 percent_surplus=3.2815,
             ),
         },

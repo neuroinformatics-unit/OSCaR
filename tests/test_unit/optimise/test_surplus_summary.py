@@ -1,6 +1,9 @@
+import logging
+
 import pandas as pd
 import pytest
 
+from oscar_colony.breeding_scheme import Genotype
 from oscar_colony.optimise.surplus_summary import create_surplus_summary
 from tests.helpers import assert_dataclass_equal
 from tests.pooch_test_data import pooch_data_path
@@ -26,6 +29,13 @@ from tests.pooch_test_data import pooch_data_path
             "surplus_2_mutations",
             id="2 mutations",
         ),
+        pytest.param(
+            "required_n_per_genotype_1_mutation_sex_split",
+            "n_matings_1_mutation_sex_split",
+            "offspring_per_scheme_1_mutation_sex_split",
+            "surplus_1_mutation_sex_split",
+            id="1 mutation - sex split",
+        ),
     ],
 )
 def test_create_surplus_summary(
@@ -48,10 +58,37 @@ def test_create_surplus_summary(
     )
 
 
-def test_create_genotype_df(surplus_2_mutations):
+def test_create_surplus_summary_sex_split(
+    n_matings_1_mutation_sex_split,
+    offspring_per_scheme_1_mutation_sex_split,
+    caplog,
+):
+    """Test that a warning is logged for each genotype where the plan doesn't
+    reach the required number - in total, and of males / females.
+    """
+
+    with caplog.at_level(logging.WARNING):
+        create_surplus_summary(
+            required_n_per_genotype={(Genotype.HET,): (20, 20)},
+            n_matings_per_scheme=n_matings_1_mutation_sex_split,
+            offspring_per_scheme=offspring_per_scheme_1_mutation_sex_split,
+        )
+
+    expected_messages = [
+        "het: plan is 10.0 individuals short of the required number",
+        "het: plan is 2.0 male individuals short of the required number",
+        "het: plan is 8.0 female individuals short of the required number",
+    ]
+    for message in expected_messages:
+        assert message in caplog.text
+
+
+def test_create_genotype_df(surplus_2_mutations_sex_split):
     """Test creation of a dataframe from SurplusSummary.surplus_per_genotype"""
 
-    genotype_df = surplus_2_mutations.create_genotype_df(decimal_places=2)
+    genotype_df = surplus_2_mutations_sex_split.create_genotype_df(
+        decimal_places=2
+    )
     expected_df = pd.read_csv(
         pooch_data_path("converted-surplus-per-genotype.csv")
     )
