@@ -298,6 +298,7 @@ def _filter_or_correct_genotypes(
 
     genotype_conversions = {
         "+/-": Genotype.HET,
+        "-/+": Genotype.HET,
         "ko/ko": Genotype.HOM,
         "ko/+": Genotype.HET,
         "ko/-": Genotype.HET,
