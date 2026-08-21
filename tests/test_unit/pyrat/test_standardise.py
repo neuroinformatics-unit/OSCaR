@@ -82,7 +82,7 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
                 "['ID-012', 'ID-013', 'ID-014']",
             ],
             WildtypeSymbol.PLUS,
-            id="forbidden genotypes - plus is wt",
+            id="forbidden genotypes, +/+ is wt",
         ),
         pytest.param(
             "pyrat-data-forbidden-genotypes.csv",
@@ -95,7 +95,7 @@ def test_standardise_pyrat_csv(pyrat_csv_name, expected_csv_name, input_type):
                 "['ID-012', 'ID-013', 'ID-014']",
             ],
             WildtypeSymbol.MINUS,
-            id="forbidden genotypes - minus is wt",
+            id="forbidden genotypes, -/- is wt",
         ),
         pytest.param(
             "pyrat-data-forbidden-schemes.csv",
@@ -137,10 +137,10 @@ def test_forbidden_data(
     +, -, T, Tg, ko/ko), as well as un-genotyped individuals.
 
     2. Test standardisation of dataframe containing forbidden genotypes where
-    the user has specified that + is WT (and - is HOM)
+    the user has specified that +/+ is WT (and -/- is HOM)
 
     3. Test standardisation of dataframe containing forbidden genotypes where
-    the user has specified that - is WT (and + is HOM)
+    the user has specified that -/- is WT (and +/+ is HOM)
 
     4. Test that impossible breeding schemes are removed from raw data.
     (e.g. hom x hom parents cannot make wt offspring)
