@@ -4,7 +4,7 @@ import pooch
 
 GIN_REPO = pooch.create(
     path=Path(__file__).parents[1] / "test_data",
-    base_url="https://gin.swc.ucl.ac.uk/neuroinformatics/oscar-test-data/raw/hc/correct-nonstandard-genotype",
+    base_url="https://gin.swc.ucl.ac.uk/neuroinformatics/oscar-test-data/raw/master",
     registry=None,
     retry_if_failed=5,
 )
