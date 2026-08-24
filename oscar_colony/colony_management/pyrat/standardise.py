@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class WildtypeSymbol(StrEnum):
-    """Which of pyRAT's ambiguous +/- genotypes represents wildtype.
+    """Which of PyRAT's ambiguous +/+ and -/- genotypes represents wildtype.
 
-    Some pyRAT instances record genotypes as + or -, without stating which
+    Some pyRAT instances record genotypes as +/+ or -/-, without stating which
     is wildtype. Whichever symbol is chosen as wildtype, the other is
     treated as homozygous.
     """
@@ -298,6 +298,8 @@ def _filter_or_correct_genotypes(
             custom_conversions = {}
 
     genotype_conversions = {
+        "+/-": Genotype.HET,
+        "-/+": Genotype.HET,
         "ko/ko": Genotype.HOM,
         "ko/+": Genotype.HET,
         "ko/-": Genotype.HET,
