@@ -181,6 +181,7 @@ def _create_rename_dict(input_csv: pd.DataFrame) -> dict[str, str]:
     # re-name standard columns
     rename_dict = {
         "ID": "ID_offspring",
+        "Offspring sex": "offspring_sex",
         "Line / Strain (Name)": "line_name",
         "DOB": "date_of_birth",
     }

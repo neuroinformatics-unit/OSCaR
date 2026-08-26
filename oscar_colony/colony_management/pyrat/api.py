@@ -55,6 +55,7 @@ def get_pyrat_data(
         "k": [
             "animalid",
             "eartag_or_id",
+            "sex",
             "species_name",
             "strain_name",
             "dateborn",
@@ -346,6 +347,7 @@ def _convert_animals_to_df(animals_data: list[dict[str, Any]]) -> pd.DataFrame:
             "dateborn": "DOB",
             "strain_name": "Line / Strain (Name)",
             "species_name": "Species",
+            "sex": "Offspring sex",
         }
     )
     logger.info(
