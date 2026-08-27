@@ -185,7 +185,7 @@ def _expected_proportion_of_males(
     min_n_offspring: int,
     expected_offspring: ExpectedOffspring,
 ) -> None:
-    """Update ExpectedOffsprng with the expected proportion of male offspring.
+    """Update ExpectedOffspring with the expected proportion of male offspring.
 
     If enough historical data is available in line_stats, the measured
     proportion will be used - first for the specific breeding scheme, then
@@ -202,7 +202,7 @@ def _expected_proportion_of_males(
         proportion of males (from historical data). Otherwise, defaults
         to 0.5.
     expected_offspring : ExpectedOffspring
-        DataClass to set the expected proportion of males on
+        Class to set the expected proportion of males on
     """
 
     scheme_stats = line_stats.stats_per_breeding_scheme.get(

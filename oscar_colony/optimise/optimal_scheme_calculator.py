@@ -35,7 +35,7 @@ def calculate_optimal_scheme(
         (n_males, n_females).
     line_stats : LineStatistics
         Statistics from historical data for the line
-    default_litter_size: float
+    default_litter_size: int
         The default value used for average litter size if there isn't enough
         historical data for the line. This should usually be set to the average
         litter size across all available data for all lines.
@@ -48,8 +48,8 @@ def calculate_optimal_scheme(
     min_n_offspring: int, optional
         Minimum number of offspring required from a breeding scheme to use
         its measured proportion of each genotype / of males from line_stats.
-        If not met, the mendelian ratio is used for genotypes, and the line's
-        proportion of males.
+        If not met, the mendelian ratio is used for both the genotypes and the
+        line's proportion of males.
 
     Returns
     -------

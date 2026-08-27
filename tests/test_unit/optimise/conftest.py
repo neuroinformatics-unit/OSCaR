@@ -560,10 +560,7 @@ def surplus_2_mutations_sex_split():
     """Surplus where (n_males, n_females) was required for het_het
     (240, 140), hom_het (10, 40) and wt_het (20, 22). All other genotypes
     were required as a total only, so have no male / female surplus.
-
-    The requested splits are deliberately uneven, and include a shortfall of
-    males (het_het), a shortfall of females (hom_het) and a surplus of both
-    (wt_het).
+    Shows response to a surplus and a deficit.
     """
 
     return SurplusSummary(

@@ -414,16 +414,19 @@ def _historical_stats_for_breeding_scheme(
     return stats
 
 
-def _calc_proportion_of_males(sex_counts, summary_stats):
-    """Calculates the proportion of males with a recorded sex
+def _calc_proportion_of_males(
+    sex_counts: pd.Series,
+    summary_stats: BreedingSchemeStatistics | LineStatistics,
+) -> None:
+    """Calculate the proportion of males with a recorded sex
 
     Parameters
     ----------
-    sex_counts : pD.Series
-        A table containing the number of male and female offspring from data
+    sex_counts : pd.Series
+        A series containing the number of male and female offspring from data
         sorted by line name or breeding scheme
-    summary_stats : DataClass
-        A table containing the summary stats for either line name or breeding
+    summary_stats : BreedingSchemeStatistics | LineStatistics
+        A class containing the summary stats for either line name or breeding
         scheme
     """
 

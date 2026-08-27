@@ -71,8 +71,9 @@ class GenotypeSurplus:
 class SurplusSummary:
     """Summary of surplus across all genotypes.
 
-    sex_surplus is None where no genotype was requested as a split of
-    (n_males, n_females). Where some were, it only covers those genotypes.
+    sex_surplus is None when a named tuple isn't requested
+    (n_males, n_females). Covers cases in which there is a mix of sex-split and
+    non-sex-split genotypes.
     """
 
     total_n: float = 0
@@ -118,10 +119,6 @@ class SurplusSummary:
                 "Percent Surplus": surplus.percent_surplus,
             }
 
-            # Male / female columns are only added where a split of
-            # (n_males, n_females) was requested for this genotype. If no
-            # genotype requested a split, they're left out of the dataframe
-            # entirely.
             sex_surplus = surplus.sex_surplus
             if sex_surplus is not None:
                 row.update(
@@ -187,8 +184,7 @@ def create_surplus_summary(
     surplus_summary = SurplusSummary()
     surplus_per_genotype = surplus_summary.surplus_per_genotype
 
-    # Total required numbers - males / females are only counted where they
-    # were specifically asked for
+    # Total required numbers - males / females are only counted when requested
     total_required = 0
     n_males_required = 0
     n_females_required = 0
@@ -213,8 +209,6 @@ def create_surplus_summary(
         n_per_genotype = expected_offspring.n_per_genotype
         for genotype, n_per_mating in n_per_genotype.items():
             if genotype not in surplus_per_genotype:
-                # Males / females are only counted where a split of
-                # (n_males, n_females) was requested for this genotype
                 sex_split = isinstance(
                     required_n_per_genotype.get(genotype), tuple
                 )
@@ -236,8 +230,6 @@ def create_surplus_summary(
     # Calculate total surplus
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
 
-    # Calculate surplus per genotype. Males / females are only reported
-    # where a split was specifically asked for.
     for genotype, surplus in surplus_per_genotype.items():
         required_n = required_n_per_genotype.get(genotype, 0)
         sex_surplus = surplus.sex_surplus
