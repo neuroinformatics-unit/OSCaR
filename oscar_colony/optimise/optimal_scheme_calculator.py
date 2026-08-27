@@ -11,13 +11,14 @@ from oscar_colony.optimise.estimate_offspring import (
     estimate_n_offspring_per_mating,
 )
 from oscar_colony.optimise.surplus_summary import (
+    SexSplit,
     SurplusSummary,
     create_surplus_summary,
 )
 
 
 def calculate_optimal_scheme(
-    required_n_per_genotype: dict[tuple[Genotype, ...], int | tuple[int, int]],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     line_stats: LineStatistics,
     default_litter_size: int,
     min_n_matings: int = 3,
@@ -78,7 +79,7 @@ def calculate_optimal_scheme(
 
 
 def _optimise_n_matings(
-    required_n_per_genotype: dict[tuple[Genotype, ...], int | tuple[int, int]],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
 ) -> dict[BreedingScheme, int]:
     """Calculate the optimal number of matings of each breeding scheme to
@@ -93,9 +94,20 @@ def _optimise_n_matings(
     total_surplus =
       sum(litter_size_per_scheme * n_matings_per_scheme) - total_n_required
 
-    There is one constraint per required offspring genotype of form:
+    There is one constraint per required offspring genotype / sex combination.
+    For example, if the required number of animals for a specific genotype
+    is given as an integer (i.e. the user doesn't care if they are male or
+    female), this creates one constraint of form:
     sum(n_of_genotype_offspring_per_mating * n_matings_per_scheme)
       >= required_n_for_genotype
+
+    If the required number is given as a tuple of (n_males, n_females), then
+    there will be two constraints for this genotype of form:
+    sum(n_of_genotype_offspring_per_mating * proportion_male *
+    n_matings_per_scheme) >= required_n_males_for_genotype
+
+    sum(n_of_genotype_offspring_per_mating * proportion_female *
+    n_matings_per_scheme) >= required_n_females_for_genotype
 
     Note: the solution given isn't guaranteed to be unique. There may be
     multiple combinations of different breeding schemes that result in the
@@ -103,9 +115,10 @@ def _optimise_n_matings(
 
     Parameters
     ----------
-    required_n_per_genotype : dict
-        The required number of individuals per genotype - either an int, or
-        a tuple of (n_males, n_females)
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | tuple[int, int]]
+        The required number of individuals per genotype. Each value is
+        either an int (where male / female doesn't matter), or a tuple of
+        (n_males, n_females).
     offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
         The estimated number of offspring produced per mating of each
         breeding scheme
@@ -141,13 +154,17 @@ def _optimise_n_matings(
     # Coefficients and constants of our constraints (see docstring for
     # description - coefficients come from the left side of the equation,
     # constants from the right).
-    # Both will be a list of length == len(required_n_per_genotype), with an
-    # extra item wherever a number of males / females was required.
+    # Both will be a list with length == number of required sex / genotype
+    # combinations - so, one item per genotype that used an int value (no sex
+    # specified), and two items per genotype that used a tuple of (n_males,
+    # n_females).
     # With each item being:
     # - For constraint_coefficients, a list of the expected number of offspring
-    #   of that genotype per mating for all breeding schemes
+    #   of that genotype (and sex if specified) per mating for all breeding
+    #   schemes
     # - For constraint_lower_limits, the required number of individuals of that
-    #   genotype
+    #   genotype (and sex if specified)
+
     constraint_coefficients: list[list[float]] = []
     constraint_lower_limits = []
     constraint_genotypes: list[tuple[tuple[Genotype, ...], str | None]] = []
@@ -178,12 +195,10 @@ def _optimise_n_matings(
         n_per_genotype = expected_offspring.n_per_genotype
         proportion_male = expected_offspring.proportion_male
 
-        # None allows mixing of tuples and int, as if no m or f sex will
-        # default to None and will not get divided.
         proportion_of_sex = {
             "m": proportion_male,
             "f": 1 - proportion_male,
-            None: 1,
+            None: 1,  # All animals are included when no sex is specified
         }
 
         for i, (genotype, sex) in enumerate(constraint_genotypes):

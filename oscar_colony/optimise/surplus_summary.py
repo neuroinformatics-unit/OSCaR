@@ -1,5 +1,6 @@
 import logging
 from dataclasses import dataclass, field
+from typing import NamedTuple
 
 import pandas as pd
 
@@ -22,12 +23,12 @@ class GenotypeSurplus:
 
     total_n: float = 0
     total_n_surplus: float = 0
-    total_m: float = 0
-    total_m_surplus: float | None = None
-    m_percent_surplus: float | None = None
-    total_f: float = 0
-    total_f_surplus: float | None = None
-    f_percent_surplus: float | None = None
+    total_male: float = 0
+    total_male_surplus: float | None = None
+    male_percent_surplus: float | None = None
+    total_female: float = 0
+    total_female_surplus: float | None = None
+    female_percent_surplus: float | None = None
     percent_surplus: float = 0
 
 
@@ -76,7 +77,7 @@ class SurplusSummary:
 
             # Male / female numbers are only shown where a split of
             # (n_males, n_females) was requested for this genotype
-            sex_requested = surplus.total_m_surplus is not None
+            sex_requested = surplus.total_male_surplus is not None
 
             rows.append(
                 (
@@ -84,12 +85,12 @@ class SurplusSummary:
                     required_n,
                     surplus.total_n,
                     surplus.total_n_surplus,
-                    surplus.total_m if sex_requested else None,
-                    surplus.total_m_surplus,
-                    surplus.m_percent_surplus,
-                    surplus.total_f if sex_requested else None,
-                    surplus.total_f_surplus,
-                    surplus.f_percent_surplus,
+                    surplus.total_male if sex_requested else None,
+                    surplus.total_male_surplus,
+                    surplus.male_percent_surplus,
+                    surplus.total_female if sex_requested else None,
+                    surplus.total_female_surplus,
+                    surplus.female_percent_surplus,
                     surplus.percent_surplus,
                 )
             )
@@ -117,8 +118,13 @@ class SurplusSummary:
         return genotype_df
 
 
+class SexSplit(NamedTuple):
+    n_males: int
+    n_females: int
+
+
 def create_surplus_summary(
-    required_n_per_genotype: dict[tuple[Genotype, ...], int | tuple[int, int]],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     n_matings_per_scheme: dict[BreedingScheme, int],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
 ) -> SurplusSummary:
@@ -176,8 +182,10 @@ def create_surplus_summary(
             n_of_genotype = n_per_mating * n_matings
             genotype_surplus = surplus_per_genotype[genotype]
             genotype_surplus.total_n += n_of_genotype
-            genotype_surplus.total_m += n_of_genotype * proportion_male
-            genotype_surplus.total_f += n_of_genotype * (1 - proportion_male)
+            genotype_surplus.total_male += n_of_genotype * proportion_male
+            genotype_surplus.total_female += n_of_genotype * (
+                1 - proportion_male
+            )
 
     # Calculate total surplus
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
@@ -189,15 +197,15 @@ def create_surplus_summary(
         if isinstance(required_n, tuple):
             required_m, required_f = required_n
             required_n = required_m + required_f
-            surplus.total_m_surplus = surplus.total_m - required_m
-            surplus.total_f_surplus = surplus.total_f - required_f
-            if surplus.total_m > 0:
-                surplus.m_percent_surplus = (
-                    surplus.total_m_surplus / surplus.total_m
+            surplus.total_male_surplus = surplus.total_male - required_m
+            surplus.total_female_surplus = surplus.total_female - required_f
+            if surplus.total_male > 0:
+                surplus.male_percent_surplus = (
+                    surplus.total_male_surplus / surplus.total_male
                 ) * 100
-            if surplus.total_f > 0:
-                surplus.f_percent_surplus = (
-                    surplus.total_f_surplus / surplus.total_f
+            if surplus.total_female > 0:
+                surplus.female_percent_surplus = (
+                    surplus.total_female_surplus / surplus.total_female
                 ) * 100
 
         surplus.total_n_surplus = surplus.total_n - required_n
@@ -211,9 +219,9 @@ def create_surplus_summary(
         total_m = 0.0
         total_f = 0.0
         for surplus in surplus_per_genotype.values():
-            if surplus.total_m_surplus is not None:
-                total_m += surplus.total_m
-                total_f += surplus.total_f
+            if surplus.total_male_surplus is not None:
+                total_m += surplus.total_male
+                total_f += surplus.total_female
 
         surplus_summary.total_m = total_m
         surplus_summary.total_f = total_f
@@ -224,8 +232,8 @@ def create_surplus_summary(
     for genotype, surplus in surplus_per_genotype.items():
         for label, n_surplus in (
             ("", surplus.total_n_surplus),
-            ("male ", surplus.total_m_surplus),
-            ("female ", surplus.total_f_surplus),
+            ("male ", surplus.total_male_surplus),
+            ("female ", surplus.total_female_surplus),
         ):
             if (n_surplus is not None) and (n_surplus < 0):
                 logger.warning(

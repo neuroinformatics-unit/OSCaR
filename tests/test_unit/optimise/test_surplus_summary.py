@@ -4,7 +4,10 @@ import pandas as pd
 import pytest
 
 from oscar_colony.breeding_scheme import Genotype
-from oscar_colony.optimise.surplus_summary import create_surplus_summary
+from oscar_colony.optimise.surplus_summary import (
+    SexSplit,
+    create_surplus_summary,
+)
 from tests.helpers import assert_dataclass_equal
 from tests.pooch_test_data import pooch_data_path
 
@@ -67,9 +70,11 @@ def test_create_surplus_summary_sex_split(
     reach the required number - in total, and of males / females.
     """
 
+    sex_split = SexSplit(n_males=20, n_females=20)
+
     with caplog.at_level(logging.WARNING):
         create_surplus_summary(
-            required_n_per_genotype={(Genotype.HET,): (20, 20)},
+            required_n_per_genotype={(Genotype.HET,): sex_split},
             n_matings_per_scheme=n_matings_1_mutation_sex_split,
             offspring_per_scheme=offspring_per_scheme_1_mutation_sex_split,
         )
