@@ -29,9 +29,9 @@ def calculate_optimal_scheme(
 
     Parameters
     ----------
-    required_n_per_genotype : dict
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]
         Required number of individuals per genotype. Each value is either an
-        int (where male / female isn't requested), or a tuple of
+        int (where male / female isn't requested), or a named tuple of
         (n_males, n_females).
     line_stats : LineStatistics
         Statistics from historical data for the line
@@ -101,8 +101,8 @@ def _optimise_n_matings(
     sum(n_of_genotype_offspring_per_mating * n_matings_per_scheme)
       >= required_n_for_genotype
 
-    If the required number is given as a tuple of (n_males, n_females), then
-    there will be two constraints for this genotype of form:
+    If the required number is given as a namedtuple of (n_males, n_females),
+    then there will be two constraints for this genotype of form:
     sum(n_of_genotype_offspring_per_mating * proportion_male *
     n_matings_per_scheme) >= required_n_males_for_genotype
 
@@ -115,9 +115,9 @@ def _optimise_n_matings(
 
     Parameters
     ----------
-    required_n_per_genotype : dict[tuple[Genotype, ...], int | tuple[int, int]]
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]
         The required number of individuals per genotype. Each value is
-        either an int (where male / female doesn't matter), or a tuple of
+        either an int (where male / female doesn't matter), or a named tuple of
         (n_males, n_females).
     offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
         The estimated number of offspring produced per mating of each
