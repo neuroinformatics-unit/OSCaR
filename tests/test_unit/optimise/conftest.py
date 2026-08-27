@@ -558,20 +558,24 @@ def surplus_2_mutations():
 @pytest.fixture
 def surplus_2_mutations_sex_split():
     """Surplus where (n_males, n_females) was required for het_het
-    (190, 190) and hom_het (25, 25). All other genotypes were required as a
-    total only, so have no male / female surplus.
+    (240, 140), hom_het (10, 40) and wt_het (20, 22). All other genotypes
+    were required as a total only, so have no male / female surplus.
+
+    The requested splits are deliberately uneven, and include a shortfall of
+    males (het_het), a shortfall of females (hom_het) and a surplus of both
+    (wt_het).
     """
 
     return SurplusSummary(
         total_n=555.8400,
-        total_n_surplus=4.8400,
+        total_n_surplus=10.8400,
         sex_surplus=SexSurplus(
-            total_males=215.6775,
-            total_male_surplus=0.6775,
-            male_percent_surplus=0.3141,
-            total_females=215.6775,
-            total_female_surplus=0.6775,
-            female_percent_surplus=0.3141,
+            total_males=240.2850,
+            total_male_surplus=-29.7150,
+            male_percent_surplus=-12.3666,
+            total_females=240.2850,
+            total_female_surplus=38.2850,
+            female_percent_surplus=15.9332,
         ),
         surplus_per_genotype={
             (Genotype.HET, Genotype.HET): GenotypeSurplus(
@@ -580,11 +584,11 @@ def surplus_2_mutations_sex_split():
                 percent_surplus=0.1819,
                 sex_surplus=SexSurplus(
                     total_males=190.34625,
-                    total_male_surplus=0.34625,
-                    male_percent_surplus=0.1819,
+                    total_male_surplus=-49.65375,
+                    male_percent_surplus=-26.0860,
                     total_females=190.34625,
-                    total_female_surplus=0.34625,
-                    female_percent_surplus=0.1819,
+                    total_female_surplus=50.34625,
+                    female_percent_surplus=26.4498,
                 ),
             ),
             (Genotype.HET, Genotype.HOM): GenotypeSurplus(
@@ -598,11 +602,11 @@ def surplus_2_mutations_sex_split():
                 percent_surplus=1.3077,
                 sex_surplus=SexSurplus(
                     total_males=25.33125,
-                    total_male_surplus=0.33125,
-                    male_percent_surplus=1.3077,
+                    total_male_surplus=15.33125,
+                    male_percent_surplus=60.5231,
                     total_females=25.33125,
-                    total_female_surplus=0.33125,
-                    female_percent_surplus=1.3077,
+                    total_female_surplus=-14.66875,
+                    female_percent_surplus=-57.9077,
                 ),
             ),
             (Genotype.HOM, Genotype.HOM): GenotypeSurplus(
@@ -622,8 +626,16 @@ def surplus_2_mutations_sex_split():
             ),
             (Genotype.WT, Genotype.HET): GenotypeSurplus(
                 total_n=49.2150,
-                total_n_surplus=1.2150,
-                percent_surplus=2.4688,
+                total_n_surplus=7.2150,
+                percent_surplus=14.6602,
+                sex_surplus=SexSurplus(
+                    total_males=24.6075,
+                    total_male_surplus=4.6075,
+                    male_percent_surplus=18.7240,
+                    total_females=24.6075,
+                    total_female_surplus=2.6075,
+                    female_percent_surplus=10.5964,
+                ),
             ),
             (Genotype.WT, Genotype.WT): GenotypeSurplus(
                 total_n=4.3425,
