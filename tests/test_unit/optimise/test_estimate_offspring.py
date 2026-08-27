@@ -17,6 +17,7 @@ def example_line_stats():
         line_name="Line-A",
         n_mutations=1,
         total_n_offspring=140,
+        total_n_genotyped_offspring=140,
         total_n_offspring_per_genotype={
             (Genotype.WT,): 110,
             (Genotype.HET,): 24,
@@ -33,6 +34,7 @@ def example_line_stats():
                 average_litter_size=8,
                 average_n_litters_per_pair=3,
                 total_n_offspring=72,
+                total_n_genotyped_offspring=72,
                 total_n_sexed_offspring=72,
                 proportion_male=0.75,
                 n_offspring_per_genotype={
@@ -50,6 +52,7 @@ def example_line_stats():
                 average_litter_size=13.6,
                 average_n_litters_per_pair=2.5,
                 total_n_offspring=68,
+                total_n_genotyped_offspring=68,
                 total_n_sexed_offspring=8,
                 proportion_male=0.25,
                 n_offspring_per_genotype={
