@@ -16,7 +16,7 @@ class BreedingSchemeStatistics:
     n_breeding_pairs: int = 0
     n_successful_matings: int = 0
     average_litter_size: float = 0
-    proportion_male: float = 0.5
+    proportion_male: float = 0
     average_n_litters_per_pair: float = 0
     total_n_offspring: int = 0
     total_n_genotyped_offspring: int = 0
@@ -42,7 +42,7 @@ class LineStatistics:
     )
     total_n_successful_matings: int = 0
     average_litter_size: float = 0
-    proportion_male: float = 0.5
+    proportion_male: float = 0
 
     stats_per_breeding_scheme: dict[
         BreedingScheme, BreedingSchemeStatistics
@@ -297,16 +297,8 @@ def calculate_historical_stats_for_line(
         line_stats.total_n_offspring / line_stats.total_n_successful_matings
     )
 
-    # Proportion of males only counts offspring with a recorded sex
     sex_counts = line_data["offspring_sex"].value_counts()
-    n_male_offspring = int(sex_counts.get("m", 0))
-    line_stats.total_n_sexed_offspring = n_male_offspring + int(
-        sex_counts.get("f", 0)
-    )
-    if line_stats.total_n_sexed_offspring > 0:
-        line_stats.proportion_male = (
-            n_male_offspring / line_stats.total_n_sexed_offspring
-        )
+    _calc_proportion_of_males(sex_counts, line_stats)
 
     return line_stats
 
@@ -397,16 +389,8 @@ def _historical_stats_for_breeding_scheme(
         stats.total_n_offspring / stats.n_successful_matings
     )
 
-    # Proportion of males only counts offspring with a recorded sex
     sex_counts = scheme_data["offspring_sex"].value_counts()
-    n_male_offspring = int(sex_counts.get("m", 0))
-    stats.total_n_sexed_offspring = n_male_offspring + int(
-        sex_counts.get("f", 0)
-    )
-    if stats.total_n_sexed_offspring > 0:
-        stats.proportion_male = (
-            n_male_offspring / stats.total_n_sexed_offspring
-        )
+    _calc_proportion_of_males(sex_counts, stats)
 
     stats.average_n_litters_per_pair = (
         stats.n_successful_matings / stats.n_breeding_pairs
@@ -428,3 +412,26 @@ def _historical_stats_for_breeding_scheme(
         proportion = n_offspring / stats.total_n_genotyped_offspring
         stats.proportion_offspring_per_genotype[genotype] = proportion
     return stats
+
+
+def _calc_proportion_of_males(sex_counts, summary_stats):
+    """Calculates the proportion of males with a recorded sex
+
+    Parameters
+    ----------
+    sex_counts : pD.Series
+        A table containing the number of male and female offspring from data
+        sorted by line name or breeding scheme
+    summary_stats : DataClass
+        A table containing the summary stats for either line name or breeding
+        scheme
+    """
+
+    n_male_offspring = int(sex_counts.get("m", 0))
+    summary_stats.total_n_sexed_offspring = n_male_offspring + int(
+        sex_counts.get("f", 0)
+    )
+    if summary_stats.total_n_sexed_offspring > 0:
+        summary_stats.proportion_male = (
+            n_male_offspring / summary_stats.total_n_sexed_offspring
+        )

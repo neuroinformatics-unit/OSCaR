@@ -72,18 +72,9 @@ def estimate_n_offspring_per_mating(
             breeding_scheme, line_stats, min_n_matings, default_litter_size
         )
 
-        # Use the measured proportion of males if there's enough offspring
-        # with a recorded sex - first for this breeding scheme, then for the
-        # whole line. Otherwise, keep the default even 50:50 split.
-        scheme_stats = line_stats.stats_per_breeding_scheme.get(
-            breeding_scheme, None
+        _expected_proportion_of_males(
+            breeding_scheme, line_stats, min_n_offspring, expected_offspring
         )
-        if (scheme_stats is not None) and (
-            scheme_stats.total_n_sexed_offspring >= min_n_offspring
-        ):
-            expected_offspring.proportion_male = scheme_stats.proportion_male
-        elif line_stats.total_n_sexed_offspring >= min_n_offspring:
-            expected_offspring.proportion_male = line_stats.proportion_male
 
         proportion_per_genotype = _expected_proportion_per_genotype(
             breeding_scheme, line_stats, min_n_offspring
@@ -180,9 +171,48 @@ def _expected_proportion_per_genotype(
     # If there's enough recorded offspring, use the observed proportion
     # from historical data
     if (scheme_stats is not None) and (
-        scheme_stats.total_n_offspring >= minimum_n_offspring
+        scheme_stats.total_n_genotyped_offspring >= minimum_n_offspring
     ):
         return scheme_stats.proportion_offspring_per_genotype
 
     else:
         return breeding_scheme.mendelian_ratio()
+
+
+def _expected_proportion_of_males(
+    breeding_scheme: BreedingScheme,
+    line_stats: LineStatistics,
+    min_n_offspring: int,
+    expected_offspring: ExpectedOffspring,
+) -> None:
+    """Update ExpectedOffsprng with the expected proportion of male offspring.
+
+    If enough historical data is available in line_stats, the measured
+    proportion will be used - first for the specific breeding scheme, then
+    for the whole line. Otherwise, defaults to 0.5.
+
+    Parameters
+    ----------
+    breeding_scheme: BreedingScheme
+        Breeding scheme to retrieve summary stats from
+    line_stats : LineStatistics
+        Summary line statistics from historical data
+    min_n_offspring: int
+        The minimum number of sexed offspring required to use the measured
+        proportion of males (from historical data). Otherwise, defaults
+        to 0.5.
+    expected_offspring : ExpectedOffspring
+        DataClass to set the expected proportion of males on
+    """
+
+    scheme_stats = line_stats.stats_per_breeding_scheme.get(
+        breeding_scheme, None
+    )
+    if (scheme_stats is not None) and (
+        scheme_stats.total_n_sexed_offspring >= min_n_offspring
+    ):
+        expected_offspring.proportion_male = scheme_stats.proportion_male
+    elif line_stats.total_n_sexed_offspring >= min_n_offspring:
+        expected_offspring.proportion_male = line_stats.proportion_male
+    else:
+        expected_offspring.proportion_male = 0.5
