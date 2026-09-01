@@ -54,7 +54,7 @@ You can include any number of genotypes here. Just make sure that your Genotype 
 
 ### Requesting a specific number of males and females
 
-If you require a certain number of each sex, input a tuple of `(n_males, n_females)` instead of a single number:
+If you require a certain number of each sex, input an int into the named tuple SexSplits `(n_males, n_females)` instead of a single number:
 
 ```python
 from oscar_colony.breeding_scheme import Genotype

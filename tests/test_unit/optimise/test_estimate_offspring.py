@@ -155,6 +155,48 @@ def example_line_stats():
             ),
         ),
         pytest.param(
+            150,
+            0,
+            {
+                BreedingScheme("wt", "hom"): ExpectedOffspring(
+                    total_n=10,
+                    proportion_male=0.5,
+                    n_per_genotype={(Genotype.HET,): 10.0},
+                ),
+                BreedingScheme("wt", "het"): ExpectedOffspring(
+                    total_n=8,
+                    proportion_male=0.5,
+                    n_per_genotype={
+                        (Genotype.WT,): pytest.approx(0.5 * 8),
+                        (Genotype.HET,): pytest.approx(0.5 * 8),
+                    },
+                ),
+                BreedingScheme("hom", "hom"): ExpectedOffspring(
+                    total_n=10,
+                    proportion_male=0.5,
+                    n_per_genotype={(Genotype.HOM,): 10.0},
+                ),
+                BreedingScheme("hom", "het"): ExpectedOffspring(
+                    total_n=10,
+                    proportion_male=0.5,
+                    n_per_genotype={(Genotype.HOM,): 5, (Genotype.HET,): 5},
+                ),
+                BreedingScheme("het", "het"): ExpectedOffspring(
+                    total_n=13.6,
+                    proportion_male=0.5,
+                    n_per_genotype={
+                        (Genotype.WT,): pytest.approx(0.25 * 13.6),
+                        (Genotype.HET,): pytest.approx(0.5 * 13.6),
+                        (Genotype.HOM,): pytest.approx(0.25 * 13.6),
+                    },
+                ),
+            },
+            id=(
+                "min_n_offspring=150. All should use mendelian ratios and "
+                "a proportion of males of 0.5"
+            ),
+        ),
+        pytest.param(
             0,
             6,
             {

@@ -72,8 +72,8 @@ def estimate_n_offspring_per_mating(
             breeding_scheme, line_stats, min_n_matings, default_litter_size
         )
 
-        _expected_proportion_of_males(
-            breeding_scheme, line_stats, min_n_offspring, expected_offspring
+        expected_offspring.proportion_male = _expected_proportion_of_males(
+            breeding_scheme, line_stats, min_n_offspring
         )
 
         proportion_per_genotype = _expected_proportion_per_genotype(
@@ -153,9 +153,9 @@ def _expected_proportion_per_genotype(
     line_stats : LineStatistics
         Summary line statistics from historical data
     minimum_n_offspring: int
-        The minimum number of offspring required for this breeding scheme to
-        use the genotyping ratio (measured from historical data). Otherwise,
-        defaults to theoretical mendelian ratio.
+        The minimum number of genotyped offspring required for this breeding
+        scheme to use the genotyping ratio (measured from historical data).
+        Otherwise, defaults to theoretical mendelian ratio.
 
     Returns
     -------
@@ -183,9 +183,8 @@ def _expected_proportion_of_males(
     breeding_scheme: BreedingScheme,
     line_stats: LineStatistics,
     min_n_offspring: int,
-    expected_offspring: ExpectedOffspring,
-) -> None:
-    """Update ExpectedOffspring with the expected proportion of male offspring.
+) -> float:
+    """Calculate the expected proportion of male offspring.
 
     If enough historical data is available in line_stats, the measured
     proportion will be used - first for the specific breeding scheme, then
@@ -201,8 +200,11 @@ def _expected_proportion_of_males(
         The minimum number of sexed offspring required to use the measured
         proportion of males (from historical data). Otherwise, defaults
         to 0.5.
-    expected_offspring : ExpectedOffspring
-        Class to set the expected proportion of males on
+
+    Returns
+    -------
+    float
+        Expected proportion of the litter that is male
     """
 
     scheme_stats = line_stats.stats_per_breeding_scheme.get(
@@ -211,8 +213,8 @@ def _expected_proportion_of_males(
     if (scheme_stats is not None) and (
         scheme_stats.total_n_sexed_offspring >= min_n_offspring
     ):
-        expected_offspring.proportion_male = scheme_stats.proportion_male
+        return scheme_stats.proportion_male
     elif line_stats.total_n_sexed_offspring >= min_n_offspring:
-        expected_offspring.proportion_male = line_stats.proportion_male
+        return line_stats.proportion_male
     else:
-        expected_offspring.proportion_male = 0.5
+        return 0.5

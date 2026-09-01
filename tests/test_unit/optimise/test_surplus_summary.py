@@ -1,5 +1,3 @@
-import logging
-
 import pandas as pd
 import pytest
 
@@ -61,41 +59,62 @@ def test_create_surplus_summary(
     )
 
 
-def test_create_surplus_summary_sex_split(
+def test_invalid_surplus_summary(
     n_matings_1_mutation_sex_split,
     offspring_per_scheme_1_mutation_sex_split,
-    caplog,
 ):
-    """Test that a warning is logged for each genotype where the plan doesn't
-    reach the required number - in total, and of males / females.
+    """Test that an error is raised for each genotype where the plan doesn't
+    reach the required number - in total, and of males / females. Including
+    genotypes that can't be produced by any of the breeding schemes (wt here).
     """
 
     sex_split = SexSplit(n_males=20, n_females=20)
 
-    with caplog.at_level(logging.WARNING):
+    with pytest.raises(ValueError) as error:
         create_surplus_summary(
-            required_n_per_genotype={(Genotype.HET,): sex_split},
+            required_n_per_genotype={
+                (Genotype.WT,): 100,
+                (Genotype.HET,): sex_split,
+            },
             n_matings_per_scheme=n_matings_1_mutation_sex_split,
             offspring_per_scheme=offspring_per_scheme_1_mutation_sex_split,
         )
 
     expected_messages = [
+        "wt: plan is 100.0 individuals short of the required number",
         "het: plan is 10.0 individuals short of the required number",
         "het: plan is 2.0 male individuals short of the required number",
         "het: plan is 8.0 female individuals short of the required number",
     ]
     for message in expected_messages:
-        assert message in caplog.text
+        assert message in str(error.value)
 
 
-def test_create_genotype_df(surplus_2_mutations_sex_split):
-    """Test creation of a dataframe from SurplusSummary.surplus_per_genotype"""
+@pytest.mark.parametrize(
+    "surplus_summary, expected_csv",
+    [
+        pytest.param(
+            "surplus_2_mutations",
+            "converted-surplus-per-genotype.csv",
+            id="no sex split",
+        ),
+        pytest.param(
+            "surplus_2_mutations_sex_split",
+            "converted-surplus-per-genotype-sex-split.csv",
+            id="sex split",
+        ),
+    ],
+)
+def test_create_genotype_df(surplus_summary, expected_csv, request):
+    """Test creation of a dataframe from SurplusSummary.surplus_per_genotype.
 
-    genotype_df = surplus_2_mutations_sex_split.create_genotype_df(
+    The male / female columns should only be present when a sex split was
+    required.
+    """
+
+    genotype_df = request.getfixturevalue(surplus_summary).create_genotype_df(
         decimal_places=2
     )
-    expected_df = pd.read_csv(
-        pooch_data_path("converted-surplus-per-genotype.csv")
-    )
+    expected_df = pd.read_csv(pooch_data_path(expected_csv))
 
     pd.testing.assert_frame_equal(genotype_df, expected_df)

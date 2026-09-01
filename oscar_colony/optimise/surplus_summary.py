@@ -1,4 +1,3 @@
-import logging
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
@@ -9,8 +8,6 @@ from oscar_colony.breeding_scheme import (
     Genotype,
 )
 from oscar_colony.optimise.estimate_offspring import ExpectedOffspring
-
-logger = logging.getLogger(__name__)
 
 
 class SexSplit(NamedTuple):
@@ -50,7 +47,7 @@ class SexSurplus:
 class GenotypeSurplus:
     """Summary of surplus for a single genotype.
 
-    sex_surplus is None where a split of (n_males, n_females) wasn't
+    sex_surplus is None where a SexSplit of (n_males, n_females) wasn't
     requested for this genotype.
     """
 
@@ -64,16 +61,17 @@ class GenotypeSurplus:
         number to the total.
         """
         self.total_n_surplus = self.total_n - required_n
-        self.percent_surplus = (self.total_n_surplus / self.total_n) * 100
+        if self.total_n > 0:
+            self.percent_surplus = (self.total_n_surplus / self.total_n) * 100
 
 
 @dataclass
 class SurplusSummary:
     """Summary of surplus across all genotypes.
 
-    sex_surplus is None when a named tuple isn't requested
-    (n_males, n_females). Covers cases in which there is a mix of sex-split and
-    non-sex-split genotypes.
+    sex_surplus is None when no genotypes requested a SexSplit of
+    (n_males, n_females). Covers cases in which there is a mix of sex-split
+    and non-sex-split genotypes.
     """
 
     total_n: float = 0
@@ -96,7 +94,7 @@ class SurplusSummary:
         'Percent Female Surplus'
 
         The male / female columns are omitted where no genotype was
-        requested as a split of (n_males, n_females).
+        requested as a SexSplit of (n_males, n_females).
 
         Parameters
         ----------
@@ -166,9 +164,9 @@ def create_surplus_summary(
 
     Parameters
     ----------
-    required_n_per_genotype : dict
-        Required number of individuals of each genotype. Each value is
-        either an int (where male / female doesn't matter), or a tuple of
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]
+        Required number of individuals per genotype. Each value is either an
+        int (where male / female isn't requested), or a SexSplit of
         (n_males, n_females).
     n_matings_per_scheme : dict[BreedingScheme, int]
         Optimal number of matings per breeding scheme
@@ -180,6 +178,12 @@ def create_surplus_summary(
     -------
     SurplusSummary
         Summary of total and surplus numbers
+
+    Raises
+    ------
+    ValueError
+        If the plan doesn't reach the required number of individuals for any
+        genotype - in total, or of males / females
     """
     surplus_summary = SurplusSummary()
     surplus_per_genotype = surplus_summary.surplus_per_genotype
@@ -190,11 +194,11 @@ def create_surplus_summary(
     n_females_required = 0
     sex_requested = False
     for required_n in required_n_per_genotype.values():
-        if isinstance(required_n, tuple):
+        if isinstance(required_n, SexSplit):
             sex_requested = True
-            n_males_required += required_n[0]
-            n_females_required += required_n[1]
-            total_required += sum(required_n)
+            n_males_required += required_n.n_males
+            n_females_required += required_n.n_females
+            total_required += required_n.n_males + required_n.n_females
         else:
             total_required += required_n
 
@@ -210,7 +214,7 @@ def create_surplus_summary(
         for genotype, n_per_mating in n_per_genotype.items():
             if genotype not in surplus_per_genotype:
                 sex_split = isinstance(
-                    required_n_per_genotype.get(genotype), tuple
+                    required_n_per_genotype.get(genotype), SexSplit
                 )
                 surplus_per_genotype[genotype] = GenotypeSurplus(
                     sex_surplus=SexSurplus() if sex_split else None
@@ -230,14 +234,25 @@ def create_surplus_summary(
     # Calculate total surplus
     surplus_summary.total_n_surplus = surplus_summary.total_n - total_required
 
+    # Required genotypes that can't be produced by any of the chosen schemes
+    # still need a summary, so their shortfall is visible
+    for genotype, required_n in required_n_per_genotype.items():
+        if genotype not in surplus_per_genotype:
+            surplus_per_genotype[genotype] = GenotypeSurplus(
+                sex_surplus=SexSurplus()
+                if isinstance(required_n, SexSplit)
+                else None
+            )
+
     for genotype, surplus in surplus_per_genotype.items():
         required_n = required_n_per_genotype.get(genotype, 0)
         sex_surplus = surplus.sex_surplus
-        if isinstance(required_n, tuple):
-            required_males, required_females = required_n
-            required_n = required_males + required_females
+        if isinstance(required_n, SexSplit):
             if sex_surplus is not None:
-                sex_surplus.set_surplus(required_males, required_females)
+                sex_surplus.set_surplus(
+                    required_n.n_males, required_n.n_females
+                )
+            required_n = required_n.n_males + required_n.n_females
 
         surplus.set_surplus(required_n)
 
@@ -256,8 +271,10 @@ def create_surplus_summary(
         summary_sex_surplus.set_surplus(n_males_required, n_females_required)
         surplus_summary.sex_surplus = summary_sex_surplus
 
-    # Warn where the plan doesn't reach the required numbers
-    for genotype, surplus in surplus_per_genotype.items():
+    # Error where the plan doesn't reach the required numbers
+    error_messages = []
+    for genotype in required_n_per_genotype:
+        surplus = surplus_per_genotype[genotype]
         surplus_per_label = [("", surplus.total_n_surplus)]
         if surplus.sex_surplus is not None:
             surplus_per_label += [
@@ -267,10 +284,13 @@ def create_surplus_summary(
 
         for label, n_surplus in surplus_per_label:
             if n_surplus < 0:
-                logger.warning(
+                error_messages.append(
                     f"{Genotype.to_string(genotype)}: plan is "
                     f"{abs(n_surplus):.1f} {label}individuals short of the "
                     "required number"
                 )
+
+    if error_messages:
+        raise ValueError("\n".join(error_messages))
 
     return surplus_summary
