@@ -11,13 +11,14 @@ from oscar_colony.optimise.estimate_offspring import (
     estimate_n_offspring_per_mating,
 )
 from oscar_colony.optimise.surplus_summary import (
+    SexSplit,
     SurplusSummary,
     create_surplus_summary,
 )
 
 
 def calculate_optimal_scheme(
-    required_n_per_genotype: dict[tuple[Genotype, ...], int],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     line_stats: LineStatistics,
     default_litter_size: int,
     min_n_matings: int = 3,
@@ -28,11 +29,13 @@ def calculate_optimal_scheme(
 
     Parameters
     ----------
-    required_n_per_genotype : dict[tuple[Genotype, ...], int]
-        Required number of individuals per genotype
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]
+        Required number of individuals per genotype. Each value is either an
+        int (where male / female isn't requested), or a SexSplit of
+        (n_males, n_females).
     line_stats : LineStatistics
         Statistics from historical data for the line
-    default_litter_size: float
+    default_litter_size: int
         The default value used for average litter size if there isn't enough
         historical data for the line. This should usually be set to the average
         litter size across all available data for all lines.
@@ -44,8 +47,10 @@ def calculate_optimal_scheme(
         default_litter_size is used.
     min_n_offspring: int, optional
         Minimum number of offspring required from a breeding scheme to use
-        the measured proportion of each genotype from line_stats. If not met,
-        the theoretical mendelian ratio will be used instead.
+        its measured proportion of each genotype / of males from line_stats.
+        If not met, the mendelian ratio is used for all genotype proportions,
+        and the proportion of males is set as the average across the whole line
+        or, if the line also doesn't meet min_n_offspring, as 0.5.
 
     Returns
     -------
@@ -75,7 +80,7 @@ def calculate_optimal_scheme(
 
 
 def _optimise_n_matings(
-    required_n_per_genotype: dict[tuple[Genotype, ...], int],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
 ) -> dict[BreedingScheme, int]:
     """Calculate the optimal number of matings of each breeding scheme to
@@ -90,9 +95,20 @@ def _optimise_n_matings(
     total_surplus =
       sum(litter_size_per_scheme * n_matings_per_scheme) - total_n_required
 
-    There is one constraint per required offspring genotype of form:
+    There is one constraint per required offspring genotype / sex combination.
+    For example, if the required number of animals for a specific genotype
+    is given as an integer (i.e. the user doesn't care if they are male or
+    female), this creates one constraint of form:
     sum(n_of_genotype_offspring_per_mating * n_matings_per_scheme)
       >= required_n_for_genotype
+
+    If the required number is given as a SexSplit of (n_males, n_females),
+    then there will be two constraints for this genotype of form:
+    sum(n_of_genotype_offspring_per_mating * proportion_male *
+    n_matings_per_scheme) >= required_n_males_for_genotype
+
+    sum(n_of_genotype_offspring_per_mating * proportion_female *
+    n_matings_per_scheme) >= required_n_females_for_genotype
 
     Note: the solution given isn't guaranteed to be unique. There may be
     multiple combinations of different breeding schemes that result in the
@@ -100,8 +116,10 @@ def _optimise_n_matings(
 
     Parameters
     ----------
-    required_n_per_genotype : dict[tuple[Genotype, ...], int]
-        The required number of individuals per genotype
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]
+        The required number of individuals per genotype. Each value is
+        either an int (where male / female doesn't matter), or a SexSplit of
+        (n_males, n_females).
     offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
         The estimated number of offspring produced per mating of each
         breeding scheme
@@ -115,7 +133,8 @@ def _optimise_n_matings(
     Raises
     ------
     ValueError
-        If the optimisation problem was infeasible, and couldn't be optimised.
+        If the optimisation problem was infeasible, and couldn't be
+        optimised or a required number isn't an int or (n_males, n_females).
     """
 
     # Extract sorted names of breeding schemes / required genotypes as a list,
@@ -136,18 +155,39 @@ def _optimise_n_matings(
     # Coefficients and constants of our constraints (see docstring for
     # description - coefficients come from the left side of the equation,
     # constants from the right).
-    # Both will be a list of length == len(required_n_per_genotype). With
-    # each item being:
+    # Both will be a list with length == number of required sex / genotype
+    # combinations - so, one item per genotype that used an int value (no sex
+    # specified), and two items per genotype that used a SexSplit of
+    # (n_males, n_females).
+    # With each item being:
     # - For constraint_coefficients, a list of the expected number of offspring
-    #   of that genotype per mating for all breeding schemes
+    #   of that genotype (and sex if specified) per mating for all breeding
+    #   schemes
     # - For constraint_lower_limits, the required number of individuals of that
-    #   genotype
+    #   genotype (and sex if specified)
+
     constraint_coefficients: list[list[float]] = []
     constraint_lower_limits = []
+    constraint_genotypes: list[tuple[tuple[Genotype, ...], str | None]] = []
 
     for genotype in required_genotypes:
-        constraint_coefficients.append([])
-        constraint_lower_limits.append(required_n_per_genotype[genotype])
+        required_n = required_n_per_genotype[genotype]
+        if isinstance(required_n, SexSplit):
+            constraint_coefficients += [[], []]
+            constraint_lower_limits += [
+                required_n.n_males,
+                required_n.n_females,
+            ]
+            constraint_genotypes += [(genotype, "m"), (genotype, "f")]
+        elif isinstance(required_n, int):
+            constraint_coefficients.append([])
+            constraint_lower_limits.append(required_n)
+            constraint_genotypes.append((genotype, None))
+        else:
+            raise ValueError(
+                f"Required number for {Genotype.to_string(genotype)} must be "
+                "an int, or a SexSplit of (n_males, n_females)"
+            )
 
     for breeding_scheme in breeding_schemes:
         expected_offspring = offspring_per_scheme[breeding_scheme]
@@ -156,12 +196,18 @@ def _optimise_n_matings(
         )
 
         n_per_genotype = expected_offspring.n_per_genotype
+        proportion_male = expected_offspring.proportion_male
 
-        for i, genotype in enumerate(required_genotypes):
-            if genotype in n_per_genotype:
-                constraint_coefficients[i].append(n_per_genotype[genotype])
-            else:
-                constraint_coefficients[i].append(0)
+        proportion_of_sex = {
+            "m": proportion_male,
+            "f": 1 - proportion_male,
+            None: 1,  # All animals are included when no sex is specified
+        }
+
+        for i, (genotype, sex) in enumerate(constraint_genotypes):
+            constraint_coefficients[i].append(
+                n_per_genotype.get(genotype, 0) * proportion_of_sex[sex]
+            )
 
     constraints = LinearConstraint(
         A=constraint_coefficients,

@@ -17,12 +17,15 @@ def example_line_stats():
         line_name="Line-A",
         n_mutations=1,
         total_n_offspring=140,
+        total_n_genotyped_offspring=140,
         total_n_offspring_per_genotype={
             (Genotype.WT,): 110,
             (Genotype.HET,): 24,
             (Genotype.HOM,): 6,
         },
         total_n_successful_matings=14,
+        total_n_sexed_offspring=140,
+        proportion_male=0.6,
         average_litter_size=10,
         stats_per_breeding_scheme={
             BreedingScheme("wt", "het"): BreedingSchemeStatistics(
@@ -31,6 +34,9 @@ def example_line_stats():
                 average_litter_size=8,
                 average_n_litters_per_pair=3,
                 total_n_offspring=72,
+                total_n_genotyped_offspring=72,
+                total_n_sexed_offspring=72,
+                proportion_male=0.75,
                 n_offspring_per_genotype={
                     (Genotype.WT,): 58,
                     (Genotype.HET,): 14,
@@ -46,6 +52,9 @@ def example_line_stats():
                 average_litter_size=13.6,
                 average_n_litters_per_pair=2.5,
                 total_n_offspring=68,
+                total_n_genotyped_offspring=68,
+                total_n_sexed_offspring=8,
+                proportion_male=0.25,
                 n_offspring_per_genotype={
                     (Genotype.WT,): 52,
                     (Genotype.HET,): 10,
@@ -69,24 +78,31 @@ def example_line_stats():
             1,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
-                    total_n=10, n_per_genotype={(Genotype.HET,): 10.0}
+                    total_n=10,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HET,): 10.0},
                 ),
                 BreedingScheme("wt", "het"): ExpectedOffspring(
                     total_n=8,
+                    proportion_male=0.75,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((58 / 72) * 8),
                         (Genotype.HET,): pytest.approx((14 / 72) * 8),
                     },
                 ),
                 BreedingScheme("hom", "hom"): ExpectedOffspring(
-                    total_n=10, n_per_genotype={(Genotype.HOM,): 10.0}
+                    total_n=10,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HOM,): 10.0},
                 ),
                 BreedingScheme("hom", "het"): ExpectedOffspring(
                     total_n=10,
+                    proportion_male=0.6,
                     n_per_genotype={(Genotype.HOM,): 5, (Genotype.HET,): 5},
                 ),
                 BreedingScheme("het", "het"): ExpectedOffspring(
                     total_n=13.6,
+                    proportion_male=0.25,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((52 / 68) * 13.6),
                         (Genotype.HET,): pytest.approx((10 / 68) * 13.6),
@@ -101,24 +117,31 @@ def example_line_stats():
             0,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
-                    total_n=10, n_per_genotype={(Genotype.HET,): 10.0}
+                    total_n=10,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HET,): 10.0},
                 ),
                 BreedingScheme("wt", "het"): ExpectedOffspring(
                     total_n=8,
+                    proportion_male=0.75,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((58 / 72) * 8),
                         (Genotype.HET,): pytest.approx((14 / 72) * 8),
                     },
                 ),
                 BreedingScheme("hom", "hom"): ExpectedOffspring(
-                    total_n=10, n_per_genotype={(Genotype.HOM,): 10.0}
+                    total_n=10,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HOM,): 10.0},
                 ),
                 BreedingScheme("hom", "het"): ExpectedOffspring(
                     total_n=10,
+                    proportion_male=0.6,
                     n_per_genotype={(Genotype.HOM,): 5, (Genotype.HET,): 5},
                 ),
                 BreedingScheme("het", "het"): ExpectedOffspring(
                     total_n=13.6,
+                    proportion_male=0.6,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx(0.25 * 13.6),
                         (Genotype.HET,): pytest.approx(0.5 * 13.6),
@@ -126,31 +149,83 @@ def example_line_stats():
                     },
                 ),
             },
-            id="min_n_offspring=70. hetxhet should use mendelian ratios now",
+            id=(
+                "min_n_offspring=70. hetxhet should use mendelian ratios "
+                "and the line proportion of males now"
+            ),
+        ),
+        pytest.param(
+            150,
+            0,
+            {
+                BreedingScheme("wt", "hom"): ExpectedOffspring(
+                    total_n=10,
+                    proportion_male=0.5,
+                    n_per_genotype={(Genotype.HET,): 10.0},
+                ),
+                BreedingScheme("wt", "het"): ExpectedOffspring(
+                    total_n=8,
+                    proportion_male=0.5,
+                    n_per_genotype={
+                        (Genotype.WT,): pytest.approx(0.5 * 8),
+                        (Genotype.HET,): pytest.approx(0.5 * 8),
+                    },
+                ),
+                BreedingScheme("hom", "hom"): ExpectedOffspring(
+                    total_n=10,
+                    proportion_male=0.5,
+                    n_per_genotype={(Genotype.HOM,): 10.0},
+                ),
+                BreedingScheme("hom", "het"): ExpectedOffspring(
+                    total_n=10,
+                    proportion_male=0.5,
+                    n_per_genotype={(Genotype.HOM,): 5, (Genotype.HET,): 5},
+                ),
+                BreedingScheme("het", "het"): ExpectedOffspring(
+                    total_n=13.6,
+                    proportion_male=0.5,
+                    n_per_genotype={
+                        (Genotype.WT,): pytest.approx(0.25 * 13.6),
+                        (Genotype.HET,): pytest.approx(0.5 * 13.6),
+                        (Genotype.HOM,): pytest.approx(0.25 * 13.6),
+                    },
+                ),
+            },
+            id=(
+                "min_n_offspring=150. All should use mendelian ratios and "
+                "a proportion of males of 0.5"
+            ),
         ),
         pytest.param(
             0,
             6,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
-                    total_n=10, n_per_genotype={(Genotype.HET,): 10.0}
+                    total_n=10,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HET,): 10.0},
                 ),
                 BreedingScheme("wt", "het"): ExpectedOffspring(
                     total_n=8,
+                    proportion_male=0.75,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((58 / 72) * 8),
                         (Genotype.HET,): pytest.approx((14 / 72) * 8),
                     },
                 ),
                 BreedingScheme("hom", "hom"): ExpectedOffspring(
-                    total_n=10, n_per_genotype={(Genotype.HOM,): 10.0}
+                    total_n=10,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HOM,): 10.0},
                 ),
                 BreedingScheme("hom", "het"): ExpectedOffspring(
                     total_n=10,
+                    proportion_male=0.6,
                     n_per_genotype={(Genotype.HOM,): 5, (Genotype.HET,): 5},
                 ),
                 BreedingScheme("het", "het"): ExpectedOffspring(
                     total_n=10.0,
+                    proportion_male=0.25,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((52 / 68) * 10.0),
                         (Genotype.HET,): pytest.approx((10 / 68) * 10.0),
@@ -165,24 +240,31 @@ def example_line_stats():
             20,
             {
                 BreedingScheme("wt", "hom"): ExpectedOffspring(
-                    total_n=4, n_per_genotype={(Genotype.HET,): 4.0}
+                    total_n=4,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HET,): 4.0},
                 ),
                 BreedingScheme("wt", "het"): ExpectedOffspring(
                     total_n=4,
+                    proportion_male=0.75,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((58 / 72) * 4),
                         (Genotype.HET,): pytest.approx((14 / 72) * 4),
                     },
                 ),
                 BreedingScheme("hom", "hom"): ExpectedOffspring(
-                    total_n=4, n_per_genotype={(Genotype.HOM,): 4.0}
+                    total_n=4,
+                    proportion_male=0.6,
+                    n_per_genotype={(Genotype.HOM,): 4.0},
                 ),
                 BreedingScheme("hom", "het"): ExpectedOffspring(
                     total_n=4,
+                    proportion_male=0.6,
                     n_per_genotype={(Genotype.HOM,): 2, (Genotype.HET,): 2},
                 ),
                 BreedingScheme("het", "het"): ExpectedOffspring(
                     total_n=4.0,
+                    proportion_male=0.25,
                     n_per_genotype={
                         (Genotype.WT,): pytest.approx((52 / 68) * 4.0),
                         (Genotype.HET,): pytest.approx((10 / 68) * 4.0),
