@@ -154,6 +154,22 @@ class SurplusSummary:
         return genotype_df
 
 
+def _initialise_genotype_surplus(
+    genotype: tuple[Genotype, ...],
+    surplus_per_genotype: dict[tuple[Genotype, ...], GenotypeSurplus],
+    required_n: int | SexSplit | None,
+) -> None:
+    """Add a GenotypeSurplus for the genotype when SexSplit requested, if not
+    already present.
+    """
+    if genotype not in surplus_per_genotype:
+        surplus_per_genotype[genotype] = GenotypeSurplus(
+            sex_surplus=SexSurplus()
+            if isinstance(required_n, SexSplit)
+            else None
+        )
+
+
 def create_surplus_summary(
     required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     n_matings_per_scheme: dict[BreedingScheme, int],
@@ -212,13 +228,11 @@ def create_surplus_summary(
 
         n_per_genotype = expected_offspring.n_per_genotype
         for genotype, n_per_mating in n_per_genotype.items():
-            if genotype not in surplus_per_genotype:
-                sex_split = isinstance(
-                    required_n_per_genotype.get(genotype), SexSplit
-                )
-                surplus_per_genotype[genotype] = GenotypeSurplus(
-                    sex_surplus=SexSurplus() if sex_split else None
-                )
+            _initialise_genotype_surplus(
+                genotype,
+                surplus_per_genotype,
+                required_n_per_genotype.get(genotype),
+            )
 
             n_of_genotype = n_per_mating * n_matings
             genotype_surplus = surplus_per_genotype[genotype]
@@ -237,12 +251,9 @@ def create_surplus_summary(
     # Required genotypes that can't be produced by any of the chosen schemes
     # still need a summary, so their shortfall is visible
     for genotype, required_n in required_n_per_genotype.items():
-        if genotype not in surplus_per_genotype:
-            surplus_per_genotype[genotype] = GenotypeSurplus(
-                sex_surplus=SexSurplus()
-                if isinstance(required_n, SexSplit)
-                else None
-            )
+        _initialise_genotype_surplus(
+            genotype, surplus_per_genotype, required_n
+        )
 
     for genotype, surplus in surplus_per_genotype.items():
         required_n = required_n_per_genotype.get(genotype, 0)
