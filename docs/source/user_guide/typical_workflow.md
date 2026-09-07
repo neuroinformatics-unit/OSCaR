@@ -58,12 +58,13 @@ If you require a certain number of each sex, provide two integers as a named tup
 
 ```python
 from oscar_colony.breeding_scheme import Genotype
+from oscar_colony.optimise.surplus_summary import SexSplit
 
 # Here we are asking for 5 male and 10 female of genotype wt_het, 33 male and 40 female of het_het and
 # 52 unspecified animals of hom_hom
 required_n_per_genotype = {
-    (Genotype.WT, Genotype.HET): (5, 10),
-    (Genotype.HET, Genotype.HET): (33, 40),
+    (Genotype.WT, Genotype.HET): SexSplit(n_males=5, n_females=10),
+    (Genotype.HET, Genotype.HET): SexSplit(n_males=33, n_females=40),
     (Genotype.HOM, Genotype.HOM): 52
 }
 ```
