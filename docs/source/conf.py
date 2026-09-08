@@ -8,7 +8,6 @@
 
 import os
 import sys
-
 from importlib.metadata import version as get_version
 
 # Used when building API docs, put the dependencies
