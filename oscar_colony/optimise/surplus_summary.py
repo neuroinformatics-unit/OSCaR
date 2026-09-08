@@ -159,9 +159,7 @@ def _initialise_genotype_surplus(
     surplus_per_genotype: dict[tuple[Genotype, ...], GenotypeSurplus],
     required_n: int | SexSplit | None,
 ) -> None:
-    """Add a GenotypeSurplus for the genotype when SexSplit requested, if not
-    already present.
-    """
+    """Add a GenotypeSurplus for the genotype (if not already present), with SexSurplus if required"""
     if genotype not in surplus_per_genotype:
         surplus_per_genotype[genotype] = GenotypeSurplus(
             sex_surplus=SexSurplus()
