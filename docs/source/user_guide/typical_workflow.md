@@ -17,8 +17,8 @@ Next, we calculate summary statistics based on this standardised data.
 from oscar_colony.historical_stats import calculate_historical_stats_for_line
 
 line_stats = calculate_historical_stats_for_line(
-    standard_df, # a pandas DataFrame in OSCaR's standard csv format
-    line_name="MY-LINE"  # The name of the line we want to process
+    standard_df,  # a pandas DataFrame in OSCaR's standard csv format
+    line_name="MY-LINE",  # The name of the line we want to process
 )
 ```
 The {func}`~oscar_colony.historical_stats.calculate_historical_stats_for_line` function produces a {class}`~oscar_colony.historical_stats.LineStatistics` object, with summary statistics for the specified line.
@@ -44,7 +44,7 @@ from oscar_colony.breeding_scheme import Genotype
 required_n_per_genotype = {
     (Genotype.WT, Genotype.HET): 20,
     (Genotype.HET, Genotype.HET): 53,
-    (Genotype.HOM, Genotype.HOM): 27
+    (Genotype.HOM, Genotype.HOM): 27,
 }
 ```
 You can include any number of genotypes here. Just make sure that your Genotype tuples:
@@ -77,12 +77,12 @@ The expected proportion of males comes from the historical stats for the line or
 Now we have defined the animals we need, OSCaR can calculate an optimal combination of breeding schemes based on the historical stats for that line.
 
 ```python
-from oscar_colony.optimise.optimal_scheme_calculator import calculate_optimal_scheme
+from oscar_colony.optimise.optimal_scheme_calculator import (
+    calculate_optimal_scheme,
+)
 
 breeding_schemes, surplus = calculate_optimal_scheme(
-    required_n_per_genotype,
-    line_stats=line_stats,
-    default_litter_size=6
+    required_n_per_genotype, line_stats=line_stats, default_litter_size=6
 )
 ```
 Make sure you set the `default_litter_size` to an appropriate value. For example, you could set it to the average litter size across all your institution's data.
