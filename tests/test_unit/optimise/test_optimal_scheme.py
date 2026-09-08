@@ -80,6 +80,12 @@ def test_calculate_optimal_scheme(
             "n_matings_2_mutations",
             id="2 mutations",
         ),
+        pytest.param(
+            "required_n_per_genotype_1_mutation_sex_split",
+            "offspring_per_scheme_1_mutation_sex_split",
+            "n_matings_1_mutation_sex_split",
+            id="1 mutation - sex split",
+        ),
     ],
 )
 def test_optimise_n_matings(
