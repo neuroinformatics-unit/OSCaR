@@ -12,12 +12,14 @@ def calculate_breeding_timeline(
     target_date: date | None = None,
     timings: BreedingTimings = BreedingTimings(),
 ) -> tuple[date, date]:
-    days_to_ready = timedelta(days=timings.gestation_days + target_age_days)
+    calculated_days_deadline = timedelta(
+        days=timings.gestation_days + target_age_days
+    )
     if target_date is None:
-        target_date = date.today() + days_to_ready
+        target_date = date.today() + calculated_days_deadline
 
-    pairing_date = target_date - days_to_ready
-    if pairing_date < date.today():
+    breeding_start_date = target_date - calculated_days_deadline
+    if breeding_start_date < date.today():
         raise ValueError(f"Can't be ready by {target_date}")
 
-    return pairing_date, target_date
+    return breeding_start_date, target_date
