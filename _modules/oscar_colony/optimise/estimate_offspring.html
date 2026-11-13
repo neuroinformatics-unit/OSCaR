@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -26,22 +25,23 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=6a604523" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../../../_static/documentation_options.js?v=a83ce22a"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/oscar_colony/optimise/estimate_offspring';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -49,6 +49,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -98,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -118,7 +119,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.9</p>
+    <p class="title logo__title">oscar-colony v0.0.10</p>
   
 </a></div>
     
@@ -163,7 +164,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -174,15 +175,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -208,7 +209,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,7 +230,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
@@ -278,15 +279,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -341,7 +342,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     
@@ -379,9 +380,10 @@
 <a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.estimate_offspring.ExpectedOffspring.html#oscar_colony.optimise.estimate_offspring.ExpectedOffspring">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExpectedOffspring</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summary of expected average number of offspring from a single mating&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Summary of expected average number of offspring from a single mating"""</span>
 
     <span class="n">total_n</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># litter size</span>
+    <span class="n">proportion_male</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># proportion of the litter that is male</span>
 
     <span class="n">n_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span>
@@ -397,37 +399,37 @@
     <span class="n">min_n_matings</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
     <span class="n">min_n_offspring</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BreedingScheme</span><span class="p">,</span> <span class="n">ExpectedOffspring</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;For all possible breeding schemes for the given line, estimate the</span>
+<span class="w">    </span><span class="sd">"""For all possible breeding schemes for the given line, estimate the</span>
 <span class="sd">    number of offspring produced per mating.</span>
 
 <span class="sd">    Calculates the total number across all genotypes == the litter size. As</span>
-<span class="sd">    well as the expected number per offspring genotype.</span>
+<span class="sd">    well as the expected number per offspring genotype, and the proportion</span>
+<span class="sd">    of the litter expected to be male.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    line_stats : LineStatistics</span>
 <span class="sd">        Statistics from historical data for the line</span>
-<span class="sd">    default_litter_size: float</span>
-<span class="sd">        The default value used for average litter size if there isn&#39;t enough</span>
+<span class="sd">    default_litter_size: int</span>
+<span class="sd">        The default value used for average litter size if there isn't enough</span>
 <span class="sd">        historical data for the line. This should usually be set to the average</span>
 <span class="sd">        litter size across all available data for all lines.</span>
 <span class="sd">    min_n_matings : int, optional</span>
 <span class="sd">        Minimum number of successful matings required to use the measured</span>
-<span class="sd">        litter size from line_stats. If there aren&#39;t enough matings for a</span>
+<span class="sd">        litter size from line_stats. If there aren't enough matings for a</span>
 <span class="sd">        specific breeding scheme, the average of the whole line will be used</span>
-<span class="sd">        instead. If the whole line also doesn&#39;t have enough matings, then</span>
+<span class="sd">        instead. If the whole line also doesn't have enough matings, then</span>
 <span class="sd">        default_litter_size is used.</span>
 <span class="sd">    min_n_offspring: int, optional</span>
 <span class="sd">        Minimum number of offspring required from a breeding scheme to use</span>
-<span class="sd">        the measured proportion of each genotype from line_stats. If not met,</span>
-<span class="sd">        the theoretical mendelian ratio will be used instead.</span>
+<span class="sd">        its measured proportion of each genotype / of males from line_stats.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict[BreedingScheme, ExpectedOffspring]</span>
 <span class="sd">        Returns a dict mapping each breeding scheme to the expected number</span>
 <span class="sd">        of offspring it will produce per mating.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># The breeding schemes listed in line_stats.stats_per_breeding_scheme are</span>
     <span class="c1"># sparse i.e. only breeding schemes that appeared in the historical data</span>
@@ -439,17 +441,20 @@
     <span class="n">expected_offspring_per_scheme</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">breeding_scheme</span> <span class="ow">in</span> <span class="n">breeding_schemes</span><span class="p">:</span>
         <span class="n">expected_offspring</span> <span class="o">=</span> <span class="n">ExpectedOffspring</span><span class="p">()</span>
-        <span class="n">litter_size</span> <span class="o">=</span> <span class="n">_expected_litter_size</span><span class="p">(</span>
+        <span class="n">expected_offspring</span><span class="o">.</span><span class="n">total_n</span> <span class="o">=</span> <span class="n">_expected_litter_size</span><span class="p">(</span>
             <span class="n">breeding_scheme</span><span class="p">,</span> <span class="n">line_stats</span><span class="p">,</span> <span class="n">min_n_matings</span><span class="p">,</span> <span class="n">default_litter_size</span>
         <span class="p">)</span>
-        <span class="n">expected_offspring</span><span class="o">.</span><span class="n">total_n</span> <span class="o">=</span> <span class="n">litter_size</span>
+
+        <span class="n">expected_offspring</span><span class="o">.</span><span class="n">proportion_male</span> <span class="o">=</span> <span class="n">_expected_proportion_of_males</span><span class="p">(</span>
+            <span class="n">breeding_scheme</span><span class="p">,</span> <span class="n">line_stats</span><span class="p">,</span> <span class="n">min_n_offspring</span>
+        <span class="p">)</span>
 
         <span class="n">proportion_per_genotype</span> <span class="o">=</span> <span class="n">_expected_proportion_per_genotype</span><span class="p">(</span>
             <span class="n">breeding_scheme</span><span class="p">,</span> <span class="n">line_stats</span><span class="p">,</span> <span class="n">min_n_offspring</span>
         <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">proportion</span> <span class="ow">in</span> <span class="n">proportion_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">expected_n</span> <span class="o">=</span> <span class="n">proportion</span> <span class="o">*</span> <span class="n">litter_size</span>
+            <span class="n">expected_n</span> <span class="o">=</span> <span class="n">proportion</span> <span class="o">*</span> <span class="n">expected_offspring</span><span class="o">.</span><span class="n">total_n</span>
             <span class="k">if</span> <span class="n">expected_n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">expected_offspring</span><span class="o">.</span><span class="n">n_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">expected_n</span>
 
@@ -465,7 +470,7 @@
     <span class="n">min_n_matings</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">default_litter_size</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an estimated average litter size (total number of individuals</span>
+<span class="w">    </span><span class="sd">"""Create an estimated average litter size (total number of individuals</span>
 <span class="sd">    produced from one mating).</span>
 
 <span class="sd">    Parameters</span>
@@ -476,19 +481,19 @@
 <span class="sd">        Summary statistics from historical data for the line</span>
 <span class="sd">    min_n_matings : int</span>
 <span class="sd">        Minimum number of successful matings required to use the measured</span>
-<span class="sd">        litter size from line_stats. If there aren&#39;t enough matings for a</span>
+<span class="sd">        litter size from line_stats. If there aren't enough matings for a</span>
 <span class="sd">        specific breeding scheme, the average of the whole line will be used</span>
-<span class="sd">        instead. If the whole line also doesn&#39;t have enough matings, then</span>
+<span class="sd">        instead. If the whole line also doesn't have enough matings, then</span>
 <span class="sd">        default_litter_size is used.</span>
 <span class="sd">    default_litter_size : float</span>
-<span class="sd">        Default litter size to fallback to if there&#39;s not enough historical</span>
+<span class="sd">        Default litter size to fallback to if there's not enough historical</span>
 <span class="sd">        data for the line.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
 <span class="sd">        Expected litter size</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">scheme_stats</span> <span class="o">=</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">stats_per_breeding_scheme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="n">breeding_scheme</span><span class="p">,</span> <span class="kc">None</span>
@@ -509,7 +514,7 @@
     <span class="n">line_stats</span><span class="p">:</span> <span class="n">LineStatistics</span><span class="p">,</span>
     <span class="n">minimum_n_offspring</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the expected proportion of offspring of each genotype.</span>
+<span class="w">    </span><span class="sd">"""Calculate the expected proportion of offspring of each genotype.</span>
 
 <span class="sd">    If enough historical data is available in line_stats, the measured</span>
 <span class="sd">    proportion will be used. Otherwise, the theoretical mendelian ratio</span>
@@ -522,30 +527,71 @@
 <span class="sd">    line_stats : LineStatistics</span>
 <span class="sd">        Summary line statistics from historical data</span>
 <span class="sd">    minimum_n_offspring: int</span>
-<span class="sd">        The minimum number of offspring required for this breeding scheme to</span>
-<span class="sd">        use the genotyping ratio (measured from historical data). Otherwise,</span>
-<span class="sd">        defaults to theoretical mendelian ratio.</span>
+<span class="sd">        The minimum number of genotyped offspring required for this breeding</span>
+<span class="sd">        scheme to use the genotyping ratio (measured from historical data).</span>
+<span class="sd">        Otherwise, defaults to theoretical mendelian ratio.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict[tuple[Genotype, ...], float]</span>
 <span class="sd">        A dictionary mapping offspring genotypes to the expected proportion</span>
 <span class="sd">        of that type</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">scheme_stats</span> <span class="o">=</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">stats_per_breeding_scheme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="n">breeding_scheme</span><span class="p">,</span> <span class="kc">None</span>
     <span class="p">)</span>
 
-    <span class="c1"># If there&#39;s enough recorded offspring, use the observed proportion</span>
+    <span class="c1"># If there's enough recorded offspring, use the observed proportion</span>
     <span class="c1"># from historical data</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">scheme_stats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-        <span class="n">scheme_stats</span><span class="o">.</span><span class="n">total_n_offspring</span> <span class="o">&gt;=</span> <span class="n">minimum_n_offspring</span>
+        <span class="n">scheme_stats</span><span class="o">.</span><span class="n">total_n_genotyped_offspring</span> <span class="o">&gt;=</span> <span class="n">minimum_n_offspring</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="n">scheme_stats</span><span class="o">.</span><span class="n">proportion_offspring_per_genotype</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">breeding_scheme</span><span class="o">.</span><span class="n">mendelian_ratio</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_expected_proportion_of_males</span><span class="p">(</span>
+    <span class="n">breeding_scheme</span><span class="p">:</span> <span class="n">BreedingScheme</span><span class="p">,</span>
+    <span class="n">line_stats</span><span class="p">:</span> <span class="n">LineStatistics</span><span class="p">,</span>
+    <span class="n">min_n_offspring</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Calculate the expected proportion of male offspring.</span>
+
+<span class="sd">    If enough historical data is available in line_stats, the measured</span>
+<span class="sd">    proportion will be used - first for the specific breeding scheme, then</span>
+<span class="sd">    for the whole line. Otherwise, defaults to 0.5.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    breeding_scheme: BreedingScheme</span>
+<span class="sd">        Breeding scheme to retrieve summary stats from</span>
+<span class="sd">    line_stats : LineStatistics</span>
+<span class="sd">        Summary line statistics from historical data</span>
+<span class="sd">    min_n_offspring: int</span>
+<span class="sd">        The minimum number of sexed offspring required to use the measured</span>
+<span class="sd">        proportion of males (from historical data). Otherwise, defaults</span>
+<span class="sd">        to 0.5.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Expected proportion of the litter that is male</span>
+<span class="sd">    """</span>
+
+    <span class="n">scheme_stats</span> <span class="o">=</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">stats_per_breeding_scheme</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">breeding_scheme</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">scheme_stats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="n">scheme_stats</span><span class="o">.</span><span class="n">total_n_sexed_offspring</span> <span class="o">&gt;=</span> <span class="n">min_n_offspring</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">scheme_stats</span><span class="o">.</span><span class="n">proportion_male</span>
+    <span class="k">elif</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">total_n_sexed_offspring</span> <span class="o">&gt;=</span> <span class="n">min_n_offspring</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">line_stats</span><span class="o">.</span><span class="n">proportion_male</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.5</span>
 </pre></div>
 
                 </article>
@@ -575,8 +621,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -596,8 +642,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
-    <br/>
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.2.0.
   </p>
 </div>
       
@@ -610,7 +655,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>

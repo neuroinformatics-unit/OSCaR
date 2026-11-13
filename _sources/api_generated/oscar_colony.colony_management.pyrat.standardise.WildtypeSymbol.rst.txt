@@ -1,0 +1,78 @@
+oscar\_colony.colony\_management.pyrat.standardise.WildtypeSymbol
+=================================================================
+
+.. currentmodule:: oscar_colony.colony_management.pyrat.standardise
+
+.. autoclass:: WildtypeSymbol
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WildtypeSymbol.encode
+      ~WildtypeSymbol.replace
+      ~WildtypeSymbol.split
+      ~WildtypeSymbol.rsplit
+      ~WildtypeSymbol.join
+      ~WildtypeSymbol.capitalize
+      ~WildtypeSymbol.casefold
+      ~WildtypeSymbol.title
+      ~WildtypeSymbol.center
+      ~WildtypeSymbol.count
+      ~WildtypeSymbol.expandtabs
+      ~WildtypeSymbol.find
+      ~WildtypeSymbol.partition
+      ~WildtypeSymbol.index
+      ~WildtypeSymbol.ljust
+      ~WildtypeSymbol.lower
+      ~WildtypeSymbol.lstrip
+      ~WildtypeSymbol.rfind
+      ~WildtypeSymbol.rindex
+      ~WildtypeSymbol.rjust
+      ~WildtypeSymbol.rstrip
+      ~WildtypeSymbol.rpartition
+      ~WildtypeSymbol.splitlines
+      ~WildtypeSymbol.strip
+      ~WildtypeSymbol.swapcase
+      ~WildtypeSymbol.translate
+      ~WildtypeSymbol.upper
+      ~WildtypeSymbol.startswith
+      ~WildtypeSymbol.endswith
+      ~WildtypeSymbol.removeprefix
+      ~WildtypeSymbol.removesuffix
+      ~WildtypeSymbol.isascii
+      ~WildtypeSymbol.islower
+      ~WildtypeSymbol.isupper
+      ~WildtypeSymbol.istitle
+      ~WildtypeSymbol.isspace
+      ~WildtypeSymbol.isdecimal
+      ~WildtypeSymbol.isdigit
+      ~WildtypeSymbol.isnumeric
+      ~WildtypeSymbol.isalpha
+      ~WildtypeSymbol.isalnum
+      ~WildtypeSymbol.isidentifier
+      ~WildtypeSymbol.isprintable
+      ~WildtypeSymbol.zfill
+      ~WildtypeSymbol.format
+      ~WildtypeSymbol.format_map
+      ~WildtypeSymbol.maketrans
+      ~WildtypeSymbol.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WildtypeSymbol.PLUS
+      ~WildtypeSymbol.MINUS
+   
+   

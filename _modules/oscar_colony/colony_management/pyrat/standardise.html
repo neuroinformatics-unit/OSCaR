@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -26,22 +25,23 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=6a604523" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../../../../_static/documentation_options.js?v=a83ce22a"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/oscar_colony/colony_management/pyrat/standardise';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -49,6 +49,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -98,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -118,7 +119,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.9</p>
+    <p class="title logo__title">oscar-colony v0.0.10</p>
   
 </a></div>
     
@@ -163,7 +164,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -174,15 +175,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -208,7 +209,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,7 +230,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
@@ -278,15 +279,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -341,7 +342,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../../../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     
@@ -367,6 +368,7 @@
   <h1>Source code for oscar_colony.colony_management.pyrat.standardise</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -377,41 +379,62 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="WildtypeSymbol">
+<a class="viewcode-back" href="../../../../api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WildtypeSymbol</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Which of PyRAT's ambiguous +/+ and -/- genotypes represents wildtype.</span>
+
+<span class="sd">    Some pyRAT instances record genotypes as +/+ or -/-, without stating which</span>
+<span class="sd">    is wildtype. Whichever symbol is chosen as wildtype, the other is</span>
+<span class="sd">    treated as homozygous.</span>
+<span class="sd">    """</span>
+
+    <span class="n">PLUS</span> <span class="o">=</span> <span class="s2">"+/+"</span>
+    <span class="n">MINUS</span> <span class="o">=</span> <span class="s2">"-/-"</span></div>
+
+
+
 <div class="viewcode-block" id="standardise_pyrat_csv">
 <a class="viewcode-back" href="../../../../api_generated/oscar_colony.colony_management.pyrat.standardise.standardise_pyrat_csv.html#oscar_colony.colony_management.pyrat.standardise.standardise_pyrat_csv">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">standardise_pyrat_csv</span><span class="p">(</span>
     <span class="n">input_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">wt_plus_or_minus</span><span class="p">:</span> <span class="n">WildtypeSymbol</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardise a csv file exported from pyRAT.</span>
+<span class="w">    </span><span class="sd">"""Standardise a csv file exported from pyRAT.</span>
 
 <span class="sd">    Processing steps include:</span>
 <span class="sd">    - standardising column names with a dynamic dict</span>
 <span class="sd">    - adding columns for the number of mutations per line (n_mutations) and</span>
 <span class="sd">    a summary of the mutation names (mutations)</span>
-<span class="sd">    - Correcting or removing forbidden genotypes like +/-, Tg, ko/ko</span>
-<span class="sd">    - adding summary columns for &#39;genotype_offspring&#39;, &#39;genotype_father&#39; and</span>
-<span class="sd">    &#39;genotype_mother&#39; that match the order of &#39;mutations&#39;.</span>
-<span class="sd">    - marking ungenotyped-offspring as NaN in the &#39;genotype_offspring&#39; column</span>
+<span class="sd">    - Correcting or removing forbidden genotypes like Tg, ko/ko. The</span>
+<span class="sd">    wt_plus_or_minus option determines if +/+ or -/- are converted or removed.</span>
+<span class="sd">    - adding summary columns for 'genotype_offspring', 'genotype_father' and</span>
+<span class="sd">    'genotype_mother' that match the order of 'mutations'.</span>
+<span class="sd">    - marking ungenotyped-offspring as NaN in the 'genotype_offspring' column</span>
 <span class="sd">    - filling any missing genotypes with wildtype</span>
-<span class="sd">    - removing columns that aren&#39;t needed for further processing steps</span>
+<span class="sd">    - removing columns that aren't needed for further processing steps</span>
 <span class="sd">    - checking data input validity and removing impossible input data</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input_csv : pd.DataFrame | Path | str</span>
 <span class="sd">        Csv file exported from pyRAT.</span>
+<span class="sd">    wt_plus_or_minus : WildtypeSymbol | None = None</span>
+<span class="sd">        When WildtypeSymbol.PLUS, +/+ is WT and -/- is HOM. When</span>
+<span class="sd">        WildtypeSymbol.MINUS, -/- is WT and +/+ is HOM. No input will result in</span>
+<span class="sd">        +/+ and -/- being filtered.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pd.DataFrame</span>
 <span class="sd">        Standardised dataframe, ready for further processing</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_df</span><span class="p">,</span> <span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
         <span class="n">input_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">input_df</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Starting standardisation of pyRAT data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">input_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span>
+        <span class="sa">f</span><span class="s2">"Starting standardisation of pyRAT data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">input_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows"</span>
     <span class="p">)</span>
 
     <span class="n">rename_col_dict</span> <span class="o">=</span> <span class="n">_create_rename_dict</span><span class="p">(</span><span class="n">input_df</span><span class="p">)</span>
@@ -430,14 +453,14 @@
     <span class="n">standard_df</span> <span class="o">=</span> <span class="n">input_df</span><span class="p">[</span><span class="n">required_cols</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_col_dict</span><span class="p">)</span>
 
     <span class="n">standard_df</span> <span class="o">=</span> <span class="n">_filter_or_correct_genotypes</span><span class="p">(</span>
-        <span class="n">standard_df</span><span class="p">,</span> <span class="n">all_genotype_cols_list</span>
+        <span class="n">standard_df</span><span class="p">,</span> <span class="n">all_genotype_cols_list</span><span class="p">,</span> <span class="n">wt_plus_or_minus</span>
     <span class="p">)</span>
 
     <span class="n">standard_df</span> <span class="o">=</span> <span class="n">_add_n_mutations_column</span><span class="p">(</span>
-        <span class="n">standard_df</span><span class="p">,</span> <span class="n">genotype_cols</span><span class="p">[</span><span class="s2">&quot;offspring&quot;</span><span class="p">]</span>
+        <span class="n">standard_df</span><span class="p">,</span> <span class="n">genotype_cols</span><span class="p">[</span><span class="s2">"offspring"</span><span class="p">]</span>
     <span class="p">)</span>
 
-    <span class="n">standard_df</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;line_name&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="n">standard_df</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"line_name"</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
         <span class="n">_make_combined_genotype_columns_for_line</span><span class="p">,</span> <span class="n">mutation_cols</span><span class="p">,</span> <span class="n">genotype_cols</span>
     <span class="p">)</span>
 
@@ -445,43 +468,43 @@
 
     <span class="n">standard_df</span> <span class="o">=</span> <span class="n">_collapse_parent_genotype</span><span class="p">(</span><span class="n">standard_df</span><span class="p">)</span>
     <span class="n">standard_df</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
-        <span class="s2">&quot;level_1&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span>
+        <span class="s2">"level_1"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"ignore"</span>
     <span class="p">)</span>
 
     <span class="c1"># for readability, make sure ID_offspring is first</span>
-    <span class="n">id_offspring_col</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ID_offspring&quot;</span><span class="p">)</span>
-    <span class="n">standard_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ID_offspring&quot;</span><span class="p">,</span> <span class="n">id_offspring_col</span><span class="p">)</span>
+    <span class="n">id_offspring_col</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"ID_offspring"</span><span class="p">)</span>
+    <span class="n">standard_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"ID_offspring"</span><span class="p">,</span> <span class="n">id_offspring_col</span><span class="p">)</span>
 
     <span class="n">_log_ungenotyped_animals</span><span class="p">(</span><span class="n">standard_df</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Standardisation complete: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">standard_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Standardisation complete: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">standard_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">standard_df</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_log_ungenotyped_animals</span><span class="p">(</span><span class="n">standard_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Log the count and IDs of offspring with no genotype recorded.</span>
+<span class="w">    </span><span class="sd">"""Log the count and IDs of offspring with no genotype recorded.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    standard_df : pd.DataFrame</span>
 <span class="sd">        Standardised dataframe to check for ungenotyped offspring.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ungenotyped</span> <span class="o">=</span> <span class="n">standard_df</span><span class="p">[</span><span class="s2">&quot;genotype_offspring&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+<span class="sd">    """</span>
+    <span class="n">ungenotyped</span> <span class="o">=</span> <span class="n">standard_df</span><span class="p">[</span><span class="s2">"genotype_offspring"</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
     <span class="n">n_ungenotyped</span> <span class="o">=</span> <span class="n">ungenotyped</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">n_ungenotyped</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ungenotyped_ids</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ungenotyped</span><span class="p">,</span> <span class="s2">&quot;ID_offspring&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">ungenotyped_ids</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ungenotyped</span><span class="p">,</span> <span class="s2">"ID_offspring"</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_ungenotyped</span><span class="si">}</span><span class="s2"> offspring have &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;no genotype recorded: </span><span class="si">{</span><span class="n">ungenotyped_ids</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">n_ungenotyped</span><span class="si">}</span><span class="s2"> offspring have "</span>
+            <span class="sa">f</span><span class="s2">"no genotype recorded: </span><span class="si">{</span><span class="n">ungenotyped_ids</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_add_n_mutations_column</span><span class="p">(</span>
     <span class="n">standard_csv</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">offspring_genotype_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add column with number of mutations per line.</span>
+<span class="w">    </span><span class="sd">"""Add column with number of mutations per line.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -494,8 +517,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    pd.DataFrame</span>
 <span class="sd">        Dataframe with n_mutations column added</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">standard_csv</span><span class="p">[</span><span class="s2">&quot;n_mutations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+<span class="sd">    """</span>
+    <span class="n">standard_csv</span><span class="p">[</span><span class="s2">"n_mutations"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">standard_csv</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">offspring_genotype_cols</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="p">)</span>
 
@@ -503,15 +526,15 @@
     <span class="c1"># use the max.</span>
     <span class="c1"># Sometimes particular individuals are ungenotyped (n_mutations = 0) or a</span>
     <span class="c1"># genotype value is omitted to mean wt.</span>
-    <span class="n">standard_csv</span><span class="p">[</span><span class="s2">&quot;n_mutations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">standard_csv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;line_name&quot;</span><span class="p">)[</span>
-        <span class="s2">&quot;n_mutations&quot;</span>
-    <span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>
+    <span class="n">standard_csv</span><span class="p">[</span><span class="s2">"n_mutations"</span><span class="p">]</span> <span class="o">=</span> <span class="n">standard_csv</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"line_name"</span><span class="p">)[</span>
+        <span class="s2">"n_mutations"</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">"max"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">standard_csv</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_create_rename_dict</span><span class="p">(</span><span class="n">input_csv</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create renaming dict for generic columns and parent_x ID columns.</span>
+<span class="w">    </span><span class="sd">"""Create renaming dict for generic columns and parent_x ID columns.</span>
 
 <span class="sd">    parents_x being any number of mother and father columns, labelled as</span>
 <span class="sd">    Mother x or Father x and assigning them to the standardised form of</span>
@@ -527,27 +550,28 @@
 <span class="sd">    dict[str, str]</span>
 <span class="sd">        Returns a dictionary where the key is the old column names to be</span>
 <span class="sd">        replaced with the value in future processing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># re-name standard columns</span>
     <span class="n">rename_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="s2">&quot;ID_offspring&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Line / Strain (Name)&quot;</span><span class="p">:</span> <span class="s2">&quot;line_name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;DOB&quot;</span><span class="p">:</span> <span class="s2">&quot;date_of_birth&quot;</span><span class="p">,</span>
+        <span class="s2">"ID"</span><span class="p">:</span> <span class="s2">"ID_offspring"</span><span class="p">,</span>
+        <span class="s2">"Offspring sex"</span><span class="p">:</span> <span class="s2">"offspring_sex"</span><span class="p">,</span>
+        <span class="s2">"Line / Strain (Name)"</span><span class="p">:</span> <span class="s2">"line_name"</span><span class="p">,</span>
+        <span class="s2">"DOB"</span><span class="p">:</span> <span class="s2">"date_of_birth"</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># re-name any number of parent columns</span>
     <span class="n">parent_cols</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">input_csv</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(Mother|Father) (\d+)$&quot;</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^(Mother|Father) (\d+)$"</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
-            <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ID_</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"ID_</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">parent_cols</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">col_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">))</span>
 
     <span class="c1"># sorts columns before concatenating so they are in the correct order</span>
     <span class="n">parent_cols</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="n">rename_dict</span> <span class="o">=</span> <span class="n">rename_dict</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">(</span><span class="n">parent_cols</span><span class="p">)</span>
-    <span class="n">rename_dict</span><span class="p">[</span><span class="s2">&quot;Sacrifice reason&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sacrifice_reason&quot;</span>
+    <span class="n">rename_dict</span><span class="p">[</span><span class="s2">"Sacrifice reason"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"sacrifice_reason"</span>
 
     <span class="k">return</span> <span class="n">rename_dict</span>
 
@@ -555,7 +579,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_create_mutation_genotype_dicts</span><span class="p">(</span>
     <span class="n">input_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create dicts of mutation / genotype column names for all identifiers.</span>
+<span class="w">    </span><span class="sd">"""Create dicts of mutation / genotype column names for all identifiers.</span>
 
 <span class="sd">    Uses _sort_and_name_columns_by_prefix to assign each identifier</span>
 <span class="sd">    (offspring, father_n, mother_n) to its mutation and genotype columns.</span>
@@ -571,16 +595,16 @@
 <span class="sd">        mutation/genotype dictionaries, keyed by identifier string</span>
 <span class="sd">        (offspring, father_n, mother_n). Value is the list of</span>
 <span class="sd">        genotype/mutation column names</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">n_fathers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^Father \d+$&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="n">n_mothers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^Mother \d+$&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">n_fathers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">"^Father \d+$"</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">n_mothers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">"^Mother \d+$"</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
     <span class="n">mutation_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">genotype_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">_sort_and_name_columns_by_prefix</span><span class="p">(</span>
-        <span class="n">mutation_dict</span><span class="p">,</span> <span class="n">genotype_dict</span><span class="p">,</span> <span class="n">input_df</span><span class="p">,</span> <span class="s2">&quot;offspring&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">mutation_dict</span><span class="p">,</span> <span class="n">genotype_dict</span><span class="p">,</span> <span class="n">input_df</span><span class="p">,</span> <span class="s2">"offspring"</span><span class="p">,</span> <span class="s2">""</span>
     <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_fathers</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -588,8 +612,8 @@
             <span class="n">mutation_dict</span><span class="p">,</span>
             <span class="n">genotype_dict</span><span class="p">,</span>
             <span class="n">input_df</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;father_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;Father </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"father_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Father </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: "</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_mothers</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -597,21 +621,24 @@
             <span class="n">mutation_dict</span><span class="p">,</span>
             <span class="n">genotype_dict</span><span class="p">,</span>
             <span class="n">input_df</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;mother_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;Mother </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"mother_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Mother </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: "</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">mutation_dict</span><span class="p">,</span> <span class="n">genotype_dict</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_filter_or_correct_genotypes</span><span class="p">(</span>
-    <span class="n">standard_csv</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">genotype_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">standard_csv</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">genotype_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">wt_plus_or_minus</span><span class="p">:</span> <span class="n">WildtypeSymbol</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter or correct rows so that only genotypes of wt, het or hom remain.</span>
+<span class="w">    </span><span class="sd">"""Filter or correct rows so that only genotypes of wt, het or hom remain.</span>
 
 <span class="sd">    Where possible, this will convert alternative forms to wt/het/hom e.g.</span>
-<span class="sd">    ko/ko -&gt; hom. If an un-ambiguous conversion isn&#39;t possible</span>
-<span class="sd">    (like T, Tg, N, +, -), rows that contain these will be removed.</span>
+<span class="sd">    ko/ko -&gt; hom. If an un-ambiguous conversion isn't possible</span>
+<span class="sd">    (like T, Tg, N, +, -), rows that contain these will be removed. Provide the</span>
+<span class="sd">    wt_plus_or_minus option to allow -/- and +/+ rows to be converted instead.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -619,25 +646,48 @@
 <span class="sd">        Dataframe to filter</span>
 <span class="sd">    genotype_cols : list[str]</span>
 <span class="sd">        Names of all genotype columns including offspring, father and mother</span>
+<span class="sd">    wt_plus_or_minus : WildtypeSymbol | None = None</span>
+<span class="sd">        When WildtypeSymbol.PLUS, +/+ is WT and -/- is HOM. When</span>
+<span class="sd">        WildtypeSymbol.MINUS, -/- is WT and +/+ is HOM. No input will result in</span>
+<span class="sd">        +/+ and -/- being filtered.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pd.DataFrame</span>
 <span class="sd">        Dataframe with only wt, het or hom in genotype columns</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
+
+    <span class="k">match</span> <span class="n">wt_plus_or_minus</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">WildtypeSymbol</span><span class="o">.</span><span class="n">PLUS</span><span class="p">:</span>
+            <span class="n">custom_conversions</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"+/+"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">WT</span><span class="p">,</span>
+                <span class="s2">"-/-"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">case</span> <span class="n">WildtypeSymbol</span><span class="o">.</span><span class="n">MINUS</span><span class="p">:</span>
+            <span class="n">custom_conversions</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"+/+"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span>
+                <span class="s2">"-/-"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">WT</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+            <span class="n">custom_conversions</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">genotype_conversions</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;ko/ko&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span>
-        <span class="s2">&quot;ko/+&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;ko/-&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;+/ko&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;-/ko&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;ki/ki&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span>
-        <span class="s2">&quot;ki/+&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;ki/-&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;+/ki&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
-        <span class="s2">&quot;-/ki&quot;</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"+/-"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"-/+"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"ko/ko"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span>
+        <span class="s2">"ko/+"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"ko/-"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"+/ko"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"-/ko"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"ki/ki"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span>
+        <span class="s2">"ki/+"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"ki/-"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"+/ki"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"-/ki"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
+        <span class="s2">"dp1tyb"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">,</span>
     <span class="p">}</span>
+
+    <span class="n">genotype_conversions</span> <span class="o">=</span> <span class="n">genotype_conversions</span> <span class="o">|</span> <span class="n">custom_conversions</span>
 
     <span class="c1"># convert genotypes where possible</span>
     <span class="n">genotype_data</span> <span class="o">=</span> <span class="n">standard_csv</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">genotype_cols</span><span class="p">]</span>
@@ -649,7 +699,7 @@
     <span class="n">filtered_data</span> <span class="o">=</span> <span class="n">standard_csv</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">filtered_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">genotype_cols</span><span class="p">]</span> <span class="o">=</span> <span class="n">genotype_data</span>
 
-    <span class="c1"># remove rows where any of the genotype values aren&#39;t in the allowed set:</span>
+    <span class="c1"># remove rows where any of the genotype values aren't in the allowed set:</span>
     <span class="c1"># wt, het, hom or empty</span>
     <span class="n">allowed_genotypes</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">genotype_data</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="n">genotype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="n">Genotype</span><span class="p">])</span>
@@ -661,12 +711,12 @@
 
     <span class="k">if</span> <span class="n">removed_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">dropped_ids</span> <span class="o">=</span> <span class="n">standard_csv</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-            <span class="o">~</span><span class="n">allowed_genotypes</span><span class="p">,</span> <span class="s2">&quot;ID_offspring&quot;</span>
+            <span class="o">~</span><span class="n">allowed_genotypes</span><span class="p">,</span> <span class="s2">"ID_offspring"</span>
         <span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Filtered out </span><span class="si">{</span><span class="n">removed_count</span><span class="si">}</span><span class="s2"> invalid genotype row(s) for these &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;offspring IDs : </span><span class="si">{</span><span class="n">dropped_ids</span><span class="si">}</span><span class="s2"> - &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filtered_count</span><span class="si">}</span><span class="s2"> remaining&quot;</span>
+            <span class="sa">f</span><span class="s2">"Filtered out </span><span class="si">{</span><span class="n">removed_count</span><span class="si">}</span><span class="s2"> invalid genotype row(s) for these "</span>
+            <span class="sa">f</span><span class="s2">"offspring IDs : </span><span class="si">{</span><span class="n">dropped_ids</span><span class="si">}</span><span class="s2"> - "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">filtered_count</span><span class="si">}</span><span class="s2"> remaining"</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">filtered_data</span>
@@ -677,9 +727,9 @@
     <span class="n">mutation_cols</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
     <span class="n">genotype_cols</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;For data from a single line, standardise the mutation order and</span>
-<span class="sd">    create summary columns for &#39;genotype_offspring&#39;, &#39;genotype_father&#39; and</span>
-<span class="sd">    &#39;genotype_mother&#39;.</span>
+<span class="w">    </span><span class="sd">"""For data from a single line, standardise the mutation order and</span>
+<span class="sd">    create summary columns for 'genotype_offspring', 'genotype_father' and</span>
+<span class="sd">    'genotype_mother'.</span>
 
 <span class="sd">    All existing mutation / genotype columns will be removed. New mutation</span>
 <span class="sd">    columns (with mutations in a consistent order across the line) will be</span>
@@ -689,7 +739,7 @@
 
 <span class="sd">    If all the offspring genotype columns are empty, they</span>
 <span class="sd">    are assumed to be un-genotyped (i.e. their genotype was never checked,</span>
-<span class="sd">    and is unknown) - in these cases, the &#39;genotype_offspring&#39; value will</span>
+<span class="sd">    and is unknown) - in these cases, the 'genotype_offspring' value will</span>
 <span class="sd">    be left empty. In all other cases, individual missing genotypes are</span>
 <span class="sd">    assumed to be wildtype.</span>
 
@@ -706,15 +756,15 @@
 <span class="sd">    -------</span>
 <span class="sd">    pd.DataFrame</span>
 <span class="sd">        Line data with standard mutation and summary genotype columns</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># get unique offspring mutations for this line</span>
     <span class="n">unique_mutations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
-        <span class="n">line_data</span><span class="p">[</span><span class="n">mutation_cols</span><span class="p">[</span><span class="s2">&quot;offspring&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">line_data</span><span class="p">[</span><span class="n">mutation_cols</span><span class="p">[</span><span class="s2">"offspring"</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="s2">"K"</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">unique_mutations</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">unique_mutations</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
 
-    <span class="c1"># Copy so we don&#39;t edit the original dataframe (this can cause issues</span>
+    <span class="c1"># Copy so we don't edit the original dataframe (this can cause issues</span>
     <span class="c1"># with apply)</span>
     <span class="n">line_data_with_combined_cols</span> <span class="o">=</span> <span class="n">line_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -730,11 +780,11 @@
     <span class="c1"># Add column for each mutation IN ORDER (for the sake of readability,</span>
     <span class="c1"># add next to the n_mutations column)</span>
     <span class="n">n_mutations_index</span> <span class="o">=</span> <span class="n">line_data_with_combined_cols</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span>
-        <span class="s2">&quot;n_mutations&quot;</span>
+        <span class="s2">"n_mutations"</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mutation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unique_mutations</span><span class="p">):</span>
         <span class="n">line_data_with_combined_cols</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-            <span class="n">n_mutations_index</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;mutation_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mutation</span>
+            <span class="n">n_mutations_index</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"mutation_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">mutation</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">line_data_with_combined_cols</span>
@@ -747,7 +797,7 @@
     <span class="n">mutation_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">genotype_cols</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine all mutation / genotype columns for an identifier, into a single</span>
+<span class="w">    </span><span class="sd">"""Combine all mutation / genotype columns for an identifier, into a single</span>
 <span class="sd">    summary genotype_IDENTIFIER column.</span>
 
 <span class="sd">    E.g. removing Mutation 1 / 2 / 3 and Grade 1 / 2 / 3 columns, and</span>
@@ -761,7 +811,7 @@
 <span class="sd">    line_data : pd.DataFrame</span>
 <span class="sd">        Data for a single line.</span>
 <span class="sd">    identifier_key : str</span>
-<span class="sd">        The identifier to summarise: &quot;offspring&quot;, &quot;father_n&quot; or &quot;mother_n&quot;.</span>
+<span class="sd">        The identifier to summarise: "offspring", "father_n" or "mother_n".</span>
 <span class="sd">    unique_mutations : list[str]</span>
 <span class="sd">        The unique mutations for this line. Genotypes will have length equal</span>
 <span class="sd">        to this, and be returned in this order.</span>
@@ -769,14 +819,14 @@
 <span class="sd">        Mutation columns for the given identifier_key.</span>
 <span class="sd">    genotype_cols : list[str]</span>
 <span class="sd">        Genotype columns for the given identifier_key.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">pivoted_mutations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">line_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
     <span class="n">wildtype_str</span> <span class="o">=</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">WT</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
     <span class="c1"># pivot each pair of mutation / genotype columns. E.g. if Mutation 1 /</span>
     <span class="c1"># Grade 1 had rows with a mix of Mutation-A and Mutation-B: this would</span>
-    <span class="c1"># produce two columns named &#39;Mutation-A&#39; and &#39;Mutation-B&#39;, with the</span>
+    <span class="c1"># produce two columns named 'Mutation-A' and 'Mutation-B', with the</span>
     <span class="c1"># genotypes as the column values.</span>
     <span class="k">for</span> <span class="n">mutation_col</span><span class="p">,</span> <span class="n">genotype_col</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mutation_cols</span><span class="p">,</span> <span class="n">genotype_cols</span><span class="p">):</span>
         <span class="n">pivoted_cols</span> <span class="o">=</span> <span class="n">line_data</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span>
@@ -810,7 +860,7 @@
         <span class="k">if</span> <span class="n">mutation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pivoted_mutations</span><span class="p">:</span>
             <span class="n">pivoted_mutations</span><span class="p">[</span><span class="n">mutation</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">identifier_key</span> <span class="o">==</span> <span class="s2">&quot;offspring&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">identifier_key</span> <span class="o">==</span> <span class="s2">"offspring"</span><span class="p">:</span>
         <span class="c1"># If all offspring mutations in a row are NaN, leave as-is -&gt; these are</span>
         <span class="c1"># un-genotyped individuals.</span>
         <span class="c1"># If only some are NaN, then fill with wt</span>
@@ -820,27 +870,27 @@
         <span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">wildtype_str</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Fill wildtype for rows where a parent is actually recorded.</span>
-        <span class="n">parent_id_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ID_</span><span class="si">{</span><span class="n">identifier_key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">parent_id_col</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"ID_</span><span class="si">{</span><span class="n">identifier_key</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">parent_recorded</span> <span class="o">=</span> <span class="n">line_data</span><span class="p">[</span><span class="n">parent_id_col</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span>
         <span class="n">pivoted_mutations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">parent_recorded</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">pivoted_mutations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
             <span class="n">parent_recorded</span><span class="p">,</span> <span class="p">:</span>
         <span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">wildtype_str</span><span class="p">)</span>
 
     <span class="c1"># Combine pivoted mutations into a single summary column</span>
-    <span class="n">new_col_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;genotype_</span><span class="si">{</span><span class="n">identifier_key</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">new_col_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"genotype_</span><span class="si">{</span><span class="n">identifier_key</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="n">line_data</span><span class="p">[</span><span class="n">new_col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
     <span class="n">genotyped_rows</span> <span class="o">=</span> <span class="o">~</span><span class="n">pivoted_mutations</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">line_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">genotyped_rows</span><span class="p">,</span> <span class="n">new_col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pivoted_mutations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
         <span class="n">genotyped_rows</span><span class="p">,</span> <span class="n">unique_mutations</span>
-    <span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"_"</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Drop old mutation / grade columns</span>
     <span class="n">line_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">mutation_cols</span> <span class="o">+</span> <span class="n">genotype_cols</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_filter_data_input_validity</span><span class="p">(</span><span class="n">standard_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes rows containing invalid data.</span>
+<span class="w">    </span><span class="sd">"""Removes rows containing invalid data.</span>
 
 <span class="sd">    Runs _check_data_input_validity on each row, if that returns an issue for</span>
 <span class="sd">    a particular row, then that row is removed from the final DataFrame.</span>
@@ -854,12 +904,12 @@
 <span class="sd">    -------</span>
 <span class="sd">    pd.DataFrame</span>
 <span class="sd">        filtered DataFrame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">mother_col_names</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;genotype_mother_\d+$&quot;</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">"genotype_mother_\d+$"</span>
     <span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">father_col_names</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;genotype_father_\d+$&quot;</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">"genotype_father_\d+$"</span>
     <span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
     <span class="n">impossible_input_data</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
@@ -874,13 +924,13 @@
 
     <span class="k">if</span> <span class="n">removed_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">removed_ids</span> <span class="o">=</span> <span class="n">standard_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-            <span class="n">impossible_input_data</span><span class="p">,</span> <span class="s2">&quot;ID_offspring&quot;</span>
+            <span class="n">impossible_input_data</span><span class="p">,</span> <span class="s2">"ID_offspring"</span>
         <span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Filtered out </span><span class="si">{</span><span class="n">removed_count</span><span class="si">}</span><span class="s2"> row(s) &quot;</span>
-            <span class="s2">&quot;with invalid breeding data for &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;these offspring IDs: </span><span class="si">{</span><span class="n">removed_ids</span><span class="si">}</span><span class="s2"> - &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> remaining&quot;</span>
+            <span class="sa">f</span><span class="s2">"Filtered out </span><span class="si">{</span><span class="n">removed_count</span><span class="si">}</span><span class="s2"> row(s) "</span>
+            <span class="s2">"with invalid breeding data for "</span>
+            <span class="sa">f</span><span class="s2">"these offspring IDs: </span><span class="si">{</span><span class="n">removed_ids</span><span class="si">}</span><span class="s2"> - "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> remaining"</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">filtered_df</span>
@@ -891,7 +941,7 @@
     <span class="n">mother_col_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">father_col_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks a Dataframe row for common data input errors.</span>
+<span class="w">    </span><span class="sd">"""Checks a Dataframe row for common data input errors.</span>
 
 <span class="sd">    Takes a row from the standardised df, and runs two functions that test the</span>
 <span class="sd">    validity of recorded data. Whether each sex of parent have the same</span>
@@ -916,9 +966,9 @@
 <span class="sd">    bool</span>
 <span class="sd">        True when an impossible breeding scheme or ambiguous parentage is</span>
 <span class="sd">        detected.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">offspring_genotype</span> <span class="o">=</span> <span class="n">standardised_df_row</span><span class="p">[</span><span class="s2">&quot;genotype_offspring&quot;</span><span class="p">]</span>
+    <span class="n">offspring_genotype</span> <span class="o">=</span> <span class="n">standardised_df_row</span><span class="p">[</span><span class="s2">"genotype_offspring"</span><span class="p">]</span>
     <span class="n">mother_genotypes</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">standardised_df_row</span><span class="p">[</span><span class="n">mother_col_names</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
     <span class="p">)</span>
@@ -928,8 +978,8 @@
 
     <span class="k">if</span> <span class="n">_is_ambiguous_parentage</span><span class="p">(</span><span class="n">mother_genotypes</span><span class="p">,</span> <span class="n">father_genotypes</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Offspring ID </span><span class="si">{</span><span class="n">standardised_df_row</span><span class="o">.</span><span class="n">ID_offspring</span><span class="si">}</span><span class="s2"> has &quot;</span>
-            <span class="s2">&quot;ambiguous parentage&quot;</span>
+            <span class="sa">f</span><span class="s2">"Offspring ID </span><span class="si">{</span><span class="n">standardised_df_row</span><span class="o">.</span><span class="n">ID_offspring</span><span class="si">}</span><span class="s2"> has "</span>
+            <span class="s2">"ambiguous parentage"</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -940,8 +990,8 @@
         <span class="n">offspring_genotype</span><span class="p">,</span> <span class="n">mother_genotype</span><span class="p">,</span> <span class="n">father_genotype</span>
     <span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Offspring ID </span><span class="si">{</span><span class="n">standardised_df_row</span><span class="o">.</span><span class="n">ID_offspring</span><span class="si">}</span><span class="s2"> has an &quot;</span>
-            <span class="s2">&quot;impossible breeding scheme&quot;</span>
+            <span class="sa">f</span><span class="s2">"Offspring ID </span><span class="si">{</span><span class="n">standardised_df_row</span><span class="o">.</span><span class="n">ID_offspring</span><span class="si">}</span><span class="s2"> has an "</span>
+            <span class="s2">"impossible breeding scheme"</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
@@ -952,7 +1002,7 @@
     <span class="n">mother_genotype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">father_genotype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks whether the given row contains an impossible breeding scheme.</span>
+<span class="w">    </span><span class="sd">"""Checks whether the given row contains an impossible breeding scheme.</span>
 
 <span class="sd">    Retrieves parent genotypes and pulls the mendelian ratios from</span>
 <span class="sd">    BreedingScheme. Compares offspring to these ratios, returning True for</span>
@@ -974,7 +1024,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
 <span class="sd">        bool of whether or not that row contains an impossible breeding scheme</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Only processes when offspring is assigned a genotype</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">offspring_genotype</span><span class="p">):</span>
@@ -994,7 +1044,7 @@
     <span class="n">mother_genotypes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">father_genotypes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;checks if parent exists and that all same sex genotypes are equal</span>
+<span class="w">    </span><span class="sd">"""checks if parent exists and that all same sex genotypes are equal</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1008,7 +1058,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
 <span class="sd">        True if parent ambiguity detected, False if not.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">parent_genotypes</span> <span class="ow">in</span> <span class="p">[</span><span class="n">mother_genotypes</span><span class="p">,</span> <span class="n">father_genotypes</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">parent_genotypes</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1024,7 +1074,7 @@
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assigns a given identifier to the corresponding mutation and grade.</span>
+<span class="w">    </span><span class="sd">"""Assigns a given identifier to the corresponding mutation and grade.</span>
 
 <span class="sd">    Called for offspring, mothers and fathers. Uses the chosen prefix to sort</span>
 <span class="sd">    through DataFrame columns and retrieve a sorted list. Then populated two</span>
@@ -1039,25 +1089,25 @@
 <span class="sd">    input_csv : pd.DataFrame</span>
 <span class="sd">        Dataframe to filter through the columns of</span>
 <span class="sd">    identifier : str</span>
-<span class="sd">        animal identifier: &quot;offspring&quot;, &quot;father_n&quot; or &quot;mother_n&quot;.</span>
+<span class="sd">        animal identifier: "offspring", "father_n" or "mother_n".</span>
 <span class="sd">    prefix : str</span>
 <span class="sd">        prefix of column names to select from input_csv</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># columns of form &#39;PREFIXMutation NUMBER&#39;</span>
+<span class="sd">    """</span>
+    <span class="c1"># columns of form 'PREFIXMutation NUMBER'</span>
     <span class="n">mutation_cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-        <span class="n">input_csv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">Mutation \d$&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">input_csv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">rf</span><span class="s2">"^</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">Mutation \d$"</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="p">)</span>
 
-    <span class="c1"># columns of form &#39;PREFIXGrade NUMBER&#39;</span>
+    <span class="c1"># columns of form 'PREFIXGrade NUMBER'</span>
     <span class="n">genotype_cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-        <span class="n">input_csv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">Grade \d$&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">input_csv</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">rf</span><span class="s2">"^</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">Grade \d$"</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="p">)</span>
 
     <span class="c1"># Each mutation must have a corresponding genotype</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mutation_cols</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">genotype_cols</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Not all </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> mutation columns have a corresponding &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;genotype column.&quot;</span>
+            <span class="sa">f</span><span class="s2">"Not all </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> mutation columns have a corresponding "</span>
+            <span class="sa">f</span><span class="s2">"genotype column."</span>
         <span class="p">)</span>
 
     <span class="n">mutation_dict</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">mutation_cols</span>
@@ -1065,13 +1115,13 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_collapse_parent_genotype</span><span class="p">(</span><span class="n">standardised_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collapses multiple same sex parent genotypes into just one&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Collapses multiple same sex parent genotypes into just one"""</span>
 
-    <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mother&quot;</span><span class="p">,</span> <span class="s2">&quot;father&quot;</span><span class="p">]:</span>
-        <span class="n">genotype_col_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;genotype_</span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="s2">_1&quot;</span>
+    <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"mother"</span><span class="p">,</span> <span class="s2">"father"</span><span class="p">]:</span>
+        <span class="n">genotype_col_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"genotype_</span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="s2">_1"</span>
 
         <span class="n">genotype_columns</span> <span class="o">=</span> <span class="n">standardised_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-            <span class="n">regex</span><span class="o">=</span><span class="sa">rf</span><span class="s2">&quot;^genotype_</span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="s2">_\d+$&quot;</span>
+            <span class="n">regex</span><span class="o">=</span><span class="sa">rf</span><span class="s2">"^genotype_</span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="s2">_\d+$"</span>
         <span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">genotype_columns</span><span class="p">:</span>
@@ -1079,7 +1129,7 @@
                 <span class="n">standardised_df</span> <span class="o">=</span> <span class="n">standardised_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">column</span><span class="p">)</span>
 
         <span class="n">standardised_df</span> <span class="o">=</span> <span class="n">standardised_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
-            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">genotype_col_name</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;genotype_</span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">genotype_col_name</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"genotype_</span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">standardised_df</span>
@@ -1112,8 +1162,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1133,8 +1183,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
-    <br/>
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.2.0.
   </p>
 </div>
       
@@ -1147,7 +1196,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>

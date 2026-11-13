@@ -18,5 +18,7 @@ oscar\_colony.optimise.surplus\_summary
       :template: custom-class.rst
    
       GenotypeSurplus
+      SexSplit
+      SexSurplus
       SurplusSummary
    

@@ -26,6 +26,7 @@ oscar\_colony.optimise.surplus\_summary.SurplusSummary
 
    .. autosummary::
    
+      ~SurplusSummary.sex_surplus
       ~SurplusSummary.total_n
       ~SurplusSummary.total_n_surplus
       ~SurplusSummary.surplus_per_genotype

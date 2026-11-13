@@ -1,0 +1,36 @@
+oscar\_colony.optimise.surplus\_summary.SexSurplus
+==================================================
+
+.. currentmodule:: oscar_colony.optimise.surplus_summary
+
+.. autoclass:: SexSurplus
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SexSurplus.__init__
+      ~SexSurplus.set_surplus
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SexSurplus.female_percent_surplus
+      ~SexSurplus.male_percent_surplus
+      ~SexSurplus.total_female_surplus
+      ~SexSurplus.total_females
+      ~SexSurplus.total_male_surplus
+      ~SexSurplus.total_males
+   
+   

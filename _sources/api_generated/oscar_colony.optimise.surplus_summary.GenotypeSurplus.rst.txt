@@ -16,6 +16,7 @@ oscar\_colony.optimise.surplus\_summary.GenotypeSurplus
    .. autosummary::
    
       ~GenotypeSurplus.__init__
+      ~GenotypeSurplus.set_surplus
    
    
 
@@ -26,6 +27,7 @@ oscar\_colony.optimise.surplus\_summary.GenotypeSurplus
    .. autosummary::
    
       ~GenotypeSurplus.percent_surplus
+      ~GenotypeSurplus.sex_surplus
       ~GenotypeSurplus.total_n
       ~GenotypeSurplus.total_n_surplus
    

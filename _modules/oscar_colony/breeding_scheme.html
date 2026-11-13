@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -26,22 +25,23 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../../_static/documentation_options.js?v=a83ce22a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/oscar_colony/breeding_scheme';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -49,6 +49,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -98,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -118,7 +119,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.9</p>
+    <p class="title logo__title">oscar-colony v0.0.10</p>
   
 </a></div>
     
@@ -163,7 +164,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -174,15 +175,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -208,7 +209,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,7 +230,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
@@ -278,15 +279,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -341,7 +342,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     
@@ -378,12 +379,12 @@
 <div class="viewcode-block" id="Genotype">
 <a class="viewcode-back" href="../../api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Genotype</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Genotype status: homozygous (HOM), heterozygous (HET) or WT (wildtype).</span>
+<span class="w">    </span><span class="sd">"""Genotype status: homozygous (HOM), heterozygous (HET) or WT (wildtype).</span>
 
 <span class="sd">    Each animal will have two copies (alleles) of a particular gene - each</span>
 <span class="sd">    being either wildtype or mutated. The value of the enum is the number of</span>
 <span class="sd">    mutated copies for that genotype.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">WT</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">HET</span> <span class="o">=</span> <span class="mi">1</span>
@@ -396,7 +397,7 @@
 <a class="viewcode-back" href="../../api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.from_string">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">genotype_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Self</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a tuple of Genotype from a string representation.</span>
+<span class="w">        </span><span class="sd">"""Create a tuple of Genotype from a string representation.</span>
 
 <span class="sd">        E.g. wt_het_hom -&gt; (Genotype.WT, Genotype.HET, Genotype.HOM)</span>
 
@@ -410,8 +411,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        tuple[Self, ...]</span>
 <span class="sd">            Converted tuple of genotypes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">genotype_strings</span> <span class="o">=</span> <span class="n">genotype_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">genotype_strings</span> <span class="o">=</span> <span class="n">genotype_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span>
         <span class="n">genotypes</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">cls</span><span class="p">[</span><span class="n">genotype_string</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
             <span class="k">for</span> <span class="n">genotype_string</span> <span class="ow">in</span> <span class="n">genotype_strings</span>
@@ -423,7 +424,7 @@
 <a class="viewcode-back" href="../../api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.to_string">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">genotype_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Self</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a string representation from a tuple of genotypes.</span>
+<span class="w">        </span><span class="sd">"""Create a string representation from a tuple of genotypes.</span>
 
 <span class="sd">        E.g. (Genotype.WT, Genotype.HET, Genotype.HOM) -&gt; wt_het_hom</span>
 
@@ -437,11 +438,11 @@
 <span class="sd">        str</span>
 <span class="sd">            String corresponding to the input tuple. This will be one or more</span>
 <span class="sd">            wt, het or hom separated by an underscore.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">genotype_strings</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">genotype</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="n">genotype_tuple</span>
         <span class="p">]</span>
-        <span class="k">return</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">genotype_strings</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s2">"_"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">genotype_strings</span><span class="p">)</span></div>
 </div>
 
 
@@ -449,10 +450,10 @@
 <div class="viewcode-block" id="BreedingScheme">
 <a class="viewcode-back" href="../../api_generated/oscar_colony.breeding_scheme.BreedingScheme.html#oscar_colony.breeding_scheme.BreedingScheme">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BreedingScheme</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Class representing a particular breeding scheme, i.e. the breeding</span>
 <span class="sd">    of two specific parent genotypes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BreedingScheme.__init__">
 <a class="viewcode-back" href="../../api_generated/oscar_colony.breeding_scheme.BreedingScheme.html#oscar_colony.breeding_scheme.BreedingScheme.__init__">[docs]</a>
@@ -461,7 +462,7 @@
         <span class="n">parent_1_genotype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">parent_2_genotype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a breeding scheme with two parent genotypes.</span>
+<span class="w">        </span><span class="sd">"""Create a breeding scheme with two parent genotypes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -475,8 +476,8 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If the parent genotypes don&#39;t have the same length</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            If the parent genotypes don't have the same length</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent_1_genotype</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">parent_1_genotype</span> <span class="o">=</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">parent_1_genotype</span><span class="p">)</span>
@@ -486,7 +487,7 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_1_genotype</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_2_genotype</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Both parents must have a genotype of the same length&quot;</span>
+                <span class="s2">"Both parents must have a genotype of the same length"</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_1_genotype</span> <span class="o">=</span> <span class="n">parent_1_genotype</span>
@@ -495,7 +496,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="c1"># The order of parent 1 vs parent 2 doesn&#39;t matter. Breeding</span>
+        <span class="c1"># The order of parent 1 vs parent 2 doesn't matter. Breeding</span>
         <span class="c1"># schemes are equal if they are combining the same two genotypes</span>
         <span class="c1"># in any order.</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_1_genotype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_2_genotype</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span>
@@ -517,12 +518,12 @@
         <span class="n">parent_1_str</span> <span class="o">=</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">parent_genotypes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">parent_2_str</span> <span class="o">=</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">parent_genotypes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">parent_1_str</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">parent_2_str</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">parent_1_str</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">parent_2_str</span><span class="si">}</span><span class="s2">"</span>
 
 <div class="viewcode-block" id="BreedingScheme.mendelian_ratio">
 <a class="viewcode-back" href="../../api_generated/oscar_colony.breeding_scheme.BreedingScheme.html#oscar_colony.breeding_scheme.BreedingScheme.mendelian_ratio">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mendelian_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the theoretical mendelian ratio for this breeding scheme.</span>
+<span class="w">        </span><span class="sd">"""Calculate the theoretical mendelian ratio for this breeding scheme.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -530,7 +531,7 @@
 <span class="sd">            Returns a dictionary with keys being the possible genotypes of</span>
 <span class="sd">            offspring, and values the expected proportion of offspring of</span>
 <span class="sd">            that genotype.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># For each parent, determine all the combinations of alleles they</span>
         <span class="c1"># could pass on to their offspring. This is equivalent to making the</span>
@@ -563,7 +564,7 @@
                 <span class="n">genotype_sums</span><span class="p">[</span><span class="n">offspring_genotype</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="c1"># calculate overall proportion of offspring of each type - termed</span>
-        <span class="c1"># the &#39;mendelian ratio&#39;</span>
+        <span class="c1"># the 'mendelian ratio'</span>
         <span class="n">mendelian_ratios</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">n_with_genotype</span> <span class="ow">in</span> <span class="n">genotype_sums</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">mendelian_ratios</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_with_genotype</span> <span class="o">/</span> <span class="n">total_sum</span>
@@ -574,7 +575,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_parent_allele_combos</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">parent_genotype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;For a parent, determine all the combinations of alleles they</span>
+<span class="w">        </span><span class="sd">"""For a parent, determine all the combinations of alleles they</span>
 <span class="sd">        could pass on to their offspring.</span>
 
 <span class="sd">        Bear in mind that each parent has 2 alleles for each gene, and will</span>
@@ -596,7 +597,7 @@
 <span class="sd">            offspring. Each item is a list of bools with length == the number</span>
 <span class="sd">            of mutations. e.g. an item of [true, false, true] would mean they</span>
 <span class="sd">            are mutant for gene 1, wildtype for gene 2 and mutant for gene 3</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">alleles</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">parent_genotype</span><span class="p">:</span>
@@ -609,7 +610,7 @@
         <span class="n">parent_1_alleles</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
         <span class="n">parent_2_alleles</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the genotype of the offspring, based on the alleles</span>
+<span class="w">        </span><span class="sd">"""Determine the genotype of the offspring, based on the alleles</span>
 <span class="sd">        it inherited from each parent.</span>
 
 <span class="sd">        Parameters</span>
@@ -624,7 +625,7 @@
 <span class="sd">        tuple[Genotype, ...]</span>
 <span class="sd">            The genotype of the offspring. The tuple will have length ==</span>
 <span class="sd">            the number of mutations.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">offspring_genotype</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -641,7 +642,7 @@
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">offspring_genotype</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_alleles_for_genotype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genotype</span><span class="p">:</span> <span class="n">Genotype</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the 2 alleles for the given genotype.</span>
+<span class="w">        </span><span class="sd">"""Return the 2 alleles for the given genotype.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -652,7 +653,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        list[bool]</span>
 <span class="sd">            The 2 alleles: True = mutated, False = wildtype.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">alleles</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">genotype</span><span class="o">.</span><span class="n">value</span>
         <span class="n">alleles</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">genotype</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">alleles</span></div>
@@ -664,7 +665,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_breeding_schemes</span><span class="p">(</span>
     <span class="n">n_mutations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BreedingScheme</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate all possible combinations of parent1 x parent2 genotype, for</span>
+<span class="w">    </span><span class="sd">"""Generate all possible combinations of parent1 x parent2 genotype, for</span>
 <span class="sd">    the given number of mutations.</span>
 
 <span class="sd">    Whether mutations come from the father or mother is ignored e.g.</span>
@@ -681,16 +682,16 @@
 <span class="sd">    list[BreedingScheme]</span>
 <span class="sd">        A list where each item is a possible breeding scheme (a cross between</span>
 <span class="sd">        two specific parent genotypes)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generating breeding schemes for </span><span class="si">{</span><span class="n">n_mutations</span><span class="si">}</span><span class="s2"> mutations&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generating breeding schemes for </span><span class="si">{</span><span class="n">n_mutations</span><span class="si">}</span><span class="s2"> mutations"</span><span class="p">)</span>
     <span class="n">breeding_schemes</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># First, generate all possible genotypes of a single parent.</span>
     <span class="n">single_genotypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Genotype</span><span class="o">.</span><span class="n">WT</span><span class="p">,</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HOM</span><span class="p">,</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">HET</span><span class="p">]</span>
     <span class="n">parent_genotypes</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">single_genotypes</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="n">n_mutations</span><span class="p">)</span>
 
-    <span class="c1"># Then combine two parents, bearing in mind order doesn&#39;t matter e.g.</span>
+    <span class="c1"># Then combine two parents, bearing in mind order doesn't matter e.g.</span>
     <span class="c1"># wt x hom == hom x wt</span>
     <span class="n">breeding_combos</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations_with_replacement</span><span class="p">(</span>
         <span class="n">parent_genotypes</span><span class="p">,</span> <span class="mi">2</span>
@@ -707,7 +708,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_breeding_scheme_contains_wt_pairs</span><span class="p">(</span><span class="n">parent_1</span><span class="p">,</span> <span class="n">parent_2</span><span class="p">):</span>
             <span class="n">breeding_schemes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BreedingScheme</span><span class="p">(</span><span class="n">parent_1</span><span class="p">,</span> <span class="n">parent_2</span><span class="p">))</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">breeding_schemes</span><span class="p">)</span><span class="si">}</span><span class="s2"> breeding schemes&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">breeding_schemes</span><span class="p">)</span><span class="si">}</span><span class="s2"> breeding schemes"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">breeding_schemes</span></div>
 
 
@@ -716,7 +717,7 @@
     <span class="n">parent_1_genotype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
     <span class="n">parent_2_genotype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a given breeding scheme (parent_1 x parent_2) contains pairs of</span>
+<span class="w">    </span><span class="sd">"""Check if a given breeding scheme (parent_1 x parent_2) contains pairs of</span>
 <span class="sd">    wt alleles.</span>
 
 <span class="sd">    E.g. wt, het x wt, hom would return true as both parents are wt for the</span>
@@ -735,7 +736,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    bool</span>
 <span class="sd">        Whether wt pairs are present.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">for</span> <span class="n">parent_1_allele</span><span class="p">,</span> <span class="n">parent_2_allele</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
         <span class="n">parent_1_genotype</span><span class="p">,</span> <span class="n">parent_2_genotype</span>
@@ -773,8 +774,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -794,8 +795,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
-    <br/>
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.2.0.
   </p>
 </div>
       
@@ -808,7 +808,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>

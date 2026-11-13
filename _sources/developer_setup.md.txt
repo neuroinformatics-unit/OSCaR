@@ -39,7 +39,7 @@ See the [PyRAT docs](./user_guide/pyrat), for information on how to set up clien
 
 ## Test data
 
-All test data is stored in the [oscar-test-data GIN repository](https://gin.g-node.org/neuroinformatics/oscar-test-data), and fetched using [`pooch`](https://www.fatiando.org/pooch/latest/).
+All test data is stored in the [oscar-test-data GIN repository](https://gin.swc.ucl.ac.uk/neuroinformatics/oscar-test-data), and fetched using [`pooch`](https://www.fatiando.org/pooch/latest/).
 
 If you add / update a test data file, you will need to update the file names and hashes in the pooch registry at `tests/pooch_registry.txt`. Hashes can be generated using [the instructions in poochs' docs](https://www.fatiando.org/pooch/latest/hashes.html#calculating-hashes).
 

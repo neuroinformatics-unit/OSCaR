@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -26,22 +25,23 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=6a604523" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../../../_static/documentation_options.js?v=a83ce22a"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/oscar_colony/optimise/surplus_summary';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -49,6 +49,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -98,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -118,7 +119,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.9</p>
+    <p class="title logo__title">oscar-colony v0.0.10</p>
   
 </a></div>
     
@@ -163,7 +164,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -174,15 +175,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -208,7 +209,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,7 +230,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
@@ -278,15 +279,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -341,7 +342,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     
@@ -366,6 +367,7 @@
                   
   <h1>Source code for oscar_colony.optimise.surplus_summary</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
@@ -376,15 +378,73 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">oscar_colony.optimise.estimate_offspring</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExpectedOffspring</span>
 
 
+<div class="viewcode-block" id="SexSplit">
+<a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SexSplit</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">n_males</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_females</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="SexSurplus">
+<a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.SexSurplus.html#oscar_colony.optimise.surplus_summary.SexSurplus">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SexSurplus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Summary of surplus split by male / female."""</span>
+
+    <span class="n">total_males</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_male_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">male_percent_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_females</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_female_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">female_percent_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="SexSurplus.set_surplus">
+<a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.SexSurplus.html#oscar_colony.optimise.surplus_summary.SexSurplus.set_surplus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_surplus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_males</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">required_females</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the surplus / percent surplus, by comparing the required</span>
+<span class="sd">        numbers to the total males / females.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_male_surplus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_males</span> <span class="o">-</span> <span class="n">required_males</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_female_surplus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_females</span> <span class="o">-</span> <span class="n">required_females</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_males</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">male_percent_surplus</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_male_surplus</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_males</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_females</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">female_percent_surplus</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_female_surplus</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_females</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="GenotypeSurplus">
 <a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.GenotypeSurplus.html#oscar_colony.optimise.surplus_summary.GenotypeSurplus">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">GenotypeSurplus</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summary of surplus for a single genotype&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Summary of surplus for a single genotype.</span>
+
+<span class="sd">    sex_surplus is None where a SexSplit of (n_males, n_females) wasn't</span>
+<span class="sd">    requested for this genotype.</span>
+<span class="sd">    """</span>
 
     <span class="n">total_n</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_n_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">percent_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span></div>
+    <span class="n">percent_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sex_surplus</span><span class="p">:</span> <span class="n">SexSurplus</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="GenotypeSurplus.set_surplus">
+<a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.GenotypeSurplus.html#oscar_colony.optimise.surplus_summary.GenotypeSurplus.set_surplus">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_surplus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required_n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Set the surplus / percent surplus, by comparing the required</span>
+<span class="sd">        number to the total.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_n_surplus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_n</span> <span class="o">-</span> <span class="n">required_n</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">percent_surplus</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_n_surplus</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span></div>
+</div>
 
 
 
@@ -392,10 +452,16 @@
 <a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SurplusSummary</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summary of surplus across all genotypes&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Summary of surplus across all genotypes.</span>
+
+<span class="sd">    sex_surplus is None when no genotypes requested a SexSplit of</span>
+<span class="sd">    (n_males, n_females). Covers cases in which there is a mix of sex-split</span>
+<span class="sd">    and non-sex-split genotypes.</span>
+<span class="sd">    """</span>
 
     <span class="n">total_n</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">total_n_surplus</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sex_surplus</span><span class="p">:</span> <span class="n">SexSurplus</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">surplus_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">GenotypeSurplus</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span>
@@ -406,10 +472,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">create_genotype_df</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">decimal_places</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pandas dataframe from surplus_per_genotype.</span>
+<span class="w">        </span><span class="sd">"""Create a pandas dataframe from surplus_per_genotype.</span>
 
-<span class="sd">        Columns are: &#39;Genotype&#39;, &#39;Required N&#39;, &#39;Total N&#39;, &#39;Total N Surplus&#39;</span>
-<span class="sd">        and &#39;Percent Surplus&#39;</span>
+<span class="sd">        Columns are: 'Genotype', 'Required N', 'Total N',</span>
+<span class="sd">        'Total N Surplus', 'Percent Surplus', 'Required Males',</span>
+<span class="sd">        'Total Males', 'Total Male Surplus', 'Percent Male Surplus',</span>
+<span class="sd">        'Required Females', 'Total Females', 'Total Female Surplus' and</span>
+<span class="sd">        'Percent Female Surplus'</span>
+
+<span class="sd">        The male / female columns are omitted where no genotype was</span>
+<span class="sd">        requested as a SexSplit of (n_males, n_females).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -420,30 +492,48 @@
 <span class="sd">        -------</span>
 <span class="sd">        pd.DataFrame</span>
 <span class="sd">            DataFrame summarising totals and surplus per genotype</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">surplus</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surplus_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">required_n</span> <span class="o">=</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n</span> <span class="o">-</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span>
-            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">genotype</span><span class="p">),</span>
-                    <span class="n">required_n</span><span class="p">,</span>
-                    <span class="n">surplus</span><span class="o">.</span><span class="n">total_n</span><span class="p">,</span>
-                    <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span><span class="p">,</span>
-                    <span class="n">surplus</span><span class="o">.</span><span class="n">percent_surplus</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
 
-        <span class="n">genotype_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-            <span class="n">rows</span><span class="p">,</span>
-            <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
-                <span class="s2">&quot;Genotype&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Required N&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Total N&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Total N Surplus&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Percent Surplus&quot;</span><span class="p">,</span>
-            <span class="p">],</span>
-        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">surplus</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surplus_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">"Genotype"</span><span class="p">:</span> <span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">genotype</span><span class="p">),</span>
+                <span class="s2">"Required N"</span><span class="p">:</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n</span> <span class="o">-</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span><span class="p">,</span>
+                <span class="s2">"Total N"</span><span class="p">:</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n</span><span class="p">,</span>
+                <span class="s2">"Total N Surplus"</span><span class="p">:</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span><span class="p">,</span>
+                <span class="s2">"Percent Surplus"</span><span class="p">:</span> <span class="n">surplus</span><span class="o">.</span><span class="n">percent_surplus</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="n">sex_surplus</span> <span class="o">=</span> <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span>
+            <span class="k">if</span> <span class="n">sex_surplus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">"Required Males"</span><span class="p">:</span> <span class="p">(</span>
+                            <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_males</span>
+                            <span class="o">-</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_male_surplus</span>
+                        <span class="p">),</span>
+                        <span class="s2">"Total Males"</span><span class="p">:</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_males</span><span class="p">,</span>
+                        <span class="s2">"Total Male Surplus"</span><span class="p">:</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_male_surplus</span><span class="p">,</span>
+                        <span class="s2">"Percent Male Surplus"</span><span class="p">:</span> <span class="p">(</span>
+                            <span class="n">sex_surplus</span><span class="o">.</span><span class="n">male_percent_surplus</span>
+                        <span class="p">),</span>
+                        <span class="s2">"Required Females"</span><span class="p">:</span> <span class="p">(</span>
+                            <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_females</span>
+                            <span class="o">-</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_female_surplus</span>
+                        <span class="p">),</span>
+                        <span class="s2">"Total Females"</span><span class="p">:</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_females</span><span class="p">,</span>
+                        <span class="s2">"Total Female Surplus"</span><span class="p">:</span> <span class="p">(</span>
+                            <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_female_surplus</span>
+                        <span class="p">),</span>
+                        <span class="s2">"Percent Female Surplus"</span><span class="p">:</span> <span class="p">(</span>
+                            <span class="n">sex_surplus</span><span class="o">.</span><span class="n">female_percent_surplus</span>
+                        <span class="p">),</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+
+            <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="n">genotype_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">decimal_places</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">genotype_df</span> <span class="o">=</span> <span class="n">genotype_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="n">decimal_places</span><span class="p">)</span>
@@ -453,20 +543,37 @@
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_initialise_genotype_surplus</span><span class="p">(</span>
+    <span class="n">genotype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="n">surplus_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">GenotypeSurplus</span><span class="p">],</span>
+    <span class="n">required_n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">SexSplit</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Add a GenotypeSurplus for the genotype (if not already present), with</span>
+<span class="sd">    SexSurplus if required"""</span>
+    <span class="k">if</span> <span class="n">genotype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">surplus_per_genotype</span><span class="p">:</span>
+        <span class="n">surplus_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">GenotypeSurplus</span><span class="p">(</span>
+            <span class="n">sex_surplus</span><span class="o">=</span><span class="n">SexSurplus</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">required_n</span><span class="p">,</span> <span class="n">SexSplit</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+
 <div class="viewcode-block" id="create_surplus_summary">
 <a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.create_surplus_summary.html#oscar_colony.optimise.surplus_summary.create_surplus_summary">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_surplus_summary</span><span class="p">(</span>
-    <span class="n">required_n_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">required_n_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">SexSplit</span><span class="p">],</span>
     <span class="n">n_matings_per_scheme</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BreedingScheme</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">offspring_per_scheme</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BreedingScheme</span><span class="p">,</span> <span class="n">ExpectedOffspring</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SurplusSummary</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a summary of the total and surplus numbers for the</span>
+<span class="w">    </span><span class="sd">"""Create a summary of the total and surplus numbers for the</span>
 <span class="sd">    given combination of breeding schemes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    required_n_per_genotype : dict[tuple[Genotype, ...], int]</span>
-<span class="sd">        Required number of individuals of each genotype</span>
+<span class="sd">    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]</span>
+<span class="sd">        Required number of individuals per genotype. Each value is either an</span>
+<span class="sd">        int (where male / female isn't requested), or a SexSplit of</span>
+<span class="sd">        (n_males, n_females).</span>
 <span class="sd">    n_matings_per_scheme : dict[BreedingScheme, int]</span>
 <span class="sd">        Optimal number of matings per breeding scheme</span>
 <span class="sd">    offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]</span>
@@ -477,36 +584,115 @@
 <span class="sd">    -------</span>
 <span class="sd">    SurplusSummary</span>
 <span class="sd">        Summary of total and surplus numbers</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the plan doesn't reach the required number of individuals for any</span>
+<span class="sd">        genotype - in total, or of males / females</span>
+<span class="sd">    """</span>
     <span class="n">surplus_summary</span> <span class="o">=</span> <span class="n">SurplusSummary</span><span class="p">()</span>
     <span class="n">surplus_per_genotype</span> <span class="o">=</span> <span class="n">surplus_summary</span><span class="o">.</span><span class="n">surplus_per_genotype</span>
+
+    <span class="c1"># Total required numbers - males / females are only counted when requested</span>
+    <span class="n">total_required</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_males_required</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_females_required</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sex_requested</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">required_n</span> <span class="ow">in</span> <span class="n">required_n_per_genotype</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">required_n</span><span class="p">,</span> <span class="n">SexSplit</span><span class="p">):</span>
+            <span class="n">sex_requested</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">n_males_required</span> <span class="o">+=</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_males</span>
+            <span class="n">n_females_required</span> <span class="o">+=</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_females</span>
+            <span class="n">total_required</span> <span class="o">+=</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_males</span> <span class="o">+</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_females</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">total_required</span> <span class="o">+=</span> <span class="n">required_n</span>
 
     <span class="c1"># Get number of expected offspring overall / per genotype</span>
     <span class="k">for</span> <span class="n">breeding_scheme</span><span class="p">,</span> <span class="n">n_matings</span> <span class="ow">in</span> <span class="n">n_matings_per_scheme</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">expected_offspring</span> <span class="o">=</span> <span class="n">offspring_per_scheme</span><span class="p">[</span><span class="n">breeding_scheme</span><span class="p">]</span>
-        <span class="n">surplus_summary</span><span class="o">.</span><span class="n">total_n</span> <span class="o">+=</span> <span class="n">expected_offspring</span><span class="o">.</span><span class="n">total_n</span> <span class="o">*</span> <span class="n">n_matings</span>
+        <span class="n">total_n</span> <span class="o">=</span> <span class="n">expected_offspring</span><span class="o">.</span><span class="n">total_n</span> <span class="o">*</span> <span class="n">n_matings</span>
+        <span class="n">proportion_male</span> <span class="o">=</span> <span class="n">expected_offspring</span><span class="o">.</span><span class="n">proportion_male</span>
+
+        <span class="n">surplus_summary</span><span class="o">.</span><span class="n">total_n</span> <span class="o">+=</span> <span class="n">total_n</span>
 
         <span class="n">n_per_genotype</span> <span class="o">=</span> <span class="n">expected_offspring</span><span class="o">.</span><span class="n">n_per_genotype</span>
         <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">n_per_mating</span> <span class="ow">in</span> <span class="n">n_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">genotype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">surplus_per_genotype</span><span class="p">:</span>
-                <span class="n">surplus_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span> <span class="o">=</span> <span class="n">GenotypeSurplus</span><span class="p">()</span>
-            <span class="n">surplus_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span><span class="o">.</span><span class="n">total_n</span> <span class="o">+=</span> <span class="n">n_per_mating</span> <span class="o">*</span> <span class="n">n_matings</span>
+            <span class="n">_initialise_genotype_surplus</span><span class="p">(</span>
+                <span class="n">genotype</span><span class="p">,</span>
+                <span class="n">surplus_per_genotype</span><span class="p">,</span>
+                <span class="n">required_n_per_genotype</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">genotype</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="n">n_of_genotype</span> <span class="o">=</span> <span class="n">n_per_mating</span> <span class="o">*</span> <span class="n">n_matings</span>
+            <span class="n">genotype_surplus</span> <span class="o">=</span> <span class="n">surplus_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span>
+            <span class="n">genotype_surplus</span><span class="o">.</span><span class="n">total_n</span> <span class="o">+=</span> <span class="n">n_of_genotype</span>
+
+            <span class="n">sex_surplus</span> <span class="o">=</span> <span class="n">genotype_surplus</span><span class="o">.</span><span class="n">sex_surplus</span>
+            <span class="k">if</span> <span class="n">sex_surplus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_males</span> <span class="o">+=</span> <span class="n">n_of_genotype</span> <span class="o">*</span> <span class="n">proportion_male</span>
+                <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_females</span> <span class="o">+=</span> <span class="n">n_of_genotype</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="mi">1</span> <span class="o">-</span> <span class="n">proportion_male</span>
+                <span class="p">)</span>
 
     <span class="c1"># Calculate total surplus</span>
-    <span class="n">total_required</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">required_n_per_genotype</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
     <span class="n">surplus_summary</span><span class="o">.</span><span class="n">total_n_surplus</span> <span class="o">=</span> <span class="n">surplus_summary</span><span class="o">.</span><span class="n">total_n</span> <span class="o">-</span> <span class="n">total_required</span>
 
-    <span class="c1"># Calculate surplus per genotype</span>
-    <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">surplus</span> <span class="ow">in</span> <span class="n">surplus_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="n">required_n_per_genotype</span><span class="p">:</span>
-            <span class="n">required_n</span> <span class="o">=</span> <span class="n">required_n_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">required_n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Required genotypes that can't be produced by any of the chosen schemes</span>
+    <span class="c1"># still need a summary, so their shortfall is visible</span>
+    <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">required_n</span> <span class="ow">in</span> <span class="n">required_n_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">_initialise_genotype_surplus</span><span class="p">(</span>
+            <span class="n">genotype</span><span class="p">,</span> <span class="n">surplus_per_genotype</span><span class="p">,</span> <span class="n">required_n</span>
+        <span class="p">)</span>
 
-        <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span> <span class="o">=</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n</span> <span class="o">-</span> <span class="n">required_n</span>
-        <span class="n">surplus</span><span class="o">.</span><span class="n">percent_surplus</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span> <span class="o">/</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n</span>
-        <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="k">for</span> <span class="n">genotype</span><span class="p">,</span> <span class="n">surplus</span> <span class="ow">in</span> <span class="n">surplus_per_genotype</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">required_n</span> <span class="o">=</span> <span class="n">required_n_per_genotype</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">genotype</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">sex_surplus</span> <span class="o">=</span> <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">required_n</span><span class="p">,</span> <span class="n">SexSplit</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sex_surplus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">sex_surplus</span><span class="o">.</span><span class="n">set_surplus</span><span class="p">(</span>
+                    <span class="n">required_n</span><span class="o">.</span><span class="n">n_males</span><span class="p">,</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_females</span>
+                <span class="p">)</span>
+            <span class="n">required_n</span> <span class="o">=</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_males</span> <span class="o">+</span> <span class="n">required_n</span><span class="o">.</span><span class="n">n_females</span>
+
+        <span class="n">surplus</span><span class="o">.</span><span class="n">set_surplus</span><span class="p">(</span><span class="n">required_n</span><span class="p">)</span>
+
+    <span class="c1"># Summary male / female numbers only cover the genotypes that were</span>
+    <span class="c1"># requested as a split, so they can be compared to the required numbers</span>
+    <span class="k">if</span> <span class="n">sex_requested</span><span class="p">:</span>
+        <span class="n">summary_sex_surplus</span> <span class="o">=</span> <span class="n">SexSurplus</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">surplus</span> <span class="ow">in</span> <span class="n">surplus_per_genotype</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">summary_sex_surplus</span><span class="o">.</span><span class="n">total_males</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_males</span>
+                <span class="p">)</span>
+                <span class="n">summary_sex_surplus</span><span class="o">.</span><span class="n">total_females</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_females</span>
+                <span class="p">)</span>
+        <span class="n">summary_sex_surplus</span><span class="o">.</span><span class="n">set_surplus</span><span class="p">(</span><span class="n">n_males_required</span><span class="p">,</span> <span class="n">n_females_required</span><span class="p">)</span>
+        <span class="n">surplus_summary</span><span class="o">.</span><span class="n">sex_surplus</span> <span class="o">=</span> <span class="n">summary_sex_surplus</span>
+
+    <span class="c1"># Error where the plan doesn't reach the required numbers</span>
+    <span class="n">error_messages</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">genotype</span> <span class="ow">in</span> <span class="n">required_n_per_genotype</span><span class="p">:</span>
+        <span class="n">surplus</span> <span class="o">=</span> <span class="n">surplus_per_genotype</span><span class="p">[</span><span class="n">genotype</span><span class="p">]</span>
+        <span class="n">surplus_per_label</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">""</span><span class="p">,</span> <span class="n">surplus</span><span class="o">.</span><span class="n">total_n_surplus</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">surplus_per_label</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s2">"male "</span><span class="p">,</span> <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_male_surplus</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">"female "</span><span class="p">,</span> <span class="n">surplus</span><span class="o">.</span><span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_female_surplus</span><span class="p">),</span>
+            <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">n_surplus</span> <span class="ow">in</span> <span class="n">surplus_per_label</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n_surplus</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">error_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">Genotype</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">genotype</span><span class="p">)</span><span class="si">}</span><span class="s2">: plan is "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">n_surplus</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">individuals short of the "</span>
+                    <span class="s2">"required number"</span>
+                <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">error_messages</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_messages</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">surplus_summary</span></div>
 
@@ -539,8 +725,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -560,8 +746,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
-    <br/>
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.2.0.
   </p>
 </div>
       
@@ -574,7 +759,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>

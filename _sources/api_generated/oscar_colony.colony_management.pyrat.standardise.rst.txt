@@ -11,3 +11,11 @@ oscar\_colony.colony\_management.pyrat.standardise
    
       standardise_pyrat_csv
    
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class.rst
+   
+      WildtypeSymbol
+   

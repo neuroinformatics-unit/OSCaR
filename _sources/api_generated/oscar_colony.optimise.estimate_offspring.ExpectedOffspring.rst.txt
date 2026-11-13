@@ -25,6 +25,7 @@ oscar\_colony.optimise.estimate\_offspring.ExpectedOffspring
 
    .. autosummary::
    
+      ~ExpectedOffspring.proportion_male
       ~ExpectedOffspring.total_n
       ~ExpectedOffspring.n_per_genotype
    

@@ -1,0 +1,33 @@
+oscar\_colony.optimise.surplus\_summary.SexSplit
+================================================
+
+.. currentmodule:: oscar_colony.optimise.surplus_summary
+
+.. autoclass:: SexSplit
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SexSplit.__init__
+      ~SexSplit.count
+      ~SexSplit.index
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SexSplit.n_females
+      ~SexSplit.n_males
+   
+   

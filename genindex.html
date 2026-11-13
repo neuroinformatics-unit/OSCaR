@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -26,22 +25,23 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="_static/documentation_options.js?v=a83ce22a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
@@ -49,6 +49,7 @@
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
   
@@ -98,7 +99,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -118,7 +119,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.9</p>
+    <p class="title logo__title">oscar-colony v0.0.10</p>
   
 </a></div>
     
@@ -163,7 +164,7 @@
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -174,15 +175,15 @@
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -208,7 +209,7 @@
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -229,7 +230,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
@@ -278,15 +279,15 @@
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -350,13 +351,18 @@
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -367,6 +373,8 @@
       <ul>
         <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.__init__">(oscar_colony.breeding_scheme.Genotype method)</a>
 </li>
+        <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.__init__">(oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
         <li><a href="api_generated/oscar_colony.historical_stats.BreedingSchemeStatistics.html#oscar_colony.historical_stats.BreedingSchemeStatistics.__init__">(oscar_colony.historical_stats.BreedingSchemeStatistics method)</a>
 </li>
         <li><a href="api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.__init__">(oscar_colony.historical_stats.LineStatistics method)</a>
@@ -374,6 +382,10 @@
         <li><a href="api_generated/oscar_colony.optimise.estimate_offspring.ExpectedOffspring.html#oscar_colony.optimise.estimate_offspring.ExpectedOffspring.__init__">(oscar_colony.optimise.estimate_offspring.ExpectedOffspring method)</a>
 </li>
         <li><a href="api_generated/oscar_colony.optimise.surplus_summary.GenotypeSurplus.html#oscar_colony.optimise.surplus_summary.GenotypeSurplus.__init__">(oscar_colony.optimise.surplus_summary.GenotypeSurplus method)</a>
+</li>
+        <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit.__init__">(oscar_colony.optimise.surplus_summary.SexSplit method)</a>
+</li>
+        <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSurplus.html#oscar_colony.optimise.surplus_summary.SexSurplus.__init__">(oscar_colony.optimise.surplus_summary.SexSurplus method)</a>
 </li>
         <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary.__init__">(oscar_colony.optimise.surplus_summary.SurplusSummary method)</a>
 </li>
@@ -412,12 +424,24 @@
 </li>
       <li><a href="api_generated/oscar_colony.optimise.optimal_scheme_calculator.calculate_optimal_scheme.html#oscar_colony.optimise.optimal_scheme_calculator.calculate_optimal_scheme">calculate_optimal_scheme() (in module oscar_colony.optimise.optimal_scheme_calculator)</a>
 </li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.capitalize">capitalize() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.casefold">casefold() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.center">center() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.conjugate">conjugate() (oscar_colony.breeding_scheme.Genotype method)</a>
 </li>
-      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary.create_genotype_df">create_genotype_df() (oscar_colony.optimise.surplus_summary.SurplusSummary method)</a>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.count">count() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+
+      <ul>
+        <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit.count">(oscar_colony.optimise.surplus_summary.SexSplit method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary.create_genotype_df">create_genotype_df() (oscar_colony.optimise.surplus_summary.SurplusSummary method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.create_n_per_genotype_df">create_n_per_genotype_df() (oscar_colony.historical_stats.LineStatistics method)</a>
 </li>
       <li><a href="api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics.create_scheme_number_df">create_scheme_number_df() (oscar_colony.historical_stats.LineStatistics method)</a>
@@ -442,10 +466,16 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_generated/oscar_colony.optimise.estimate_offspring.estimate_n_offspring_per_mating.html#oscar_colony.optimise.estimate_offspring.estimate_n_offspring_per_mating">estimate_n_offspring_per_mating() (in module oscar_colony.optimise.estimate_offspring)</a>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.encode">encode() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.endswith">endswith() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.optimise.estimate_offspring.estimate_n_offspring_per_mating.html#oscar_colony.optimise.estimate_offspring.estimate_n_offspring_per_mating">estimate_n_offspring_per_mating() (in module oscar_colony.optimise.estimate_offspring)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.expandtabs">expandtabs() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.optimise.estimate_offspring.ExpectedOffspring.html#oscar_colony.optimise.estimate_offspring.ExpectedOffspring">ExpectedOffspring (class in oscar_colony.optimise.estimate_offspring)</a>
 </li>
   </ul></td>
@@ -454,10 +484,16 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.from_bytes">from_bytes() (oscar_colony.breeding_scheme.Genotype class method)</a>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.find">find() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.format">format() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.format_map">format_map() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.from_bytes">from_bytes() (oscar_colony.breeding_scheme.Genotype class method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.from_string">from_string() (oscar_colony.breeding_scheme.Genotype class method)</a>
 </li>
   </ul></td>
@@ -492,9 +528,47 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.imag">imag (oscar_colony.breeding_scheme.Genotype attribute)</a>
 </li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.index">index() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+
+      <ul>
+        <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit.index">(oscar_colony.optimise.surplus_summary.SexSplit method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.is_integer">is_integer() (oscar_colony.breeding_scheme.Genotype method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isalnum">isalnum() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isalpha">isalpha() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isascii">isascii() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isdecimal">isdecimal() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.is_integer">is_integer() (oscar_colony.breeding_scheme.Genotype method)</a>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isdigit">isdigit() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isidentifier">isidentifier() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.islower">islower() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isnumeric">isnumeric() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isprintable">isprintable() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isspace">isspace() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.istitle">istitle() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.isupper">isupper() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.join">join() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -504,12 +578,22 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_generated/oscar_colony.historical_stats.LineStatistics.html#oscar_colony.historical_stats.LineStatistics">LineStatistics (class in oscar_colony.historical_stats)</a>
 </li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.ljust">ljust() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.lower">lower() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.lstrip">lstrip() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.maketrans">maketrans() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol static method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.breeding_scheme.BreedingScheme.html#oscar_colony.breeding_scheme.BreedingScheme.mendelian_ratio">mendelian_ratio() (oscar_colony.breeding_scheme.BreedingScheme method)</a>
 </li>
       <li>
@@ -543,6 +627,12 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit.n_females">n_females (oscar_colony.optimise.surplus_summary.SexSplit attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit.n_males">n_males (oscar_colony.optimise.surplus_summary.SexSplit attribute)</a>
+</li>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.numerator">numerator (oscar_colony.breeding_scheme.Genotype attribute)</a>
 </li>
   </ul></td>
@@ -626,10 +716,38 @@
   </ul></td>
 </tr></table>
 
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.partition">partition() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.real">real (oscar_colony.breeding_scheme.Genotype attribute)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.removeprefix">removeprefix() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.removesuffix">removesuffix() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.replace">replace() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.rfind">rfind() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.rindex">rindex() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.rjust">rjust() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.rpartition">rpartition() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.rsplit">rsplit() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.rstrip">rstrip() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -637,11 +755,31 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.standardise_pyrat_csv.html#oscar_colony.colony_management.pyrat.standardise.standardise_pyrat_csv">standardise_pyrat_csv() (in module oscar_colony.colony_management.pyrat.standardise)</a>
+      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.GenotypeSurplus.html#oscar_colony.optimise.surplus_summary.GenotypeSurplus.set_surplus">set_surplus() (oscar_colony.optimise.surplus_summary.GenotypeSurplus method)</a>
+
+      <ul>
+        <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSurplus.html#oscar_colony.optimise.surplus_summary.SexSurplus.set_surplus">(oscar_colony.optimise.surplus_summary.SexSurplus method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSplit.html#oscar_colony.optimise.surplus_summary.SexSplit">SexSplit (class in oscar_colony.optimise.surplus_summary)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SexSurplus.html#oscar_colony.optimise.surplus_summary.SexSurplus">SexSurplus (class in oscar_colony.optimise.surplus_summary)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.split">split() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.splitlines">splitlines() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.standardise_pyrat_csv.html#oscar_colony.colony_management.pyrat.standardise.standardise_pyrat_csv">standardise_pyrat_csv() (in module oscar_colony.colony_management.pyrat.standardise)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.startswith">startswith() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.strip">strip() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary">SurplusSummary (class in oscar_colony.optimise.surplus_summary)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.swapcase">swapcase() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -649,11 +787,39 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.title">title() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.to_bytes">to_bytes() (oscar_colony.breeding_scheme.Genotype method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_generated/oscar_colony.breeding_scheme.Genotype.html#oscar_colony.breeding_scheme.Genotype.to_string">to_string() (oscar_colony.breeding_scheme.Genotype class method)</a>
+</li>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.translate">translate() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.upper">upper() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol">WildtypeSymbol (class in oscar_colony.colony_management.pyrat.standardise)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_generated/oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html#oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.zfill">zfill() (oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -687,8 +853,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -708,8 +874,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
-    <br/>
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.2.0.
   </p>
 </div>
       
@@ -722,7 +887,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>

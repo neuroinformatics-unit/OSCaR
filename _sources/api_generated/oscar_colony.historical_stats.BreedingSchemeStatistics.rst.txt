@@ -29,8 +29,10 @@ oscar\_colony.historical\_stats.BreedingSchemeStatistics
       ~BreedingSchemeStatistics.average_n_litters_per_pair
       ~BreedingSchemeStatistics.n_breeding_pairs
       ~BreedingSchemeStatistics.n_successful_matings
+      ~BreedingSchemeStatistics.proportion_male
       ~BreedingSchemeStatistics.total_n_genotyped_offspring
       ~BreedingSchemeStatistics.total_n_offspring
+      ~BreedingSchemeStatistics.total_n_sexed_offspring
       ~BreedingSchemeStatistics.n_offspring_per_genotype
       ~BreedingSchemeStatistics.proportion_offspring_per_genotype
    

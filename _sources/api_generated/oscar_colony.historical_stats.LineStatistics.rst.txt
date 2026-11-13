@@ -31,8 +31,10 @@ oscar\_colony.historical\_stats.LineStatistics
    
       ~LineStatistics.average_litter_size
       ~LineStatistics.n_mutations
+      ~LineStatistics.proportion_male
       ~LineStatistics.total_n_genotyped_offspring
       ~LineStatistics.total_n_offspring
+      ~LineStatistics.total_n_sexed_offspring
       ~LineStatistics.total_n_successful_matings
       ~LineStatistics.line_name
       ~LineStatistics.mutations
