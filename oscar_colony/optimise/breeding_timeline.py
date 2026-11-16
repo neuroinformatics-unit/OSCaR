@@ -36,8 +36,13 @@ def calculate_breeding_timeline(
     Raises
     ------
     ValueError
-        If there isn't enough time between today and target_date.
+        If there isn't enough time between today and target_date, or
+        target_age_days or gestation_days is negative.
     """
+    if target_age_days < 0 or timings.gestation_days < 0:
+        raise ValueError(
+            "Target age and gestation duration must be non-negative"
+        )
 
     calculated_days_deadline = timedelta(
         days=timings.gestation_days + target_age_days

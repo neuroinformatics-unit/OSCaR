@@ -45,6 +45,23 @@ def test_calculate_breeding_timeline(
     )
 
 
-def test_calculate_breeding_timeline_too_soon():
+@pytest.mark.parametrize(
+    "target_age_days, target_date, timings",
+    [
+        pytest.param(
+            30, TODAY + timedelta(days=49), BreedingTimings(), id="too soon"
+        ),
+        pytest.param(-10, None, BreedingTimings(), id="negative age"),
+        pytest.param(
+            30,
+            None,
+            BreedingTimings(gestation_days=-10),
+            id="negative gestation",
+        ),
+    ],
+)
+def test_calculate_breeding_timeline_invalid(
+    target_age_days, target_date, timings
+):
     with pytest.raises(ValueError):
-        calculate_breeding_timeline(30, TODAY + timedelta(days=49))
+        calculate_breeding_timeline(target_age_days, target_date, timings)
