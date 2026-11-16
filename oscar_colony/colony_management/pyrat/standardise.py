@@ -512,7 +512,8 @@ def _make_combined_genotype_column_for_identifier(
     ].agg("_".join, axis=1)
 
     # Drop old mutation / grade columns
-    line_data.drop(columns=mutation_cols + genotype_cols, inplace=True)
+    for col in mutation_cols + genotype_cols:
+        del line_data[col]
 
 
 def _filter_data_input_validity(standard_df: pd.DataFrame) -> pd.DataFrame:
