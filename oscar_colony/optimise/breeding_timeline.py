@@ -47,11 +47,12 @@ def calculate_breeding_timeline(
     calculated_days_deadline = timedelta(
         days=timings.gestation_days + target_age_days
     )
+    today = date.today()
     if target_date is None:
-        target_date = date.today() + calculated_days_deadline
+        target_date = today + calculated_days_deadline
 
     breeding_start_date = target_date - calculated_days_deadline
-    if breeding_start_date < date.today():
+    if breeding_start_date < today:
         raise ValueError(f"Can't be ready by {target_date}")
 
     return breeding_start_date, target_date
