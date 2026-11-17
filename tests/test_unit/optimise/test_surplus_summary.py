@@ -95,6 +95,36 @@ def test_invalid_surplus_summary(
     [
         pytest.param(
             "surplus_2_mutations",
+            "converted-surplus-summary.csv",
+            id="no sex split",
+        ),
+        pytest.param(
+            "surplus_2_mutations_sex_split",
+            "converted-surplus-summary-sex-split.csv",
+            id="sex split",
+        ),
+    ],
+)
+def test_create_summary_df(surplus_summary, expected_csv, request):
+    """Test creation of a summary dataframe from SurplusSummary.
+
+    The male / female rows should only be present when a sex split was
+    required.
+    """
+
+    summary_df = request.getfixturevalue(surplus_summary).create_summary_df(
+        decimal_places=2
+    )
+    expected_df = pd.read_csv(pooch_data_path(expected_csv))
+
+    pd.testing.assert_frame_equal(summary_df, expected_df)
+
+
+@pytest.mark.parametrize(
+    "surplus_summary, expected_csv",
+    [
+        pytest.param(
+            "surplus_2_mutations",
             "converted-surplus-per-genotype.csv",
             id="no sex split",
         ),
