@@ -98,6 +98,8 @@ class LineStatistics:
                     stats.average_n_litters_per_pair,
                     stats.total_n_offspring,
                     stats.total_n_genotyped_offspring,
+                    stats.total_n_sexed_offspring,
+                    stats.proportion_male,
                 ]
             )
 
@@ -111,6 +113,8 @@ class LineStatistics:
                 "Average litters per pair",
                 "Total offspring",
                 "Total genotyped offspring",
+                "Total sexed offspring",
+                "Proportion male offspring",
             ],
         )
 
