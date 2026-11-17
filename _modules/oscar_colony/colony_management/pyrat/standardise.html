@@ -886,7 +886,8 @@
     <span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="s2">"_"</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Drop old mutation / grade columns</span>
-    <span class="n">line_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">mutation_cols</span> <span class="o">+</span> <span class="n">genotype_cols</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">mutation_cols</span> <span class="o">+</span> <span class="n">genotype_cols</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">line_data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_filter_data_input_validity</span><span class="p">(</span><span class="n">standard_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>

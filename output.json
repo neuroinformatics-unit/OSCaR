@@ -30,11 +30,11 @@
 {"filename": "api_generated/oscar_colony.optimise.optimal_scheme_calculator.calculate_optimal_scheme.rst", "lineno": 2, "status": "unchecked", "code": 0, "uri": "#oscar_colony.optimise.surplus_summary.SurplusSummary", "info": ""}
 {"filename": "api_generated/oscar_colony.optimise.surplus_summary.rst", "lineno": 1, "status": "unchecked", "code": 0, "uri": "#oscar_colony.optimise.surplus_summary.create_surplus_summary", "info": ""}
 {"filename": "developer_setup.md", "lineno": 9, "status": "working", "code": 0, "uri": "https://docs.astral.sh/uv/getting-started/installation/", "info": ""}
-{"filename": "developer_setup.md", "lineno": 18, "status": "working", "code": 0, "uri": "https://conda-forge.org/download/", "info": ""}
 {"filename": "user_guide/pyrat.md", "lineno": 61, "status": "working", "code": 0, "uri": "https://pandas.pydata.org/", "info": ""}
+{"filename": "developer_setup.md", "lineno": 18, "status": "working", "code": 0, "uri": "https://conda-forge.org/download/", "info": ""}
 {"filename": "user_guide/pyrat.md", "lineno": 28, "status": "working", "code": 0, "uri": "https://github.com/theskumar/python-dotenv", "info": ""}
-{"filename": "developer_setup.md", "lineno": 42, "status": "working", "code": 0, "uri": "https://www.fatiando.org/pooch/latest/", "info": ""}
 {"filename": "developer_setup.md", "lineno": 30, "status": "working", "code": 0, "uri": "https://pre-commit.com/", "info": ""}
+{"filename": "developer_setup.md", "lineno": 42, "status": "working", "code": 0, "uri": "https://www.fatiando.org/pooch/latest/", "info": ""}
 {"filename": "developer_setup.md", "lineno": 44, "status": "working", "code": 0, "uri": "https://www.fatiando.org/pooch/latest/hashes.html#calculating-hashes", "info": ""}
 {"filename": "index.md", "lineno": 6, "status": "working", "code": 0, "uri": "https://github.com/neuroinformatics-unit/OSCaR-web-app", "info": ""}
 {"filename": "developer_setup.md", "lineno": 42, "status": "working", "code": 0, "uri": "https://gin.swc.ucl.ac.uk/neuroinformatics/oscar-test-data", "info": ""}
