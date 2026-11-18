@@ -7,6 +7,7 @@ from oscar_colony.optimise.optimal_scheme_calculator import (
     _optimise_n_matings,
     calculate_optimal_scheme,
 )
+from oscar_colony.optimise.surplus_summary import SexSplit
 from tests.helpers import assert_dataclass_equal
 
 
@@ -99,6 +100,47 @@ def test_optimise_n_matings(
     )
 
     assert n_matings_per_scheme == request.getfixturevalue(expected_n_matings)
+
+
+@pytest.mark.parametrize(
+    "available_breeding_stock, expected_n_matings",
+    [
+        pytest.param(
+            {
+                (Genotype.WT,): SexSplit(100, 100),
+                (Genotype.HET,): SexSplit(100, 100),
+                (Genotype.HOM,): SexSplit(100, 100),
+            },
+            {BreedingScheme("hom", "hom"): 4, BreedingScheme("hom", "wt"): 4},
+            id="plenty of stock",
+        ),
+        pytest.param(
+            {
+                (Genotype.HET,): SexSplit(0, 10),
+                (Genotype.HOM,): SexSplit(10, 0),
+            },
+            {BreedingScheme("hom", "het"): 8},
+            id="hom males and het females only",
+        ),
+    ],
+)
+def test_optimise_n_matings_breeding_stock(
+    available_breeding_stock,
+    expected_n_matings,
+    offspring_per_scheme_1_mutation,
+):
+    """Test optimisation only uses the available breeding stock when values are
+    provided."""
+
+    required_n_per_genotype = {(Genotype.HET,): 20, (Genotype.HOM,): 20}
+
+    n_matings_per_scheme = _optimise_n_matings(
+        required_n_per_genotype,
+        offspring_per_scheme_1_mutation,
+        available_breeding_stock,
+    )
+
+    assert n_matings_per_scheme == expected_n_matings
 
 
 def test_optimise_impossible_scheme():
