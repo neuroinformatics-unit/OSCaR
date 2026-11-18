@@ -136,6 +136,15 @@ def test_optimise_n_matings(
             ),
             id="no female breeders",
         ),
+        pytest.param(
+            {(Genotype.HOM,): SexSplit(10, 10)},
+            None,
+            pytest.raises(
+                ValueError,
+                match="Can't breed het from the available breeding stock",
+            ),
+            id="only hom breeders",
+        ),
     ],
 )
 def test_optimise_n_matings_breeding_stock(

@@ -151,8 +151,11 @@ def _optimise_n_matings(
     required_genotypes = sorted(list(required_n_per_genotype.keys()))
 
     if available_breeding_stock is not None:
-        breeding_schemes = _filter_schemes_by_breeding_stock(
-            breeding_schemes, available_breeding_stock
+        breeding_schemes = _get_schemes_from_breeding_stock(
+            breeding_schemes,
+            available_breeding_stock,
+            required_genotypes,
+            offspring_per_scheme,
         )
 
     # Coefficients of the objective function we want to minimise. This will
@@ -256,11 +259,13 @@ def _optimise_n_matings(
     return n_matings_per_scheme
 
 
-def _filter_schemes_by_breeding_stock(
+def _get_schemes_from_breeding_stock(
     breeding_schemes: list[BreedingScheme],
     available_breeding_stock: dict[tuple[Genotype, ...], SexSplit],
+    required_genotypes: list[tuple[Genotype, ...]],
+    offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
 ) -> list[BreedingScheme]:
-    """Filter breeding_schemes to use only those with one male and one female.
+    """Get the breeding schemes that can be set up from the provided stock.
 
     Parameters
     ----------
@@ -269,6 +274,11 @@ def _filter_schemes_by_breeding_stock(
     available_breeding_stock : dict[tuple[Genotype, ...], SexSplit]
         Breeders in stock per genotype, as a SexSplit of (n_males,
         n_females).
+    required_genotypes : list[tuple[Genotype, ...]]
+        The genotypes that need to be produced
+    offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
+        The estimated number of offspring produced per mating of each
+        breeding scheme
 
     Returns
     -------
@@ -278,9 +288,11 @@ def _filter_schemes_by_breeding_stock(
     Raises
     ------
     ValueError
-        If no breeding schemes can be set up from available_breeding_stock.
+        If breeding schemes or required genotypes cannot be produced from
+        available_breeding_stock.
     """
 
+    # check male and female in chosen available breeding stock is not 0
     possible_schemes = set()
     for male_genotype, male_stock in available_breeding_stock.items():
         for female_genotype, female_stock in available_breeding_stock.items():
@@ -298,5 +310,21 @@ def _filter_schemes_by_breeding_stock(
         raise ValueError(
             "The chosen scheme lacks the minimum of one male and one female"
         )
+
+    # Check that the selected genotype can be produced from the available stock
+    # e.g. WT stock can not be produced from exclusively HOM stock.
+    breedable_genotypes = set()
+    for scheme in filtered_schemes:
+        n_per_genotype = offspring_per_scheme[scheme].n_per_genotype
+        for genotype, n_offspring in n_per_genotype.items():
+            if n_offspring > 0:
+                breedable_genotypes.add(genotype)
+
+    for genotype in required_genotypes:
+        if genotype not in breedable_genotypes:
+            raise ValueError(
+                f"Can't breed {Genotype.to_string(genotype)} from the "
+                "available breeding stock"
+            )
 
     return filtered_schemes
