@@ -1,3 +1,5 @@
+from contextlib import nullcontext as does_not_raise
+
 import pytest
 
 from oscar_colony.breeding_scheme import BreedingScheme, Genotype
@@ -103,7 +105,7 @@ def test_optimise_n_matings(
 
 
 @pytest.mark.parametrize(
-    "available_breeding_stock, expected_n_matings",
+    "available_breeding_stock, expected_n_matings, expectation",
     [
         pytest.param(
             {
@@ -112,6 +114,7 @@ def test_optimise_n_matings(
                 (Genotype.HOM,): SexSplit(100, 100),
             },
             {BreedingScheme("hom", "hom"): 4, BreedingScheme("hom", "wt"): 4},
+            does_not_raise(),
             id="plenty of stock",
         ),
         pytest.param(
@@ -120,27 +123,39 @@ def test_optimise_n_matings(
                 (Genotype.HOM,): SexSplit(10, 0),
             },
             {BreedingScheme("hom", "het"): 8},
+            does_not_raise(),
             id="hom males and het females only",
+        ),
+        pytest.param(
+            {(Genotype.HOM,): SexSplit(10, 0)},
+            None,
+            pytest.raises(
+                ValueError,
+                match="The chosen scheme lacks the minimum of one male and "
+                "one female",
+            ),
+            id="no female breeders",
         ),
     ],
 )
 def test_optimise_n_matings_breeding_stock(
     available_breeding_stock,
     expected_n_matings,
+    expectation,
     offspring_per_scheme_1_mutation,
 ):
     """Test optimisation only uses the available breeding stock when values are
-    provided."""
+    provided, and raises an error when the stock can't be used."""
 
     required_n_per_genotype = {(Genotype.HET,): 20, (Genotype.HOM,): 20}
 
-    n_matings_per_scheme = _optimise_n_matings(
-        required_n_per_genotype,
-        offspring_per_scheme_1_mutation,
-        available_breeding_stock,
-    )
-
-    assert n_matings_per_scheme == expected_n_matings
+    with expectation:
+        n_matings_per_scheme = _optimise_n_matings(
+            required_n_per_genotype,
+            offspring_per_scheme_1_mutation,
+            available_breeding_stock,
+        )
+        assert n_matings_per_scheme == expected_n_matings
 
 
 def test_optimise_impossible_scheme():

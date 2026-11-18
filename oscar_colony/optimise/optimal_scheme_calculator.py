@@ -274,6 +274,11 @@ def _filter_schemes_by_breeding_stock(
     -------
     list[BreedingScheme]
         The filtered breeding schemes, in the same order as the original list.
+
+    Raises
+    ------
+    ValueError
+        If no breeding schemes can be set up from available_breeding_stock.
     """
 
     possible_schemes = set()
@@ -288,5 +293,10 @@ def _filter_schemes_by_breeding_stock(
     for scheme in breeding_schemes:
         if scheme in possible_schemes:
             filtered_schemes.append(scheme)
+
+    if not filtered_schemes:
+        raise ValueError(
+            "The chosen scheme lacks the minimum of one male and one female"
+        )
 
     return filtered_schemes
