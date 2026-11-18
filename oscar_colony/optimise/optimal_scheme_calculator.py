@@ -82,6 +82,8 @@ def calculate_optimal_scheme(
 def _optimise_n_matings(
     required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
+    available_breeding_stock: dict[tuple[Genotype, ...], SexSplit]
+    | None = None,
 ) -> dict[BreedingScheme, int]:
     """Calculate the optimal number of matings of each breeding scheme to
     meet the required_genotypes.
@@ -123,6 +125,9 @@ def _optimise_n_matings(
     offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
         The estimated number of offspring produced per mating of each
         breeding scheme
+    available_breeding_stock : dict[tuple[Genotype, ...], SexSplit], optional
+        Breeders in stock per genotype, as a SexSplit of (n_males,
+        n_females). If None, assumed infinite breeding stock.
 
     Returns
     -------
@@ -144,6 +149,11 @@ def _optimise_n_matings(
     # can result in a different solution being returned.
     breeding_schemes = sorted(list(offspring_per_scheme.keys()), key=str)
     required_genotypes = sorted(list(required_n_per_genotype.keys()))
+
+    if available_breeding_stock is not None:
+        breeding_schemes = _filter_schemes_by_breeding_stock(
+            breeding_schemes, available_breeding_stock
+        )
 
     # Coefficients of the objective function we want to minimise. This will
     # be a list with length == number of breeding schemes, containing the
@@ -244,3 +254,39 @@ def _optimise_n_matings(
             del n_matings_per_scheme[scheme]
 
     return n_matings_per_scheme
+
+
+def _filter_schemes_by_breeding_stock(
+    breeding_schemes: list[BreedingScheme],
+    available_breeding_stock: dict[tuple[Genotype, ...], SexSplit],
+) -> list[BreedingScheme]:
+    """Filter breeding_schemes to use only those with one male and one female.
+
+    Parameters
+    ----------
+    breeding_schemes : list[BreedingScheme]
+        The breeding schemes to filter
+    available_breeding_stock : dict[tuple[Genotype, ...], SexSplit]
+        Breeders in stock per genotype, as a SexSplit of (n_males,
+        n_females).
+
+    Returns
+    -------
+    list[BreedingScheme]
+        The filtered breeding schemes, in the same order as the original list.
+    """
+
+    possible_schemes = set()
+    for male_genotype, male_stock in available_breeding_stock.items():
+        for female_genotype, female_stock in available_breeding_stock.items():
+            if male_stock.n_males > 0 and female_stock.n_females > 0:
+                possible_schemes.add(
+                    BreedingScheme(male_genotype, female_genotype)
+                )
+
+    filtered_schemes = []
+    for scheme in breeding_schemes:
+        if scheme in possible_schemes:
+            filtered_schemes.append(scheme)
+
+    return filtered_schemes
