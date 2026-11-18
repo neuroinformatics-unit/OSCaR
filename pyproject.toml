@@ -38,7 +38,7 @@ dev = [
   "pytest-cov",
   "pytest-env",
   "coverage",
-  "tox",
+  "tox<4.67.14",
   "mypy",
   "pre-commit",
   "ruff",
