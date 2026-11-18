@@ -1,0 +1,21 @@
+oscar\_colony.optimise.breeding\_timeline
+=========================================
+
+.. automodule:: oscar_colony.optimise.breeding_timeline
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      calculate_breeding_timeline
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class.rst
+   
+      BreedingTimings
+   

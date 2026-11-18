@@ -17,6 +17,7 @@ oscar\_colony.optimise.surplus\_summary.SurplusSummary
    
       ~SurplusSummary.__init__
       ~SurplusSummary.create_genotype_df
+      ~SurplusSummary.create_summary_df
    
    
 

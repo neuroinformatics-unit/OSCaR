@@ -38,7 +38,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../_static/documentation_options.js?v=a83ce22a"></script>
+    <script src="../../../_static/documentation_options.js?v=0c446633"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../../_static/design-tabs.js?v=fcb327ea"></script>
@@ -119,7 +119,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.10</p>
+    <p class="title logo__title">oscar-colony v0.0.11</p>
   
 </a></div>
     
@@ -466,6 +466,65 @@
     <span class="n">surplus_per_genotype</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Genotype</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">GenotypeSurplus</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span>
     <span class="p">)</span>
+
+<div class="viewcode-block" id="SurplusSummary.create_summary_df">
+<a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary.create_summary_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_summary_df</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">decimal_places</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a pandas dataframe summarising total numbers and surplus.</span>
+
+<span class="sd">        Columns are 'Sex', 'Required N', 'Total N' and 'Total N Surplus'.</span>
+<span class="sd">        Rows for male / female are omitted where no genotype was</span>
+<span class="sd">        requested as a SexSplit of (n_males, n_females).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        decimal_places : int | None, optional</span>
+<span class="sd">            Number of decimal places to round float values to</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            DataFrame summarising overall total and surplus.</span>
+<span class="sd">        """</span>
+
+        <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">total_n</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_n_surplus</span><span class="p">]</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">total_n</span><span class="p">]</span>
+        <span class="n">surplus</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">total_n_surplus</span><span class="p">]</span>
+        <span class="n">sex</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"all"</span><span class="p">]</span>
+
+        <span class="n">sex_surplus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sex_surplus</span>
+        <span class="k">if</span> <span class="n">sex_surplus</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">required</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_males</span> <span class="o">-</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_male_surplus</span><span class="p">,</span>
+                    <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_females</span>
+                    <span class="o">-</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_female_surplus</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">total</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_males</span><span class="p">,</span> <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_females</span><span class="p">])</span>
+            <span class="n">surplus</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_male_surplus</span><span class="p">,</span>
+                    <span class="n">sex_surplus</span><span class="o">.</span><span class="n">total_female_surplus</span><span class="p">,</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">sex</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">"male"</span><span class="p">,</span> <span class="s2">"female"</span><span class="p">])</span>
+
+        <span class="n">summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">"Sex"</span><span class="p">:</span> <span class="n">sex</span><span class="p">,</span>
+                <span class="s2">"Required N"</span><span class="p">:</span> <span class="n">required</span><span class="p">,</span>
+                <span class="s2">"Total N"</span><span class="p">:</span> <span class="n">total</span><span class="p">,</span>
+                <span class="s2">"Total N Surplus"</span><span class="p">:</span> <span class="n">surplus</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">decimal_places</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">summary_df</span> <span class="o">=</span> <span class="n">summary_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="n">decimal_places</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">summary_df</span></div>
+
 
 <div class="viewcode-block" id="SurplusSummary.create_genotype_df">
 <a class="viewcode-back" href="../../../api_generated/oscar_colony.optimise.surplus_summary.SurplusSummary.html#oscar_colony.optimise.surplus_summary.SurplusSummary.create_genotype_df">[docs]</a>

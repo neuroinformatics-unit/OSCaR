@@ -1,0 +1,30 @@
+oscar\_colony.optimise.breeding\_timeline.BreedingTimings
+=========================================================
+
+.. currentmodule:: oscar_colony.optimise.breeding_timeline
+
+.. autoclass:: BreedingTimings
+   :members:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BreedingTimings.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BreedingTimings.gestation_days
+   
+   

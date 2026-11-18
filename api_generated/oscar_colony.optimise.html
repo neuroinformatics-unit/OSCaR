@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=a83ce22a"></script>
+    <script src="../_static/documentation_options.js?v=0c446633"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../_static/design-tabs.js?v=fcb327ea"></script>
@@ -49,7 +49,7 @@
     <link rel="canonical" href="https://oscar-api.neuroinformatics.dev/api_generated/oscar_colony.optimise.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="oscar_colony.optimise.estimate_offspring" href="oscar_colony.optimise.estimate_offspring.html" />
+    <link rel="next" title="oscar_colony.optimise.breeding_timeline" href="oscar_colony.optimise.breeding_timeline.html" />
     <link rel="prev" title="oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol" href="oscar_colony.colony_management.pyrat.standardise.WildtypeSymbol.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
@@ -122,7 +122,7 @@
   
   
   
-    <p class="title logo__title">oscar-colony v0.0.10</p>
+    <p class="title logo__title">oscar-colony v0.0.11</p>
   
 </a></div>
     
@@ -361,6 +361,11 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">oscar_colony.optimise</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="oscar_colony.optimise.breeding_timeline.html">oscar_colony.optimise.breeding_timeline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="oscar_colony.optimise.breeding_timeline.calculate_breeding_timeline.html">oscar_colony.optimise.breeding_timeline.calculate_breeding_timeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="oscar_colony.optimise.breeding_timeline.BreedingTimings.html">oscar_colony.optimise.breeding_timeline.BreedingTimings</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="oscar_colony.optimise.estimate_offspring.html">oscar_colony.optimise.estimate_offspring</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="oscar_colony.optimise.estimate_offspring.estimate_n_offspring_per_mating.html">oscar_colony.optimise.estimate_offspring.estimate_n_offspring_per_mating</a></li>
 <li class="toctree-l3"><a class="reference internal" href="oscar_colony.optimise.estimate_offspring.ExpectedOffspring.html">oscar_colony.optimise.estimate_offspring.ExpectedOffspring</a></li>
@@ -445,13 +450,16 @@
 <p class="rubric">Modules</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="oscar_colony.optimise.estimate_offspring.html#module-oscar_colony.optimise.estimate_offspring" title="oscar_colony.optimise.estimate_offspring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_offspring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="oscar_colony.optimise.breeding_timeline.html#module-oscar_colony.optimise.breeding_timeline" title="oscar_colony.optimise.breeding_timeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">breeding_timeline</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="oscar_colony.optimise.optimal_scheme_calculator.html#module-oscar_colony.optimise.optimal_scheme_calculator" title="oscar_colony.optimise.optimal_scheme_calculator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimal_scheme_calculator</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="oscar_colony.optimise.estimate_offspring.html#module-oscar_colony.optimise.estimate_offspring" title="oscar_colony.optimise.estimate_offspring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_offspring</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="oscar_colony.optimise.surplus_summary.html#module-oscar_colony.optimise.surplus_summary" title="oscar_colony.optimise.surplus_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surplus_summary</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="oscar_colony.optimise.optimal_scheme_calculator.html#module-oscar_colony.optimise.optimal_scheme_calculator" title="oscar_colony.optimise.optimal_scheme_calculator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimal_scheme_calculator</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="oscar_colony.optimise.surplus_summary.html#module-oscar_colony.optimise.surplus_summary" title="oscar_colony.optimise.surplus_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">surplus_summary</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -479,11 +487,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="oscar_colony.optimise.estimate_offspring.html"
+       href="oscar_colony.optimise.breeding_timeline.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">oscar_colony.optimise.estimate_offspring</p>
+        <p class="prev-next-title">oscar_colony.optimise.breeding_timeline</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

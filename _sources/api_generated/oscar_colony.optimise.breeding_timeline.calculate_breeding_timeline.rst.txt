@@ -1,0 +1,6 @@
+oscar\_colony.optimise.breeding\_timeline.calculate\_breeding\_timeline
+=======================================================================
+
+.. currentmodule:: oscar_colony.optimise.breeding_timeline
+
+.. autofunction:: calculate_breeding_timeline

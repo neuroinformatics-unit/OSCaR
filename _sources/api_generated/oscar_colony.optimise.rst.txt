@@ -11,6 +11,7 @@
    :template: custom-module.rst
    :recursive:
 
+   breeding_timeline
    estimate_offspring
    optimal_scheme_calculator
    surplus_summary
