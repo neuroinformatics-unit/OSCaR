@@ -109,16 +109,6 @@ def test_optimise_n_matings(
     [
         pytest.param(
             {
-                (Genotype.WT,): SexSplit(100, 100),
-                (Genotype.HET,): SexSplit(100, 100),
-                (Genotype.HOM,): SexSplit(100, 100),
-            },
-            {BreedingScheme("hom", "hom"): 4, BreedingScheme("hom", "wt"): 4},
-            does_not_raise(),
-            id="plenty of stock",
-        ),
-        pytest.param(
-            {
                 (Genotype.HET,): SexSplit(0, 10),
                 (Genotype.HOM,): SexSplit(10, 0),
             },
@@ -131,8 +121,8 @@ def test_optimise_n_matings(
             None,
             pytest.raises(
                 ValueError,
-                match="The chosen scheme lacks the minimum of one male and "
-                "one female",
+                match="No breeding scheme can be set up from the available "
+                "breeding stock",
             ),
             id="no female breeders",
         ),
@@ -144,6 +134,33 @@ def test_optimise_n_matings(
                 match="Can't breed het from the available breeding stock",
             ),
             id="only hom breeders",
+        ),
+        pytest.param(
+            {
+                (Genotype.HET,): SexSplit(10, 10),
+                (Genotype.HOM,): SexSplit(6, 0),
+            },
+            {BreedingScheme("hom", "het"): 6, BreedingScheme("het", "het"): 3},
+            does_not_raise(),
+            id="six hom males",
+        ),
+        pytest.param(
+            {
+                (Genotype.HET,): SexSplit(4, 4),
+                (Genotype.HOM,): SexSplit(4, 4),
+            },
+            {BreedingScheme("hom", "het"): 8},
+            does_not_raise(),
+            id="four of each, both ways",
+        ),
+        pytest.param(
+            {
+                (Genotype.HET,): SexSplit(0, 10),
+                (Genotype.HOM,): SexSplit(1, 0),
+            },
+            None,
+            pytest.raises(ValueError, match="Not enough breeders in stock"),
+            id="one hom male",
         ),
     ],
 )
