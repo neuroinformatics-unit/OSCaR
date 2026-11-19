@@ -127,7 +127,8 @@ def _optimise_n_matings(
         breeding scheme
     available_breeding_stock : dict[tuple[Genotype, ...], SexSplit], optional
         Breeders in stock per genotype, as a SexSplit of (n_males,
-        n_females). If None, assumed infinite breeding stock.
+        n_females). Each mating uses one male and one female. If None,
+        assumed infinite breeding stock.
 
     Returns
     -------
@@ -150,9 +151,15 @@ def _optimise_n_matings(
     breeding_schemes = sorted(list(offspring_per_scheme.keys()), key=str)
     required_genotypes = sorted(list(required_n_per_genotype.keys()))
 
-    if available_breeding_stock is not None:
-        breeding_schemes = _get_schemes_from_breeding_stock(
-            breeding_schemes,
+    # one variable per male x female pairing, so stock can be counted by sex
+    if available_breeding_stock is None:
+        pairings = []
+        for scheme in breeding_schemes:
+            pairings.append(
+                (scheme, scheme.parent_1_genotype, scheme.parent_2_genotype)
+            )
+    else:
+        pairings = _get_pairings_from_breeding_stock(
             available_breeding_stock,
             required_genotypes,
             offspring_per_scheme,
@@ -202,7 +209,7 @@ def _optimise_n_matings(
                 "an int, or a SexSplit of (n_males, n_females)"
             )
 
-    for breeding_scheme in breeding_schemes:
+    for breeding_scheme, _, _ in pairings:
         expected_offspring = offspring_per_scheme[breeding_scheme]
         objective_coefficients.append(
             expected_offspring.total_n  # litter size
@@ -228,14 +235,32 @@ def _optimise_n_matings(
         ub=np.inf,  # no upper limit on values
     )
 
+    # matings can't use more males / females of a genotype than are in stock
+    stock_limits = []
+    if available_breeding_stock is not None:
+        for genotype, stock in available_breeding_stock.items():
+            females = []
+            males = []
+            for _, male, female in pairings:
+                females.append(int(female == genotype))
+                males.append(int(male == genotype))
+            stock_limits.append(LinearConstraint(males, ub=stock.n_males))
+            stock_limits.append(LinearConstraint(females, ub=stock.n_females))
+
     # By default milp has bounds of 0-infinity for variables (i.e. the
     # n_matings) so no need to specify further here.
     optimised_result = milp(
         objective_coefficients,
         integrality=1,  # returned values for n of matings must be integers
-        constraints=constraints,
+        constraints=[constraints, *stock_limits],
         options={"mip_rel_gap": 0},
     )
+
+    # MILP has status 2 = infeasible. From a too low stock count.
+    if available_breeding_stock is not None and optimised_result.status == 2:
+        raise ValueError(
+            "Not enough breeders in stock to produce the required animals"
+        )
 
     if (optimised_result.status != 0) or (not optimised_result.success):
         raise ValueError(
@@ -243,34 +268,33 @@ def _optimise_n_matings(
             f"{optimised_result.message}"
         )
 
-    n_matings_per_scheme = dict(zip(breeding_schemes, optimised_result.x))
-
+    # Add both ways round of a scheme together (e.g. hom x het, het x hom).
     # Output number of matings are forced to be whole numbers
-    # (with integrality=1 option above), but are still returned as floats.
-    # Let's convert to true int() + remove breeding schemes
-    # with 0 matings, to make the output easier to read at a glance
-    for scheme in list(n_matings_per_scheme.keys()):
-        n_matings = round(n_matings_per_scheme[scheme])
-        n_matings_per_scheme[scheme] = n_matings
+    # (with integrality=1 option above), but are still returned as floats,
+    # so convert to true int().
+    n_matings_per_scheme: dict[BreedingScheme, int] = {}
+    for (scheme, _, _), n_matings in zip(pairings, optimised_result.x):
+        n_matings_per_scheme.setdefault(scheme, 0)
+        n_matings_per_scheme[scheme] += round(n_matings)
 
-        if n_matings == 0:
+    # Remove breeding schemes with 0 matings, to make the output easier to
+    # read at a glance
+    for scheme in list(n_matings_per_scheme.keys()):
+        if n_matings_per_scheme[scheme] == 0:
             del n_matings_per_scheme[scheme]
 
     return n_matings_per_scheme
 
 
-def _get_schemes_from_breeding_stock(
-    breeding_schemes: list[BreedingScheme],
+def _get_pairings_from_breeding_stock(
     available_breeding_stock: dict[tuple[Genotype, ...], SexSplit],
     required_genotypes: list[tuple[Genotype, ...]],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
-) -> list[BreedingScheme]:
-    """Get the breeding schemes that can be set up from the provided stock.
+) -> list[tuple[BreedingScheme, tuple[Genotype, ...], tuple[Genotype, ...]]]:
+    """Get the male x female pairings that can be set up from the stock.
 
     Parameters
     ----------
-    breeding_schemes : list[BreedingScheme]
-        The breeding schemes to filter
     available_breeding_stock : dict[tuple[Genotype, ...], SexSplit]
         Breeders in stock per genotype, as a SexSplit of (n_males,
         n_females).
@@ -282,8 +306,9 @@ def _get_schemes_from_breeding_stock(
 
     Returns
     -------
-    list[BreedingScheme]
-        The filtered breeding schemes, in the same order as the original list.
+    list[tuple[BreedingScheme, tuple[Genotype, ...], tuple[Genotype, ...]]]
+        Each possible pairing, as (breeding scheme, male genotype, female
+        genotype).
 
     Raises
     ------
@@ -292,29 +317,29 @@ def _get_schemes_from_breeding_stock(
         available_breeding_stock.
     """
 
-    # check male and female in chosen available breeding stock is not 0
-    possible_schemes = set()
-    for male_genotype, male_stock in available_breeding_stock.items():
-        for female_genotype, female_stock in available_breeding_stock.items():
-            if male_stock.n_males > 0 and female_stock.n_females > 0:
-                possible_schemes.add(
-                    BreedingScheme(male_genotype, female_genotype)
-                )
+    # pair each male genotype in stock with each female genotype in stock
+    sorted_stock = sorted(available_breeding_stock.items())
+    pairings = []
+    for male_genotype, male_stock in sorted_stock:
+        for female_genotype, female_stock in sorted_stock:
+            scheme = BreedingScheme(male_genotype, female_genotype)
+            if (
+                male_stock.n_males > 0
+                and female_stock.n_females > 0
+                and scheme in offspring_per_scheme
+            ):
+                pairings.append((scheme, male_genotype, female_genotype))
 
-    filtered_schemes = []
-    for scheme in breeding_schemes:
-        if scheme in possible_schemes:
-            filtered_schemes.append(scheme)
-
-    if not filtered_schemes:
+    if not pairings:
         raise ValueError(
-            "The chosen scheme lacks the minimum of one male and one female"
+            "No breeding scheme can be set up from the available breeding "
+            "stock"
         )
 
     # Check that the selected genotype can be produced from the available stock
     # e.g. WT stock can not be produced from exclusively HOM stock.
     breedable_genotypes = set()
-    for scheme in filtered_schemes:
+    for scheme, _, _ in pairings:
         n_per_genotype = offspring_per_scheme[scheme].n_per_genotype
         for genotype, n_offspring in n_per_genotype.items():
             if n_offspring > 0:
@@ -327,4 +352,4 @@ def _get_schemes_from_breeding_stock(
                 "available breeding stock"
             )
 
-    return filtered_schemes
+    return pairings
