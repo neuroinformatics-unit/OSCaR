@@ -15,6 +15,7 @@ def get_pyrat_data(
     birth_date_from: datetime.date | None = None,
     birth_date_to: datetime.date | None = None,
     max_n_rows: int = 10000,
+    currently_available: bool = False,
 ) -> Iterator[pd.DataFrame]:
     """Fetch animal data directly from the pyRAT api.
 
@@ -38,6 +39,9 @@ def get_pyrat_data(
     max_no_rows : int, optional
         Maximum number of items in each returned dataframe (and therefore
         returned per request to the pyRAT api)
+    currently_available : bool, optional
+        If True, only fetch live animals. Otherwise, sacrificed and exported
+        animals are included too.
 
     Returns
     -------
@@ -64,7 +68,11 @@ def get_pyrat_data(
             "sacrifice_reason_name",
         ],
         "s": ["eartag_or_id:asc"],
-        "state": ["live", "sacrificed", "exported"],
+        "state": (
+            ["live"]
+            if currently_available
+            else ["live", "sacrificed", "exported"]
+        ),
         "l": max_n_rows,
     }
     log_params = {}
