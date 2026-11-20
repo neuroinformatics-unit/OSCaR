@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
+import numpy as np
 import pandas as pd
 
 from oscar_colony.breeding_scheme import (
@@ -82,64 +83,10 @@ class SurplusSummary:
         default_factory=dict
     )
 
-    def create_summary_df(
-        self, decimal_places: int | None = None
-    ) -> pd.DataFrame:
-        """Create a pandas dataframe summarising total numbers and surplus.
-
-        Columns are 'Sex', 'Required N', 'Total N' and 'Total N Surplus'.
-        Rows for male / female are omitted where no genotype was
-        requested as a SexSplit of (n_males, n_females).
-
-        Parameters
-        ----------
-        decimal_places : int | None, optional
-            Number of decimal places to round float values to
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame summarising overall total and surplus.
-        """
-
-        required = [self.total_n - self.total_n_surplus]
-        total = [self.total_n]
-        surplus = [self.total_n_surplus]
-        sex = ["all"]
-
-        sex_surplus = self.sex_surplus
-        if sex_surplus is not None:
-            required.extend(
-                [
-                    sex_surplus.total_males - sex_surplus.total_male_surplus,
-                    sex_surplus.total_females
-                    - sex_surplus.total_female_surplus,
-                ]
-            )
-            total.extend([sex_surplus.total_males, sex_surplus.total_females])
-            surplus.extend(
-                [
-                    sex_surplus.total_male_surplus,
-                    sex_surplus.total_female_surplus,
-                ]
-            )
-            sex.extend(["male", "female"])
-
-        summary_df = pd.DataFrame(
-            data={
-                "Sex": sex,
-                "Required N": required,
-                "Total N": total,
-                "Total N Surplus": surplus,
-            }
-        )
-        if decimal_places is not None:
-            summary_df = summary_df.round(decimals=decimal_places)
-
-        return summary_df
-
     def create_genotype_df(
-        self, decimal_places: int | None = None
+        self,
+        decimal_places: int | None = None,
+        round_up_total_surplus: bool = False,
     ) -> pd.DataFrame:
         """Create a pandas dataframe from surplus_per_genotype.
 
@@ -156,6 +103,9 @@ class SurplusSummary:
         ----------
         decimal_places : int | None, optional
             Number of decimal places to round float values to
+        round_up_total_surplus: bool, optional
+            When true, rounds all total surplus columns up to the
+            nearest integer
 
         Returns
         -------
@@ -203,6 +153,15 @@ class SurplusSummary:
             rows.append(row)
 
         genotype_df = pd.DataFrame(rows)
+
+        total_surplus_cols = [
+            "Total N Surplus",
+            "Total Male Surplus",
+            "Total Female Surplus",
+        ]
+        if round_up_total_surplus:
+            cols = genotype_df.columns.intersection(total_surplus_cols)
+            genotype_df[cols] = np.ceil(genotype_df[cols])
 
         if decimal_places is not None:
             genotype_df = genotype_df.round(decimals=decimal_places)
