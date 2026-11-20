@@ -23,6 +23,8 @@ def calculate_optimal_scheme(
     default_litter_size: int,
     min_n_matings: int = 3,
     min_n_offspring: int = 10,
+    available_breeding_stock: dict[tuple[Genotype, ...], SexSplit]
+    | None = None,
 ) -> tuple[dict[BreedingScheme, int], SurplusSummary]:
     """Calculate the optimal combination of breeding schemes to produce
     the required_n_per_genotype.
@@ -51,6 +53,9 @@ def calculate_optimal_scheme(
         If not met, the mendelian ratio is used for all genotype proportions,
         and the proportion of males is set as the average across the whole line
         or, if the line also doesn't meet min_n_offspring, as 0.5.
+    available_breeding_stock : dict[tuple[Genotype, ...], SexSplit], optional
+        Breeders in stock per genotype, as a SexSplit of (n_males,
+        n_females). If None, assumed infinite breeding stock.
 
     Returns
     -------
@@ -69,7 +74,7 @@ def calculate_optimal_scheme(
     )
 
     n_matings_per_scheme = _optimise_n_matings(
-        required_n_per_genotype, offspring_per_scheme
+        required_n_per_genotype, offspring_per_scheme, available_breeding_stock
     )
 
     surplus_summary = create_surplus_summary(
