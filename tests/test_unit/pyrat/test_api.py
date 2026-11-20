@@ -268,6 +268,31 @@ def test_no_pyrat_data_exists(species_response):
     assert pyrat_dfs[0].empty
 
 
+@responses.activate
+@pytest.mark.parametrize(
+    "currently_available, expected_states",
+    [
+        pytest.param(False, ["live", "sacrificed", "exported"], id="all"),
+        pytest.param(True, "live", id="currently available"),
+    ],
+)
+def test_get_pyrat_data_currently_available(
+    currently_available, expected_states
+):
+    """Test only live animals are requested from pyRAT when
+    currently_available is True."""
+
+    # the request must contain these states, or responses raises an error
+    responses.add(
+        create_pyrat_response(query_params={"state": expected_states})
+    )
+
+    pyrat_dfs = list(get_pyrat_data(currently_available=currently_available))
+
+    assert len(responses.calls) == 1
+    assert pyrat_dfs[0].empty
+
+
 def test_invalid_date_range():
     """
     Test fetching pyrat api data when birth_date_from is after
