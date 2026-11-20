@@ -91,9 +91,9 @@ class SurplusSummary:
         """Create a pandas dataframe from surplus_per_genotype.
 
         Columns are: 'Genotype', 'Required N', 'Total N',
-        'Total N Surplus', 'Percent Surplus', 'Required Males',
-        'Total Males', 'Total Male Surplus', 'Percent Male Surplus',
-        'Required Females', 'Total Females', 'Total Female Surplus' and
+        'Surplus N', 'Percent Surplus', 'Required Males',
+        'Total Males', 'Surplus Males', 'Percent Male Surplus',
+        'Required Females', 'Total Females', 'Surplus Females' and
         'Percent Female Surplus'
 
         The male / female columns are omitted where no genotype was
@@ -105,7 +105,7 @@ class SurplusSummary:
             Number of decimal places to round float values to
         round_up_total_surplus: bool, optional
             When true, rounds all total surplus columns up to the
-            nearest integer
+            nearest integer. This adds (rounded up) to relevant column names.
 
         Returns
         -------
@@ -119,7 +119,7 @@ class SurplusSummary:
                 "Genotype": Genotype.to_string(genotype),
                 "Required N": surplus.total_n - surplus.total_n_surplus,
                 "Total N": surplus.total_n,
-                "Total N Surplus": surplus.total_n_surplus,
+                "Surplus N": surplus.total_n_surplus,
                 "Percent Surplus": surplus.percent_surplus,
             }
 
@@ -132,7 +132,7 @@ class SurplusSummary:
                             - sex_surplus.total_male_surplus
                         ),
                         "Total Males": sex_surplus.total_males,
-                        "Total Male Surplus": sex_surplus.total_male_surplus,
+                        "Surplus Males": sex_surplus.total_male_surplus,
                         "Percent Male Surplus": (
                             sex_surplus.male_percent_surplus
                         ),
@@ -141,9 +141,7 @@ class SurplusSummary:
                             - sex_surplus.total_female_surplus
                         ),
                         "Total Females": sex_surplus.total_females,
-                        "Total Female Surplus": (
-                            sex_surplus.total_female_surplus
-                        ),
+                        "Surplus Females": (sex_surplus.total_female_surplus),
                         "Percent Female Surplus": (
                             sex_surplus.female_percent_surplus
                         ),
@@ -155,13 +153,16 @@ class SurplusSummary:
         genotype_df = pd.DataFrame(rows)
 
         total_surplus_cols = [
-            "Total N Surplus",
-            "Total Male Surplus",
-            "Total Female Surplus",
+            "Surplus N",
+            "Surplus Males",
+            "Surplus Females",
         ]
         if round_up_total_surplus:
             cols = genotype_df.columns.intersection(total_surplus_cols)
             genotype_df[cols] = np.ceil(genotype_df[cols])
+            genotype_df = genotype_df.rename(
+                columns={col: f"{col} (rounded up)" for col in cols}
+            )
 
         if decimal_places is not None:
             genotype_df = genotype_df.round(decimals=decimal_places)
