@@ -105,9 +105,13 @@ def test_optimise_n_matings(
 
 
 @pytest.mark.parametrize(
-    "available_breeding_stock, expected_n_matings, expectation",
+    (
+        "required_n_per_genotype, available_breeding_stock, "
+        "expected_n_matings, expectation"
+    ),
     [
         pytest.param(
+            {(Genotype.HET,): 20, (Genotype.HOM,): 20},
             {
                 (Genotype.HET,): SexSplit(0, 10),
                 (Genotype.HOM,): SexSplit(10, 0),
@@ -117,6 +121,7 @@ def test_optimise_n_matings(
             id="hom males and het females only",
         ),
         pytest.param(
+            {(Genotype.HET,): 20, (Genotype.HOM,): 20},
             {(Genotype.HOM,): SexSplit(10, 0)},
             None,
             pytest.raises(
@@ -127,6 +132,7 @@ def test_optimise_n_matings(
             id="no female breeders",
         ),
         pytest.param(
+            {(Genotype.HET,): 20, (Genotype.HOM,): 20},
             {(Genotype.HOM,): SexSplit(10, 10)},
             None,
             pytest.raises(
@@ -136,6 +142,21 @@ def test_optimise_n_matings(
             id="only hom breeders",
         ),
         pytest.param(
+            {(Genotype.HET,): 0, (Genotype.HOM,): 20},
+            {(Genotype.HOM,): SexSplit(10, 10)},
+            {BreedingScheme("hom", "hom"): 4},
+            does_not_raise(),
+            id="only hom breeders, 0 het required",
+        ),
+        pytest.param(
+            {(Genotype.HET,): SexSplit(0, 0), (Genotype.HOM,): 20},
+            {(Genotype.HOM,): SexSplit(10, 10)},
+            {BreedingScheme("hom", "hom"): 4},
+            does_not_raise(),
+            id="only hom breeders, 0 het of each sex required",
+        ),
+        pytest.param(
+            {(Genotype.HET,): 20, (Genotype.HOM,): 20},
             {
                 (Genotype.HET,): SexSplit(10, 10),
                 (Genotype.HOM,): SexSplit(6, 0),
@@ -145,6 +166,7 @@ def test_optimise_n_matings(
             id="six hom males",
         ),
         pytest.param(
+            {(Genotype.HET,): 20, (Genotype.HOM,): 20},
             {
                 (Genotype.HET,): SexSplit(4, 4),
                 (Genotype.HOM,): SexSplit(4, 4),
@@ -154,6 +176,7 @@ def test_optimise_n_matings(
             id="four of each, both ways",
         ),
         pytest.param(
+            {(Genotype.HET,): 20, (Genotype.HOM,): 20},
             {
                 (Genotype.HET,): SexSplit(0, 10),
                 (Genotype.HOM,): SexSplit(1, 0),
@@ -165,6 +188,7 @@ def test_optimise_n_matings(
     ],
 )
 def test_optimise_n_matings_breeding_stock(
+    required_n_per_genotype,
     available_breeding_stock,
     expected_n_matings,
     expectation,
@@ -172,8 +196,6 @@ def test_optimise_n_matings_breeding_stock(
 ):
     """Test optimisation only uses the available breeding stock when values are
     provided, and raises an error when the stock can't be used."""
-
-    required_n_per_genotype = {(Genotype.HET,): 20, (Genotype.HOM,): 20}
 
     with expectation:
         n_matings_per_scheme = _optimise_n_matings(

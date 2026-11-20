@@ -166,7 +166,7 @@ def _optimise_n_matings(
     else:
         pairings = _get_pairings_from_breeding_stock(
             available_breeding_stock,
-            required_genotypes,
+            required_n_per_genotype,
             offspring_per_scheme,
         )
 
@@ -293,7 +293,7 @@ def _optimise_n_matings(
 
 def _get_pairings_from_breeding_stock(
     available_breeding_stock: dict[tuple[Genotype, ...], SexSplit],
-    required_genotypes: list[tuple[Genotype, ...]],
+    required_n_per_genotype: dict[tuple[Genotype, ...], int | SexSplit],
     offspring_per_scheme: dict[BreedingScheme, ExpectedOffspring],
 ) -> list[tuple[BreedingScheme, tuple[Genotype, ...], tuple[Genotype, ...]]]:
     """Get the male x female pairings that can be set up from the stock.
@@ -303,8 +303,8 @@ def _get_pairings_from_breeding_stock(
     available_breeding_stock : dict[tuple[Genotype, ...], SexSplit]
         Breeders in stock per genotype, as a SexSplit of (n_males,
         n_females).
-    required_genotypes : list[tuple[Genotype, ...]]
-        The genotypes that need to be produced
+    required_n_per_genotype : dict[tuple[Genotype, ...], int | SexSplit]
+        The required number of individuals per genotype.
     offspring_per_scheme : dict[BreedingScheme, ExpectedOffspring]
         The estimated number of offspring produced per mating of each
         breeding scheme
@@ -350,7 +350,10 @@ def _get_pairings_from_breeding_stock(
             if n_offspring > 0:
                 breedable_genotypes.add(genotype)
 
-    for genotype in required_genotypes:
+    for genotype, required_n in required_n_per_genotype.items():
+        if required_n in (0, SexSplit(0, 0)):
+            # Skips 0 as an input
+            continue
         if genotype not in breedable_genotypes:
             raise ValueError(
                 f"Can't breed {Genotype.to_string(genotype)} from the "
