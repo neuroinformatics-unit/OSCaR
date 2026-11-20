@@ -94,7 +94,8 @@ def _optimise_n_matings(
     meet the required_genotypes.
 
     This is framed as a linear programming (optimisation) problem with three
-    parts: the decision variables (the number of matings for each scheme),
+    parts: the decision variables (the number of matings for each male x
+    female pairing of a breeding scheme),
     the objective function (the surplus to minimise) and the constraints
     (that the final result must meet the given required_genotypes).
 
@@ -146,6 +147,9 @@ def _optimise_n_matings(
     ValueError
         If the optimisation problem was infeasible, and couldn't be
         optimised or a required number isn't an int or (n_males, n_females).
+        When available_breeding_stock is given, also if no breeding scheme
+        can be set up from the stock, a required genotype can't be bred from
+        it, or there aren't enough breeders to produce the required animals.
     """
 
     # Extract sorted names of breeding schemes / required genotypes as a list,
@@ -153,13 +157,12 @@ def _optimise_n_matings(
     # This makes sure the same input always gives the same output. As
     # there may be multiple optimal solutions, slight changes in input order
     # can result in a different solution being returned.
-    breeding_schemes = sorted(list(offspring_per_scheme.keys()), key=str)
     required_genotypes = sorted(list(required_n_per_genotype.keys()))
 
     # one variable per male x female pairing, so stock can be counted by sex
     if available_breeding_stock is None:
         pairings = []
-        for scheme in breeding_schemes:
+        for scheme in sorted(offspring_per_scheme, key=str):
             pairings.append(
                 (scheme, scheme.parent_1_genotype, scheme.parent_2_genotype)
             )
@@ -171,7 +174,7 @@ def _optimise_n_matings(
         )
 
     # Coefficients of the objective function we want to minimise. This will
-    # be a list with length == number of breeding schemes, containing the
+    # be a list with length == number of pairings, containing the
     # expected litter size for each. (see docstring for description of
     # objective function. We can ignore the constant, total_n_required, as
     # it won't affect the position of the solutions)
@@ -186,8 +189,7 @@ def _optimise_n_matings(
     # (n_males, n_females).
     # With each item being:
     # - For constraint_coefficients, a list of the expected number of offspring
-    #   of that genotype (and sex if specified) per mating for all breeding
-    #   schemes
+    #   of that genotype (and sex if specified) per mating for all pairings
     # - For constraint_lower_limits, the required number of individuals of that
     #   genotype (and sex if specified)
 
@@ -276,17 +278,14 @@ def _optimise_n_matings(
     # Add both ways round of a scheme together (e.g. hom x het, het x hom).
     # Output number of matings are forced to be whole numbers
     # (with integrality=1 option above), but are still returned as floats,
-    # so convert to true int().
+    # so convert to true int(). Pairings with 0 matings are left out, to make
+    # the output easier to read at a glance.
     n_matings_per_scheme: dict[BreedingScheme, int] = {}
     for (scheme, _, _), n_matings in zip(pairings, optimised_result.x):
+        if round(n_matings) == 0:
+            continue
         n_matings_per_scheme.setdefault(scheme, 0)
         n_matings_per_scheme[scheme] += round(n_matings)
-
-    # Remove breeding schemes with 0 matings, to make the output easier to
-    # read at a glance
-    for scheme in list(n_matings_per_scheme.keys()):
-        if n_matings_per_scheme[scheme] == 0:
-            del n_matings_per_scheme[scheme]
 
     return n_matings_per_scheme
 
@@ -352,7 +351,6 @@ def _get_pairings_from_breeding_stock(
 
     for genotype, required_n in required_n_per_genotype.items():
         if required_n in (0, SexSplit(0, 0)):
-            # Skips 0 as an input
             continue
         if genotype not in breedable_genotypes:
             raise ValueError(
