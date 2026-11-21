@@ -68,7 +68,9 @@ Now we have the data, it must be converted into OSCaR's [standard table format](
 We can do this with:
 ```python
 import pandas as pd
-from oscar_colony.colony_management.pyrat.standardise import standardise_pyrat_csv
+from oscar_colony.colony_management.pyrat.standardise import (
+    standardise_pyrat_csv,
+)
 
 standardised_dfs = []
 
