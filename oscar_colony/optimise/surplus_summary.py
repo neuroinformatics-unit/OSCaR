@@ -135,7 +135,7 @@ class SurplusSummary:
                             - sex_surplus.total_female_surplus
                         ),
                         "Total Females": sex_surplus.total_females,
-                        "Surplus Females": (sex_surplus.total_female_surplus),
+                        "Surplus Females": sex_surplus.total_female_surplus,
                     }
                 )
 
