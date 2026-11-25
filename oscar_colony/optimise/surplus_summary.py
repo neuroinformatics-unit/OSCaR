@@ -91,10 +91,8 @@ class SurplusSummary:
         """Create a pandas dataframe from surplus_per_genotype.
 
         Columns are: 'Genotype', 'Required N', 'Total N',
-        'Surplus N', 'Percent Surplus', 'Required Males',
-        'Total Males', 'Surplus Males', 'Percent Male Surplus',
-        'Required Females', 'Total Females', 'Surplus Females' and
-        'Percent Female Surplus'
+        'Surplus N', 'Required Males', 'Total Males', 'Surplus Males',
+        'Required Females', 'Total Females', 'Surplus Females'
 
         The male / female columns are omitted where no genotype was
         requested as a SexSplit of (n_males, n_females).
@@ -120,7 +118,6 @@ class SurplusSummary:
                 "Required N": surplus.total_n - surplus.total_n_surplus,
                 "Total N": surplus.total_n,
                 "Surplus N": surplus.total_n_surplus,
-                "Percent Surplus": surplus.percent_surplus,
             }
 
             sex_surplus = surplus.sex_surplus
@@ -133,18 +130,12 @@ class SurplusSummary:
                         ),
                         "Total Males": sex_surplus.total_males,
                         "Surplus Males": sex_surplus.total_male_surplus,
-                        "Percent Male Surplus": (
-                            sex_surplus.male_percent_surplus
-                        ),
                         "Required Females": (
                             sex_surplus.total_females
                             - sex_surplus.total_female_surplus
                         ),
                         "Total Females": sex_surplus.total_females,
                         "Surplus Females": (sex_surplus.total_female_surplus),
-                        "Percent Female Surplus": (
-                            sex_surplus.female_percent_surplus
-                        ),
                     }
                 )
 
