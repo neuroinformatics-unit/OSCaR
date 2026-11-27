@@ -91,51 +91,35 @@ def test_invalid_surplus_summary(
 
 
 @pytest.mark.parametrize(
-    "surplus_summary, expected_csv",
+    "round_up, surplus_summary, expected_csv",
     [
         pytest.param(
-            "surplus_2_mutations",
-            "converted-surplus-summary.csv",
-            id="no sex split",
-        ),
-        pytest.param(
-            "surplus_2_mutations_sex_split",
-            "converted-surplus-summary-sex-split.csv",
-            id="sex split",
-        ),
-    ],
-)
-def test_create_summary_df(surplus_summary, expected_csv, request):
-    """Test creation of a summary dataframe from SurplusSummary.
-
-    The male / female rows should only be present when a sex split was
-    required.
-    """
-
-    summary_df = request.getfixturevalue(surplus_summary).create_summary_df(
-        decimal_places=2
-    )
-    expected_df = pd.read_csv(pooch_data_path(expected_csv))
-
-    pd.testing.assert_frame_equal(summary_df, expected_df)
-
-
-@pytest.mark.parametrize(
-    "surplus_summary, expected_csv",
-    [
-        pytest.param(
+            False,
             "surplus_2_mutations",
             "converted-surplus-per-genotype.csv",
             id="no sex split",
         ),
         pytest.param(
+            False,
             "surplus_2_mutations_sex_split",
             "converted-surplus-per-genotype-sex-split.csv",
             id="sex split",
         ),
+        pytest.param(
+            True,
+            "surplus_2_mutations",
+            "converted-surplus-per-genotype-round-up.csv",
+            id="no sex split - round up",
+        ),
+        pytest.param(
+            True,
+            "surplus_2_mutations_sex_split",
+            "converted-surplus-per-genotype-sex-split-round-up.csv",
+            id="sex split - round up",
+        ),
     ],
 )
-def test_create_genotype_df(surplus_summary, expected_csv, request):
+def test_create_genotype_df(round_up, surplus_summary, expected_csv, request):
     """Test creation of a dataframe from SurplusSummary.surplus_per_genotype.
 
     The male / female columns should only be present when a sex split was
@@ -143,7 +127,7 @@ def test_create_genotype_df(surplus_summary, expected_csv, request):
     """
 
     genotype_df = request.getfixturevalue(surplus_summary).create_genotype_df(
-        decimal_places=2
+        decimal_places=2, round_up_total_surplus=round_up
     )
     expected_df = pd.read_csv(pooch_data_path(expected_csv))
 
